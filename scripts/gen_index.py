@@ -32,6 +32,12 @@ PAGE_META: dict[str, dict[str, object]] = {
         "order": 10,
         "note": "集中论证 F-A 现在应该怎么 framing，适合往论文主线收敛。",
     },
+    "research-abstracts.html": {
+        "title": "Abstract Candidates",
+        "layer": "layer1",
+        "order": 15,
+        "note": "三版更像顶会投稿的英文摘要，分别对应稳妥版、强 claim 版和 traceability 版。",
+    },
     "research-selection.html": {
         "title": "Benchmark Selection",
         "layer": "layer1",

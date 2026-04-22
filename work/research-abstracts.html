@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>F-A GroundedChart — Abstract Candidates</title>
+  <link rel="stylesheet" href="research-styles.css">
+  <style>
+    .abstract-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+    .abstract-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:18px; }
+    .abstract-card.recommended { border-color:rgba(63,185,80,0.55); box-shadow:0 8px 28px rgba(63,185,80,0.08); }
+    .abstract-card .meta { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+    .abstract-name { font-size:1.06rem; font-weight:700; margin-bottom:6px; color:var(--text); }
+    .abstract-fit { font-size:0.92rem; color:var(--text2); margin-bottom:14px; }
+    .abstract-text {
+      background:#0b0f15;
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:16px;
+      color:#dce6f2;
+      font-size:0.97rem;
+      line-height:1.82;
+      margin-bottom:14px;
+    }
+    .abstract-text p:last-child { margin-bottom:0; }
+    .strength-risk { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .mini-box {
+      border-radius:10px;
+      padding:12px 14px;
+      font-size:0.9rem;
+      line-height:1.68;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,0.02);
+    }
+    .mini-box strong { display:block; margin-bottom:6px; }
+    .mini-box.good strong { color:var(--green); }
+    .mini-box.warn strong { color:var(--yellow); }
+    .usage-note {
+      margin-top:8px;
+      font-size:0.9rem;
+      color:var(--text2);
+    }
+    @media (max-width: 1100px) {
+      .abstract-grid { grid-template-columns:1fr; }
+    }
+    @media (max-width: 700px) {
+      .strength-risk { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a class="nav-home" href="research-overview.html">Overview</a>
+  <a href="research-summary.html">01 Summary</a>
+  <a href="research-benchmarks.html">02 Benchmarks</a>
+  <a href="research-failure.html">03 失败分析</a>
+  <a href="research-competitors.html">04 竞品</a>
+  <a href="research-thesis.html">05 论证</a>
+  <a href="research-selection.html">06 选型</a>
+  <a href="research-timeline.html">07 Timeline</a>
+  <a class="active" href="research-abstracts.html">08 Abstracts</a>
+</nav>
+
+<h1 class="section-title good">摘要候选 — 三个更像顶会投稿的 abstract 版本</h1>
+
+<div class="hero">
+  <h2>使用原则</h2>
+  <p class="one-liner"><strong>这三版都不是“随便包装一下”的摘要，而是对应三种不同的论文主 claim。</strong></p>
+  <p class="finding">推荐顺序：<strong>A 最稳</strong>，<strong>C 最有辨识度</strong>，<strong>B 最野但也最容易被 reviewer 追问实现边界</strong>。</p>
+  <div class="stat-row">
+    <div class="stat-box green">
+      <div class="num">A</div>
+      <div class="label">最稳妥<br>贴近当前证据与实现</div>
+    </div>
+    <div class="stat-box blue">
+      <div class="num">C</div>
+      <div class="label">最有特色<br>突出 traceability</div>
+    </div>
+    <div class="stat-box yellow">
+      <div class="num">B</div>
+      <div class="label">最强 claim<br>要求框架更完整</div>
+    </div>
+  </div>
+</div>
+
+<div class="note-box red">
+  <strong>批判性提醒：</strong>在最终实验数字没定之前，不要在摘要里写硬性的百分比提升，也不要暗示“所有 benchmark 都大涨”。下面三版都故意把结果句写成了<strong>可提交风格</strong>但不乱造数字的版本。等你主实验跑完后，再把结果句压实。
+</div>
+
+<div class="section">
+  <div class="section-title">三版摘要</div>
+  <div class="abstract-grid">
+
+    <div class="abstract-card recommended">
+      <div class="meta">
+        <span class="tag tag-green">推荐 No.1</span>
+        <span class="tag tag-blue">EMNLP Main 风格</span>
+        <span class="tag tag-yellow">最稳</span>
+      </div>
+      <div class="abstract-name">Abstract A · Execution-Grounded Verification-and-Repair</div>
+      <div class="abstract-fit">适合你现在这条主线：以 <strong>faithful language-to-chart generation</strong> 为题，核心证据主要靠 VisEval，Text2Vis/MatPlotBench 只做补充。</div>
+      <div class="abstract-text">
+        <p>Large language models can generate chart code from natural-language requests and structured data, but existing systems are typically optimized for executability or visual quality rather than whether the rendered figure faithfully reflects the requested data operations. As a result, models can produce charts that look plausible while encoding incorrect filters, group-bys, aggregations, or sort orders. We study this problem as faithful language-to-chart generation and present GroundedChart, an execution-grounded verification-and-repair framework. GroundedChart first extracts a structured chart requirement plan from the user request, including data-operation and basic encoding constraints. It then derives expected artifacts from the source data with deterministic execution and compares them against traces recovered from the generated plotting program, enabling requirement-level mismatch detection and localized repair. Unlike black-box LLM judging, our framework grounds verification in executable evidence and attributes each failure to specific requirements. We evaluate GroundedChart on benchmarks for natural-language-to-chart generation, using VisEval as the primary testbed and supplementary settings from Text2Vis and MatPlotBench. Results show that GroundedChart improves chart fidelity and data-check success while preserving executability, and provides interpretable error reports for downstream analysis. Our findings suggest that semantic alignment between language intent, data transformation, and plotted traces is a distinct bottleneck in chart generation that cannot be resolved by stronger base models alone.</p>
+      </div>
+      <div class="strength-risk">
+        <div class="mini-box good">
+          <strong>为什么这版稳</strong>
+          claim 收得比较准，重点放在 data operation fidelity、execution-grounded verification、localized repair，和你当前已经形成的证据链最贴。
+        </div>
+        <div class="mini-box warn">
+          <strong>主要风险</strong>
+          如果最后实验只修了少数 groupby/filter 错误，这版还能保住；但“basic encoding constraints”那句最好确保你系统至少有初步覆盖。
+        </div>
+      </div>
+      <div class="usage-note">建议：如果明天就要拿给师兄看摘要，先看这版。</div>
+    </div>
+
+    <div class="abstract-card">
+      <div class="meta">
+        <span class="tag tag-purple">强 claim</span>
+        <span class="tag tag-blue">Framework-first</span>
+        <span class="tag tag-yellow">要求更高</span>
+      </div>
+      <div class="abstract-name">Abstract B · Chart Requirement Fidelity</div>
+      <div class="abstract-fit">这版把故事从“数据保真”进一步扩展为 <strong>chart requirement fidelity</strong>，适合你后面真的把 encoding / order / presentation constraint 也做进来。</div>
+      <div class="abstract-text">
+        <p>Natural-language chart generation involves more than producing runnable code: the final figure must satisfy chart requirements expressed or implied in the request, including data transformations, visual encodings, and presentation constraints such as ordering or value formatting. Existing systems lack an explicit representation of these requirements and therefore struggle to diagnose silent fidelity errors, where a chart executes successfully but violates the intended semantics. We introduce GroundedChart, a requirement-grounded framework for faithful language-to-chart generation. The framework converts a user request into a traceable requirement plan, computes expected artifacts with deterministic programs, extracts actual plot traces from generated code, and performs requirement-level verification before localized repair. This design turns chart correctness from an opaque end result into a structured, evidence-backed process linking query spans, requirement nodes, computed artifacts, plotted traces, and repair actions. We further define chart requirement fidelity as an evaluation perspective that complements executability and visual similarity. Across benchmark settings, GroundedChart produces more faithful chart code, reveals failure modes that are invisible to surface-level metrics, and supports fine-grained error analysis by requirement family. These findings suggest that structured requirement grounding is an effective foundation for building trustworthy chart generation systems.</p>
+      </div>
+      <div class="strength-risk">
+        <div class="mini-box good">
+          <strong>为什么这版强</strong>
+          这版最像“提出了一个新任务视角 + 新框架 + 新分析维度”的顶会摘要，理论高度更高，不只是 repair pipeline。
+        </div>
+        <div class="mini-box warn">
+          <strong>主要风险</strong>
+          reviewer 很可能会问：你到底支持了多少 requirement family？如果现在主要还是 data ops，这版会显得略微超卖。
+        </div>
+      </div>
+      <div class="usage-note">建议：只有当 requirement extraction、constraint verification、family-wise error analysis 都做得比较完整时再上这版。</div>
+    </div>
+
+    <div class="abstract-card">
+      <div class="meta">
+        <span class="tag tag-blue">辨识度高</span>
+        <span class="tag tag-green">Reviewer-friendly</span>
+        <span class="tag tag-purple">Traceability</span>
+      </div>
+      <div class="abstract-name">Abstract C · Evidence-Grounded and Traceable</div>
+      <div class="abstract-fit">这版最适合你想把“可溯源、可归因、LLM 不负责算数真值”打成系统特色的时候，用来区别普通 agent framework。</div>
+      <div class="abstract-text">
+        <p>Many chart-generation errors are silent: a plotting program executes and produces a visually plausible figure, yet the underlying data no longer corresponds to the user’s request. Existing systems and benchmarks provide limited support for tracing such failures back to their causes. We present GroundedChart, an evidence-grounded framework that makes chart generation verifiable and attributable. Given a natural-language request, source data, and candidate chart code, GroundedChart extracts requirement nodes with provenance, computes expected artifacts via deterministic execution, aligns them with actual plot traces, and constructs an evidence chain for requirement-level verification and repair. This approach separates numerical truth from language modeling: LLMs are used for requirement interpretation and code revision, while filters, joins, aggregations, percentages, and ordering are checked by executable programs. The resulting verifier can abstain under ambiguity, localize mismatches to specific requirements, and prevent unconstrained rewrites during repair. Experiments on language-to-chart benchmarks show that evidence-grounded verification improves fidelity, produces more actionable diagnostics, and enables analysis of which requirement families remain challenging. Our study argues that traceability, not just generation quality, is central to building reliable chart-generation systems.</p>
+      </div>
+      <div class="strength-risk">
+        <div class="mini-box good">
+          <strong>为什么这版有特色</strong>
+          它把你的系统从“又一个 chart agent”拉成“evidence-backed, traceable verification framework”，很利于和黑箱 judge / 黑箱 self-refine 区分。
+        </div>
+        <div class="mini-box warn">
+          <strong>主要风险</strong>
+          这版默认你的 evidence chain、abstention、localized repair 都至少有 prototype。若实现不够硬，摘要会比系统本体更强。
+        </div>
+      </div>
+      <div class="usage-note">建议：如果你的论文想主打 methodology 和分析可信度，这版比 A 更有“味道”。</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title good">当前推荐</div>
+  <div class="card">
+    <div class="card-body">
+      <p><strong>如果按你现在的状态，我建议：</strong></p>
+      <ul>
+        <li><strong>主摘要先用 A：</strong>最贴近当前证据结构，不容易被 reviewer 一眼看出 overclaim。</li>
+        <li><strong>如果接下来 traceability 真做扎实，再切到 C：</strong>这会让论文辨识度更强，也更像你自己的方法，而不是通用 repair agent。</li>
+        <li><strong>B 先保留：</strong>它代表你最理想的论文终局，但只有 requirement family 做得够广时才建议上。</li>
+      </ul>
+      <p style="margin-top:10px;">更直白一点：<strong>A 是现在能 defend 的版本，C 是最值得冲的版本，B 是需要更多实现才能站稳的版本。</strong></p>
+    </div>
+  </div>
+</div>
+
+<div class="page-nav">
+  <a href="research-thesis.html">&larr; 返回差异化论证</a>
+  <a href="research-selection.html">去看 Benchmark 选型 &rarr;</a>
+</div>
+
+</body>
+</html>
