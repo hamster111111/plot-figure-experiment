@@ -7,17 +7,31 @@
 <style>
   :root {
     --bg: #0d1117; --surface: #161b22; --border: #30363d;
-    --text: #e6edf3; --text2: #8b949e; --accent: #58a6ff;
+    --text: #e6edf3; --text2: #a7b0ba; --accent: #58a6ff;
     --green: #3fb950; --yellow: #d29922; --red: #f85149; --purple: #bc8cff;
     --orange: #d18616;
+    --font-sans: "Segoe UI Variable","Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei UI","Microsoft YaHei","Noto Sans CJK SC","Source Han Sans SC",sans-serif;
+    --font-mono: "Cascadia Mono","Cascadia Code",Consolas,monospace;
   }
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family: -apple-system,'Segoe UI',sans-serif; background:var(--bg); color:var(--text); line-height:1.6; padding:24px; max-width:1200px; margin:0 auto; }
-  h1 { font-size:1.5em; margin-bottom:4px; }
-  .subtitle { color:var(--text2); margin-bottom:28px; font-size:0.9em; }
+  body {
+    font-family: var(--font-sans);
+    font-size:16px;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.68;
+    padding:24px;
+    max-width:1200px;
+    margin:0 auto;
+    text-rendering:optimizeLegibility;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
+  h1 { font-size:1.7rem; margin-bottom:6px; }
+  .subtitle { color:var(--text2); margin-bottom:28px; font-size:0.98rem; }
   .section { margin-bottom:32px; }
   .section-title {
-    font-size:1.05em; font-weight:600; padding:8px 14px; margin-bottom:14px;
+    font-size:1.08rem; font-weight:600; padding:8px 14px; margin-bottom:14px;
     border-left:3px solid var(--accent); background:rgba(88,166,255,0.06);
     border-radius:0 6px 6px 0;
   }
@@ -25,18 +39,18 @@
   .section-title.good { border-left-color:var(--green); background:rgba(63,185,80,0.06); }
   .section-title.danger { border-left-color:var(--red); background:rgba(248,81,73,0.06); }
 
-  table { width:100%; border-collapse:collapse; font-size:0.88em; margin-bottom:16px; }
+  table { width:100%; border-collapse:collapse; font-size:0.93rem; margin-bottom:16px; }
   th,td { padding:8px 12px; border:1px solid var(--border); text-align:left; }
   th { background:var(--surface); color:var(--accent); font-weight:600; position:sticky; top:0; }
   tr:hover td { background:rgba(88,166,255,0.04); }
 
   .card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px; margin-bottom:12px; }
   .card-title { font-weight:600; color:var(--accent); margin-bottom:6px; }
-  .card-body { font-size:0.88em; color:var(--text2); line-height:1.6; }
+  .card-body { font-size:0.95rem; color:var(--text2); line-height:1.7; }
   .card-body strong { color:var(--text); }
   .card-body p { margin-bottom:6px; }
 
-  .tag { display:inline-block; font-size:0.72em; padding:2px 8px; border-radius:10px; margin-right:4px; }
+  .tag { display:inline-block; font-size:0.8rem; padding:2px 8px; border-radius:10px; margin-right:4px; }
   .tag-green { background:rgba(63,185,80,0.15); color:var(--green); }
   .tag-yellow { background:rgba(210,153,34,0.15); color:var(--yellow); }
   .tag-red { background:rgba(248,81,73,0.15); color:var(--red); }
@@ -45,7 +59,7 @@
 
   .note-box {
     background:rgba(210,153,34,0.08); border:1px solid rgba(210,153,34,0.3);
-    border-radius:8px; padding:12px 16px; font-size:0.88em; color:var(--text2); margin-bottom:12px;
+    border-radius:8px; padding:12px 16px; font-size:0.94rem; color:var(--text2); margin-bottom:12px;
   }
   .note-box strong { color:var(--yellow); }
   .note-box.green { background:rgba(63,185,80,0.08); border-color:rgba(63,185,80,0.3); }
@@ -53,12 +67,13 @@
   .note-box.red { background:rgba(248,81,73,0.08); border-color:rgba(248,81,73,0.3); }
   .note-box.red strong { color:var(--red); }
 
+  code { font-family:var(--font-mono); font-size:0.96em; }
   a { color:var(--accent); text-decoration:none; }
   a:hover { text-decoration:underline; }
-  .timestamp { font-size:0.78em; color:var(--text2); }
+  .timestamp { font-size:0.86rem; color:var(--text2); }
   .divider { border:none; border-top:1px solid var(--border); margin:24px 0; }
   ul { padding-left:20px; margin:6px 0; }
-  li { margin-bottom:4px; font-size:0.88em; color:var(--text2); }
+  li { margin-bottom:6px; font-size:0.95rem; color:var(--text2); }
   li strong { color:var(--text); }
 </style>
 </head>

@@ -11,20 +11,26 @@
     --surface2: #1f2630;
     --border: #30363d;
     --text: #e6edf3;
-    --text2: #8b949e;
+    --text2: #a7b0ba;
     --accent: #58a6ff;
     --green: #3fb950;
     --yellow: #d29922;
     --red: #f85149;
     --blue: #79c0ff;
+    --font-sans: "Segoe UI Variable","Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei UI","Microsoft YaHei","Noto Sans CJK SC","Source Han Sans SC",sans-serif;
+    --font-mono: "Cascadia Mono","Cascadia Code",Consolas,monospace;
   }
   * { box-sizing: border-box; }
   body {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: var(--font-sans);
+    font-size: 16px;
     background: linear-gradient(180deg, #0d1117 0%, #10161f 100%);
     color: var(--text);
-    line-height: 1.6;
+    line-height: 1.68;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   .wrap {
     max-width: 1240px;
@@ -39,6 +45,7 @@
   .subtitle {
     color: var(--text2);
     margin-bottom: 28px;
+    font-size: 0.98rem;
   }
   .subtitle .stamp {
     color: var(--blue);
@@ -66,7 +73,11 @@
   .section-card p,
   li {
     color: var(--text2);
-    font-size: 0.94rem;
+    font-size: 0.98rem;
+  }
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.95em;
   }
   .good { color: var(--green); }
   .warn { color: var(--yellow); }
@@ -92,7 +103,7 @@
     border-bottom: 1px solid var(--border);
     vertical-align: top;
     text-align: left;
-    font-size: 0.9rem;
+    font-size: 0.94rem;
   }
   th {
     color: var(--accent);
@@ -177,7 +188,7 @@
     td::before {
       content: attr(data-label);
       display: block;
-      font-size: 0.78rem;
+      font-size: 0.84rem;
       color: var(--accent);
       margin-bottom: 4px;
     }

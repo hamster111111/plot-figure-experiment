@@ -7,17 +7,29 @@
 <style>
   :root {
     --bg: #0d1117; --surface: #161b22; --border: #30363d;
-    --text: #e6edf3; --text2: #8b949e; --accent: #58a6ff;
+    --text: #e6edf3; --text2: #a7b0ba; --accent: #58a6ff;
     --green: #3fb950; --yellow: #d29922; --red: #f85149; --purple: #bc8cff;
+    --font-sans: "Segoe UI Variable","Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei UI","Microsoft YaHei","Noto Sans CJK SC","Source Han Sans SC",sans-serif;
+    --font-mono: "Cascadia Mono","Cascadia Code",Consolas,monospace;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 24px; }
-  h1 { font-size: 1.6em; margin-bottom: 6px; }
-  .subtitle { color: var(--text2); margin-bottom: 24px; font-size: 0.95em; }
+  body {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.68;
+    padding: 24px;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  h1 { font-size: 1.7rem; margin-bottom: 6px; }
+  .subtitle { color: var(--text2); margin-bottom: 24px; font-size: 0.98rem; }
   .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
   .filters button {
     padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border);
-    background: var(--surface); color: var(--text2); cursor: pointer; font-size: 0.85em;
+    background: var(--surface); color: var(--text2); cursor: pointer; font-size: 0.92rem;
     transition: all 0.2s;
   }
   .filters button:hover, .filters button.active { border-color: var(--accent); color: var(--accent); background: rgba(88,166,255,0.1); }
@@ -35,47 +47,48 @@
   .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
   .card-title { font-size: 1.15em; font-weight: 600; color: var(--accent); }
   .card-venue {
-    font-size: 0.75em; padding: 3px 8px; border-radius: 12px; white-space: nowrap;
+    font-size: 0.82rem; padding: 3px 8px; border-radius: 12px; white-space: nowrap;
     font-weight: 600;
   }
   .venue-top { background: rgba(63,185,80,0.15); color: var(--green); }
   .venue-good { background: rgba(210,153,34,0.15); color: var(--yellow); }
   .venue-arxiv { background: rgba(139,148,158,0.15); color: var(--text2); }
   .card-meta { display: flex; gap: 16px; margin-bottom: 10px; flex-wrap: wrap; }
-  .meta-item { font-size: 0.82em; color: var(--text2); }
+  .meta-item { font-size: 0.9rem; color: var(--text2); }
   .meta-item span { color: var(--text); font-weight: 500; }
   .tag-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
   .tag {
-    font-size: 0.72em; padding: 2px 8px; border-radius: 10px;
+    font-size: 0.8rem; padding: 2px 8px; border-radius: 10px;
     border: 1px solid var(--border); color: var(--text2);
   }
   .tag-code { border-color: var(--green); color: var(--green); }
   .tag-img { border-color: var(--purple); color: var(--purple); }
   .tag-spec { border-color: var(--yellow); color: var(--yellow); }
-  .card-desc { font-size: 0.88em; color: var(--text2); margin-bottom: 10px; line-height: 1.5; }
-  .card-metrics { font-size: 0.82em; color: var(--text2); }
+  .card-desc { font-size: 0.95rem; color: var(--text2); margin-bottom: 10px; line-height: 1.58; }
+  .card-metrics { font-size: 0.9rem; color: var(--text2); }
   .card-metrics strong { color: var(--text); }
   .card-links { margin-top: 10px; display: flex; gap: 10px; }
   .card-links a {
-    font-size: 0.82em; color: var(--accent); text-decoration: none;
+    font-size: 0.9rem; color: var(--accent); text-decoration: none;
     padding: 3px 10px; border: 1px solid var(--accent); border-radius: 6px;
     transition: all 0.2s;
   }
   .card-links a:hover { background: rgba(88,166,255,0.15); }
   .relevance-bar { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); }
-  .relevance-label { font-size: 0.78em; color: var(--text2); margin-bottom: 4px; }
+  .relevance-label { font-size: 0.88rem; color: var(--text2); margin-bottom: 4px; }
   .bar-bg { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
   .bar-fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
   .bar-high { background: var(--green); }
   .bar-mid { background: var(--yellow); }
   .bar-low { background: var(--text2); }
-  .section-title { font-size: 1.1em; font-weight: 600; margin: 28px 0 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-  .summary-table { width: 100%; border-collapse: collapse; margin-bottom: 24px; font-size: 0.88em; }
+  .section-title { font-size: 1.14rem; font-weight: 600; margin: 28px 0 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .summary-table { width: 100%; border-collapse: collapse; margin-bottom: 24px; font-size: 0.93rem; }
   .summary-table th, .summary-table td { padding: 8px 12px; border: 1px solid var(--border); text-align: left; }
   .summary-table th { background: var(--surface); color: var(--accent); font-weight: 600; position: sticky; top: 0; }
   .summary-table tr:hover td { background: rgba(88,166,255,0.05); }
   .hidden { display: none !important; }
-  .count-badge { font-size: 0.85em; color: var(--text2); margin-left: 4px; }
+  .count-badge { font-size: 0.92rem; color: var(--text2); margin-left: 4px; }
+  code { font-family: var(--font-mono); font-size: 0.96em; }
   @media (max-width: 500px) { .card-grid { grid-template-columns: 1fr; } }
 </style>
 </head>
