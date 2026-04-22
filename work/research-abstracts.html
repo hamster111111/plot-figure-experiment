@@ -253,6 +253,53 @@
   </div>
 </div>
 
+<div class="section">
+  <div class="section-title">B + C 做出来之后，能投顶会吗？</div>
+  <div class="note-box green">
+    <strong>结论：</strong><strong>B + C</strong> 是最像顶会终局的版本，但前提不是“把两个概念写在一起”，而是把它们真正做成一个可验证的方法论文。做实了，有主会相；只做成概念拼接，更像 Findings / ARR。
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">为什么它有顶会潜力</div>
+      <div class="card-body">
+        <ul>
+          <li><strong>B 负责问题定义：</strong><code>chart requirement fidelity</code> 让你不只是修 bug，而是在定义 chart correctness 的新视角。</li>
+          <li><strong>C 负责方法辨识度：</strong><code>evidence-grounded, traceable verification-and-repair</code> 能把你和普通 self-refine、judge-based、黑箱 agent 区分开。</li>
+          <li><strong>两者合体后更像完整论文：</strong>既回答“在解决什么问题”，也回答“为什么这个方法值得相信”。</li>
+          <li><strong>如果 requirement-level analysis 跑通：</strong>这篇 paper 会更像 methodology + evaluation perspective，而不只是工程修复系统。</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">为什么它也很容易掉到 Findings</div>
+      <div class="card-body">
+        <ul>
+          <li><strong>如果 B 是虚的：</strong>只是在讲大而泛的 requirement fidelity，但实际只覆盖少数 data ops，reviewer 会认为你在 overclaim。</li>
+          <li><strong>如果 C 是虚的：</strong>traceability、provenance、evidence chain 只写在设计里，没有真正进入实验和 ablation，摘要会显得比系统本体更强。</li>
+          <li><strong>如果实验太窄：</strong>只在单一 benchmark、单一错误类型、单一弱模型上成立，会被降格成 task-specific fix。</li>
+          <li><strong>如果方法像规则修补：</strong>reviewer 会觉得这只是 clever heuristics，而不是一个值得主会接收的 framework。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">最低门槛：什么情况下才像 EMNLP Main</div>
+    <div class="card-body">
+      <ul>
+        <li><strong>问题定义要站住：</strong>你得证明 requirement-level fidelity 不是重命名，而是真的揭示了现有指标遗漏的错误。</li>
+        <li><strong>方法链路要完整：</strong>至少要把 <code>requirement extraction -> expected artifact -> actual trace -> mismatch attribution -> localized repair</code> 真跑通。</li>
+        <li><strong>operator 覆盖不能太单薄：</strong>不能只修 <code>missing_groupby</code>，至少要稳定覆盖 <code>filter / agg / join / sort</code> 中几类。</li>
+        <li><strong>实验不能只靠一个弱模型：</strong>最好证明这不是“换个更强模型就自然解决”的问题。</li>
+        <li><strong>不能只看 aggregate score：</strong>需要 requirement family / error family 级别的细粒度分析和 ablation。</li>
+        <li><strong>至少一主一辅证据源：</strong>主 bench 用来证明核心 claim，补充 setting 用来证明不是单点成立。</li>
+      </ul>
+    </div>
+  </div>
+  <div class="note-box red">
+    <strong>更直白的判断：</strong>弱版 B + C 更像 Findings；中等完成度的 B + C 才开始有主会边缘可投性；只有当它被证明不是单 benchmark、单 operator、单模型的偶然现象时，才真正像一篇可以 defend 的顶会稿。
+  </div>
+</div>
+
 <div class="page-nav">
   <a href="research-thesis.html">&larr; 返回差异化论证</a>
   <a href="research-selection.html">去看 Benchmark 选型 &rarr;</a>
