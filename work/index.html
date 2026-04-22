@@ -19,31 +19,83 @@
 body {
   margin: 0;
   font-family: var(--font-sans);
-  background: var(--bg);
+  background:
+    radial-gradient(circle at top left, rgba(88, 166, 255, 0.14), transparent 34%),
+    radial-gradient(circle at top right, rgba(56, 139, 253, 0.08), transparent 28%),
+    var(--bg);
   color: var(--text);
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 .shell {
-  width: min(1180px, calc(100vw - 32px));
+  width: min(1240px, calc(100vw - 32px));
   margin: 0 auto;
-  padding: 32px 0 48px;
+  padding: 40px 0 56px;
 }
 .hero {
-  background: linear-gradient(135deg, rgba(88,166,255,0.12), rgba(22,27,34,0.96));
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(240px, 0.8fr);
+  gap: 18px;
+  align-items: end;
+  background: linear-gradient(140deg, rgba(88,166,255,0.16), rgba(22,27,34,0.94) 58%);
   border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 24px;
-  margin-bottom: 24px;
+  border-radius: 22px;
+  padding: 28px;
+  margin-bottom: 28px;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.24);
+}
+.hero-copy {
+  min-width: 0;
+}
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(88, 166, 255, 0.1);
+  border: 1px solid rgba(88, 166, 255, 0.16);
+  color: #cfe5ff;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
 }
 h1 {
   margin: 0 0 8px;
-  font-size: 34px;
+  font-size: clamp(32px, 4vw, 44px);
+  line-height: 1.06;
 }
 .sub {
   color: var(--muted);
   line-height: 1.6;
+  max-width: 760px;
+  font-size: 15px;
+}
+.hero-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.hero-stat {
+  background: rgba(13, 17, 23, 0.44);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 14px 16px;
+}
+.hero-stat-value {
+  display: block;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.hero-stat-label {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 code {
   font-family: var(--font-mono);
@@ -56,18 +108,33 @@ code {
 }
 .board {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 22px;
+  gap: 18px;
 }
 .lane {
+  display: grid;
+  grid-template-columns: 72px minmax(220px, 260px) minmax(0, 1fr);
+  gap: 18px;
+  align-items: stretch;
   min-width: 0;
+  padding: 18px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(22,27,34,0.92));
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.18);
+}
+.lane-mark {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 6px;
+  color: rgba(88, 166, 255, 0.48);
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
 }
 .lane-head {
-  background: linear-gradient(180deg, rgba(88,166,255,0.1), rgba(22,27,34,0.92));
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 16px;
-  margin-bottom: 14px;
+  min-width: 0;
+  padding: 6px 0;
 }
 .lane-kicker {
   color: var(--accent);
@@ -77,66 +144,143 @@ code {
   margin-bottom: 6px;
 }
 .lane-title {
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 700;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 .lane-desc {
   color: var(--muted);
-  line-height: 1.6;
+  line-height: 1.7;
   font-size: 14px;
 }
 .lane-count {
-  margin-top: 10px;
-  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  margin-top: 14px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(88, 166, 255, 0.08);
+  border: 1px solid rgba(88, 166, 255, 0.14);
+  color: #d2e7ff;
   font-size: 12px;
 }
 .lane-stack {
   display: grid;
-  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  align-content: start;
+  gap: 12px;
+  min-width: 0;
 }
 .card {
-  display: block;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
   text-decoration: none;
   color: inherit;
-  background: var(--surface);
+  min-height: 156px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), var(--surface));
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 16px;
-  transition: transform 0.15s ease, border-color 0.15s ease;
+  border-radius: 16px;
+  padding: 14px 15px;
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
 }
 .card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
   border-color: var(--accent);
+  background: linear-gradient(180deg, rgba(88,166,255,0.08), rgba(22,27,34,0.98));
+}
+.card-topline {
+  color: rgba(167, 176, 186, 0.78);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
 }
 .card-title {
-  font-weight: 600;
-  margin-bottom: 6px;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.3;
+  margin-bottom: 8px;
 }
 .card-note {
   color: var(--text);
-  opacity: 0.92;
-  line-height: 1.55;
-  margin-bottom: 10px;
+  opacity: 0.88;
+  line-height: 1.6;
+  margin-bottom: 12px;
   font-size: 14px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 .card-path {
   color: var(--muted);
   font-size: 12px;
-  word-break: break-all;
+  font-family: var(--font-mono);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .empty {
   color: var(--muted);
+}
+@media (max-width: 940px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+  .lane {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .lane-mark {
+    justify-content: flex-start;
+    padding-top: 0;
+    font-size: 28px;
+  }
+  .lane-head {
+    padding: 0;
+  }
+}
+@media (max-width: 640px) {
+  .shell {
+    width: min(100vw - 20px, 1240px);
+    padding: 20px 0 36px;
+  }
+  .hero {
+    padding: 20px;
+  }
+  .hero-meta {
+    grid-template-columns: 1fr 1fr;
+  }
+  .lane {
+    padding: 14px;
+  }
+  .lane-stack {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
 </head>
 <body>
   <div class="shell">
     <section class="hero">
-      <h1>Research Pages Index</h1>
-      <div class="sub">Static pages published from <code>work/</code>. This index is generated automatically by <code>scripts/gen_index.py</code>. Pages are grouped by reading hierarchy so you can go from overview to strategy to evidence.</div>
+      <div class="hero-copy">
+        <div class="eyebrow">Research Navigation</div>
+        <h1>Research Pages Index</h1>
+        <div class="sub">Static pages published from <code>work/</code>. This index is generated automatically by <code>scripts/gen_index.py</code>. Pages are grouped by reading hierarchy so you can move from overview to strategy and then down to concrete evidence.</div>
+      </div>
+      <div class="hero-meta">
+        <div class="hero-stat">
+          <span class="hero-stat-value">14</span>
+          <span class="hero-stat-label">Pages</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-value">3</span>
+          <span class="hero-stat-label">Layers</span>
+        </div>
+      </div>
     </section>
     <div class="board"><section class="lane">
+              <div class="lane-mark">01</div>
               <div class="lane-head">
                 <div class="lane-kicker">Layer 0</div>
                 <div class="lane-title">总览层</div>
@@ -145,22 +289,26 @@ code {
               </div>
               <div class="lane-stack">
                 <a class="card" href="research-overview.html">
+              <div class="card-topline">Layer 0</div>
               <div class="card-title">Research Overview</div>
               <div class="card-note">总入口页，串起当前方向判断、关键结论和各专题入口。</div>
               <div class="card-path">research-overview.html</div>
             </a>
 <a class="card" href="research-summary.html">
+              <div class="card-topline">Layer 0</div>
               <div class="card-title">Executive Summary</div>
               <div class="card-note">给师兄/自己快速过一遍当前结论、风险和下一步判断。</div>
               <div class="card-path">research-summary.html</div>
             </a>
 <a class="card" href="research-timeline.html">
+              <div class="card-topline">Layer 0</div>
               <div class="card-title">Timeline &amp; Risks</div>
               <div class="card-note">按时间线记录推进过程，并把风险项单独拎出来看。</div>
               <div class="card-path">research-timeline.html</div>
             </a>
               </div>
             </section><section class="lane">
+              <div class="lane-mark">02</div>
               <div class="lane-head">
                 <div class="lane-kicker">Layer 1</div>
                 <div class="lane-title">策略层</div>
@@ -169,42 +317,50 @@ code {
               </div>
               <div class="lane-stack">
                 <a class="card" href="research-thesis.html">
+              <div class="card-topline">Layer 1</div>
               <div class="card-title">Thesis Framing</div>
               <div class="card-note">集中论证 F-A 现在应该怎么 framing，适合往论文主线收敛。</div>
               <div class="card-path">research-thesis.html</div>
             </a>
 <a class="card" href="research-selection.html">
+              <div class="card-topline">Layer 1</div>
               <div class="card-title">Benchmark Selection</div>
               <div class="card-note">讨论 bench 该怎么选、主实验放哪、哪些只配做补充。</div>
               <div class="card-path">research-selection.html</div>
             </a>
 <a class="card" href="research-benchmarks.html">
+              <div class="card-topline">Layer 1</div>
               <div class="card-title">Benchmark Overview</div>
               <div class="card-note">把 MatPlotBench / Text2Vis / VisEval 等复现结果放在一页总览里。</div>
               <div class="card-path">research-benchmarks.html</div>
             </a>
 <a class="card" href="research-competitors.html">
+              <div class="card-topline">Layer 1</div>
               <div class="card-title">Competitor Panorama</div>
               <div class="card-note">看竞品和我们是不是正交、谁是真威胁、谁只是 related work。</div>
               <div class="card-path">research-competitors.html</div>
             </a>
 <a class="card" href="competitive-intel.html">
+              <div class="card-topline">Layer 1</div>
               <div class="card-title">Competitive Intel</div>
               <div class="card-note">最细的调研与复现笔记，信息最杂但证据最全。</div>
               <div class="card-path">competitive-intel.html</div>
             </a>
 <a class="card" href="plotting-authority.html">
+              <div class="card-topline">Layer 1</div>
               <div class="card-title">Authority Landscape</div>
               <div class="card-note">按权威度筛 plotting 相关 bench 和 framework，帮助判断主叙事放哪。</div>
               <div class="card-path">plotting-authority.html</div>
             </a>
 <a class="card" href="plotting-benchmarks.html">
+              <div class="card-topline">Layer 1</div>
               <div class="card-title">Plotting Benchmark Catalog</div>
               <div class="card-note">更像卡片库，适合扫有哪些 plotting bench、各自测什么。</div>
               <div class="card-path">plotting-benchmarks.html</div>
             </a>
               </div>
             </section><section class="lane">
+              <div class="lane-mark">03</div>
               <div class="lane-head">
                 <div class="lane-kicker">Layer 2</div>
                 <div class="lane-title">证据层</div>
@@ -213,21 +369,25 @@ code {
               </div>
               <div class="lane-stack">
                 <a class="card" href="research-bench-text2vis.html">
+              <div class="card-topline">Layer 2</div>
               <div class="card-title">Text2Vis Cases</div>
               <div class="card-note">Text2Vis 失败样例页，专门看答案错、计算错、格式错这些问题。</div>
               <div class="card-path">research-bench-text2vis.html</div>
             </a>
 <a class="card" href="research-bench-viseval.html">
+              <div class="card-topline">Layer 2</div>
               <div class="card-title">VisEval Cases</div>
               <div class="card-note">VisEval 失败样例页，重点看 groupby / filter / data_check 这类错误。</div>
               <div class="card-path">research-bench-viseval.html</div>
             </a>
 <a class="card" href="research-bench-matplot.html">
+              <div class="card-topline">Layer 2</div>
               <div class="card-title">MatPlotBench Cases</div>
               <div class="card-note">MatPlotBench 典型好坏例子，主要观察图像质量和结构偏差。</div>
               <div class="card-path">research-bench-matplot.html</div>
             </a>
 <a class="card" href="research-failure.html">
+              <div class="card-topline">Layer 2</div>
               <div class="card-title">Failure Analysis</div>
               <div class="card-note">把失败模式再抽象一层，帮助从 case 走向框架问题。</div>
               <div class="card-path">research-failure.html</div>
