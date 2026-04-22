@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img" aria-label="Missing asset">
+<rect width="960" height="540" fill="#0d1117"/>
+<rect x="36" y="36" width="888" height="468" rx="18" fill="#161b22" stroke="#30363d"/>
+<text x="480" y="240" fill="#e6edf3" font-family="Segoe UI, Microsoft YaHei, sans-serif" font-size="28" text-anchor="middle">Asset not available in published site</text>
+<text x="480" y="286" fill="#a7b0ba" font-family="Consolas, monospace" font-size="18" text-anchor="middle">sample_100/output.png</text>
+</svg>

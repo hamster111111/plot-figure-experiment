@@ -67,8 +67,8 @@
     </div>
     <div class="trace-row"><span class="trace-label">GPT-4o 评测摘要</span><span class="trace-val">Generated a pie chart about 'Fruit Distribution in Basket' and a stacked bar chart about 'Apple Preference by Age Group.' The ground truth contains only a pie chart titled 'Age of approvers' showing age group percentages. Completely wrong topic and data.</span></div>
     <div class="img-compare">
-      <div><img src="../MatPlotAgent/workspace_full/example_5/novice.png" alt="Generated"><div class="img-label">Generated</div></div>
-      <div><img src="../MatPlotAgent/benchmark_data/ground_truth/example_5.png" alt="GT"><div class="img-label">Ground Truth</div></div>
+      <div><img src="assets/external/MatPlotAgent/workspace_full/example_5/novice.png" alt="Generated"><div class="img-label">Generated</div></div>
+      <div><img src="assets/external/MatPlotAgent/benchmark_data/ground_truth/example_5.png" alt="GT"><div class="img-label">Ground Truth</div></div>
     </div>
     <div class="trace-verdict fail">生成了完全无关的图表——水果分布 vs 年龄分布。模型可能误解了输入数据或 prompt。</div>
   </div>
@@ -80,8 +80,8 @@
     </div>
     <div class="trace-row"><span class="trace-label">GPT-4o 评测摘要</span><span class="trace-val">Generated a flow diagram with labeled segments and arrows (nodes like "RB", "T2"), while the ground truth is a completely different visualization. The generated plot's layout, structure, and data are entirely unrelated to the target.</span></div>
     <div class="img-compare">
-      <div><img src="../MatPlotAgent/workspace_full/example_42/novice.png" alt="Generated"><div class="img-label">Generated</div></div>
-      <div><img src="../MatPlotAgent/benchmark_data/ground_truth/example_42.png" alt="GT"><div class="img-label">Ground Truth</div></div>
+      <div><img src="assets/external/MatPlotAgent/workspace_full/example_42/novice.png" alt="Generated"><div class="img-label">Generated</div></div>
+      <div><img src="assets/external/MatPlotAgent/benchmark_data/ground_truth/example_42.png" alt="GT"><div class="img-label">Ground Truth</div></div>
     </div>
     <div class="trace-verdict fail">生成了完全无关的流程图，与 GT 的图表类型和数据都不匹配。模型完全误解了任务。</div>
   </div>
@@ -99,8 +99,8 @@
     </div>
     <div class="trace-row"><span class="trace-label">GPT-4o 评测摘要</span><span class="trace-val">Both figures show two bar plots with transparency effects. However, the generated plot has wrong data ranges (y: -1 to 1 vs ground truth -1 to 2), incorrect bar heights and positions, and different color schemes. The transparency effects are partially correct but applied inconsistently.</span></div>
     <div class="img-compare">
-      <div><img src="../MatPlotAgent/workspace_full/example_12/novice.png" alt="Generated"><div class="img-label">Generated</div></div>
-      <div><img src="../MatPlotAgent/benchmark_data/ground_truth/example_12.png" alt="GT"><div class="img-label">Ground Truth</div></div>
+      <div><img src="assets/external/MatPlotAgent/workspace_full/example_12/novice.png" alt="Generated"><div class="img-label">Generated</div></div>
+      <div><img src="assets/external/MatPlotAgent/benchmark_data/ground_truth/example_12.png" alt="GT"><div class="img-label">Ground Truth</div></div>
     </div>
     <div class="trace-verdict fail">图表结构对了（两个柱状图），但数据范围、柱高、颜色都不对。</div>
   </div>
@@ -112,8 +112,8 @@
     </div>
     <div class="trace-row"><span class="trace-label">GPT-4o 评测摘要</span><span class="trace-val">Generated an Aitoff-Hammer projection with coastline but mismatched geographic features vs ground truth. The projection type is correct but specific geographic annotations, color schemes, and data overlays differ significantly.</span></div>
     <div class="img-compare">
-      <div><img src="../MatPlotAgent/workspace_full/example_18/novice.png" alt="Generated"><div class="img-label">Generated</div></div>
-      <div><img src="../MatPlotAgent/benchmark_data/ground_truth/example_18.png" alt="GT"><div class="img-label">Ground Truth</div></div>
+      <div><img src="assets/external/MatPlotAgent/workspace_full/example_18/novice.png" alt="Generated"><div class="img-label">Generated</div></div>
+      <div><img src="assets/external/MatPlotAgent/benchmark_data/ground_truth/example_18.png" alt="GT"><div class="img-label">Ground Truth</div></div>
     </div>
     <div class="trace-verdict fail">地图投影类型正确，但地理标注、颜色方案和数据叠加层都不匹配。</div>
   </div>
@@ -131,8 +131,8 @@
     </div>
     <div class="trace-row"><span class="trace-label">GPT-4o 评测摘要</span><span class="trace-val">Both plots visualize data points with standard deviation contours (1σ, 2σ, 3σ) around a central point. However, the data points distribution differs — the ground truth shows a dense cluster while the generated plot has a more spread-out distribution. Contour shapes and colors also differ.</span></div>
     <div class="img-compare">
-      <div><img src="../MatPlotAgent/workspace_full/example_4/novice.png" alt="Generated"><div class="img-label">Generated</div></div>
-      <div><img src="../MatPlotAgent/benchmark_data/ground_truth/example_4.png" alt="GT"><div class="img-label">Ground Truth</div></div>
+      <div><img src="assets/external/MatPlotAgent/workspace_full/example_4/novice.png" alt="Generated"><div class="img-label">Generated</div></div>
+      <div><img src="assets/external/MatPlotAgent/benchmark_data/ground_truth/example_4.png" alt="GT"><div class="img-label">Ground Truth</div></div>
     </div>
     <div class="trace-verdict warn">概念正确（标准差等高线），但数据分布和等高线形状不匹配。</div>
   </div>
@@ -144,8 +144,8 @@
     </div>
     <div class="trace-row"><span class="trace-label">GPT-4o 评测摘要</span><span class="trace-val">Both contain five subplots: four bar plots with hatch patterns and one cosine curve with filled areas. The bar plot hatch patterns partially match but have different densities. The cosine curve shape is correct but fill colors and boundary shapes differ.</span></div>
     <div class="img-compare">
-      <div><img src="../MatPlotAgent/workspace_full/example_13/novice.png" alt="Generated"><div class="img-label">Generated</div></div>
-      <div><img src="../MatPlotAgent/benchmark_data/ground_truth/example_13.png" alt="GT"><div class="img-label">Ground Truth</div></div>
+      <div><img src="assets/external/MatPlotAgent/workspace_full/example_13/novice.png" alt="Generated"><div class="img-label">Generated</div></div>
+      <div><img src="assets/external/MatPlotAgent/benchmark_data/ground_truth/example_13.png" alt="GT"><div class="img-label">Ground Truth</div></div>
     </div>
     <div class="trace-verdict warn">5 个子图结构匹配，但填充图案密度和颜色细节不同。</div>
   </div>
@@ -163,8 +163,8 @@
     </div>
     <div class="trace-row"><span class="trace-label">GPT-4o 评测摘要</span><span class="trace-val">Both display six boxplots with various customizations (notched, horizontal, custom outlier symbols, no outliers, custom whisker lengths). The boxplot types and data distributions are largely correct, but specific styling details like outlier marker shapes, whisker cap widths, and color fills differ from the ground truth.</span></div>
     <div class="img-compare">
-      <div><img src="../MatPlotAgent/workspace_full/example_1/novice.png" alt="Generated"><div class="img-label">Generated</div></div>
-      <div><img src="../MatPlotAgent/benchmark_data/ground_truth/example_1.png" alt="GT"><div class="img-label">Ground Truth</div></div>
+      <div><img src="assets/external/MatPlotAgent/workspace_full/example_1/novice.png" alt="Generated"><div class="img-label">Generated</div></div>
+      <div><img src="assets/external/MatPlotAgent/benchmark_data/ground_truth/example_1.png" alt="GT"><div class="img-label">Ground Truth</div></div>
     </div>
     <div class="trace-verdict warn">6 个 boxplot 的类型和数据分布基本正确，但样式细节（标记形状、颜色填充）有差异。</div>
   </div>

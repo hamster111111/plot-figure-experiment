@@ -60,7 +60,7 @@
     <div class="trace-row"><div class="trace-label">Model</div><div class="trace-val" style="color:var(--red)">Africa</div></div>
     <div class="trace-row"><div class="trace-label">GT</div><div class="trace-val" style="color:var(--green)">Fragile</div></div>
     <div class="trace-row"><div class="trace-label">Scores</div><div class="trace-val">Readability: 5.0, Correctness: 5.0</div></div>
-    <div class="img-single"><img src="../Text2Vis/workspace_test1/sample_0/output.png" alt="生成的图表"><div class="img-label">生成的图表（图表质量满分，但答案选错了实体）</div></div>
+    <div class="img-single"><img src="assets/external/Text2Vis/workspace_test1/sample_0/output.png" alt="生成的图表"><div class="img-label">生成的图表（图表质量满分，但答案选错了实体）</div></div>
     <div class="trace-verdict fail">图表画对了（readability和correctness都是满分），但从图中提取答案时选错了实体。模型选了"Africa"而非"Fragile"作为最接近平均值的实体。</div>
   </div>
 
@@ -73,7 +73,7 @@
     <div class="trace-row"><div class="trace-label">Model</div><div class="trace-val" style="color:var(--red)">Algeria (returned entity name)</div></div>
     <div class="trace-row"><div class="trace-label">GT</div><div class="trace-val" style="color:var(--green)">14.95 (expected numeric value)</div></div>
     <div class="trace-row"><div class="trace-label">Scores</div><div class="trace-val">Readability: 4.5, Correctness: 3.0</div></div>
-    <div class="img-single"><img src="../Text2Vis/workspace_test1/sample_10/output.png" alt="生成的图表"><div class="img-label">生成的图表</div></div>
+    <div class="img-single"><img src="assets/external/Text2Vis/workspace_test1/sample_10/output.png" alt="生成的图表"><div class="img-label">生成的图表</div></div>
     <div class="trace-verdict fail">模型返回了国家名而非数值。题目问的是"最高的 CAGR 值"，应该回答 14.95，但模型理解为"哪个国家的 CAGR 最高"。</div>
   </div>
 </div>
@@ -94,7 +94,7 @@
     <div class="trace-row"><div class="trace-label">Model</div><div class="trace-val" style="color:var(--red)">68.39</div></div>
     <div class="trace-row"><div class="trace-label">GT</div><div class="trace-val" style="color:var(--green)">0.5484</div></div>
     <div class="trace-row"><div class="trace-label">Scores</div><div class="trace-val">Readability: 5.0, Correctness: 5.0</div></div>
-    <div class="img-single"><img src="../Text2Vis/workspace_test1/sample_1021/output.png" alt="生成的图表"><div class="img-label">生成的图表</div></div>
+    <div class="img-single"><img src="assets/external/Text2Vis/workspace_test1/sample_1021/output.png" alt="生成的图表"><div class="img-label">生成的图表</div></div>
     <div class="trace-verdict fail">数量级完全不对。GT 期望的是小数形式的百分比差值 (0.5484)，模型可能没做百分比转换或用了错误的基数，得到 68.39。</div>
   </div>
   <div class="trace-card">
@@ -105,7 +105,7 @@
     <div class="trace-row"><div class="trace-label">Question</div><div class="trace-val">Analyzing the provided dataset of daily energy outputs (in MWh) from eight wind turbines, compute the mean and standard deviation, and determine the number of turbines whose energy output is within one standard deviation of the mean.</div></div>
     <div class="trace-row"><div class="trace-label">Model</div><div class="trace-val" style="color:var(--red)">4</div></div>
     <div class="trace-row"><div class="trace-label">GT</div><div class="trace-val" style="color:var(--green)">7</div></div>
-    <div class="img-single"><img src="../Text2Vis/workspace_test1/sample_1057/output.png" alt="生成的图表"><div class="img-label">生成的图表</div></div>
+    <div class="img-single"><img src="assets/external/Text2Vis/workspace_test1/sample_1057/output.png" alt="生成的图表"><div class="img-label">生成的图表</div></div>
     <div class="trace-verdict fail">统计计算错误。模型计算出 4 个 turbine 在一个标准差内，而 GT 是 7 个。可能是均值或标准差计算有误。</div>
   </div>
 </div>
@@ -125,7 +125,7 @@
     <div class="trace-row"><div class="trace-label">Question</div><div class="trace-val">In which year did the combined energy production from Solar and Wind first exceed 50% of the total energy production from all four sources combined?</div></div>
     <div class="trace-row"><div class="trace-label">Model</div><div class="trace-val" style="color:var(--red)">2022</div></div>
     <div class="trace-row"><div class="trace-label">GT</div><div class="trace-val" style="color:var(--green)">2021</div></div>
-    <div class="img-single"><img src="../Text2Vis/workspace_test1/sample_1072/output.png" alt="生成的图表"><div class="img-label">生成的图表</div></div>
+    <div class="img-single"><img src="assets/external/Text2Vis/workspace_test1/sample_1072/output.png" alt="生成的图表"><div class="img-label">生成的图表</div></div>
     <div class="trace-verdict warn">差一年。可能是边界条件判断不同（"first exceed" 的精确时间点）。</div>
   </div>
 
@@ -137,7 +137,7 @@
     <div class="trace-row"><div class="trace-label">Question</div><div class="trace-val">In which year did the combined proportion of Clothing and Cosmetics sales to total sales first exceed 60%?</div></div>
     <div class="trace-row"><div class="trace-label">Model</div><div class="trace-val" style="color:var(--red)">2021</div></div>
     <div class="trace-row"><div class="trace-label">GT</div><div class="trace-val" style="color:var(--green)">2022</div></div>
-    <div class="img-single"><img src="../Text2Vis/workspace_test1/sample_1123/output.png" alt="生成的图表"><div class="img-label">生成的图表</div></div>
+    <div class="img-single"><img src="assets/external/Text2Vis/workspace_test1/sample_1123/output.png" alt="生成的图表"><div class="img-label">生成的图表</div></div>
     <div class="trace-verdict warn">同样是"first exceed"的边界判断差异。</div>
   </div>
 </div>
@@ -157,7 +157,7 @@
     <div class="trace-row"><div class="trace-label">Model</div><div class="trace-val" style="color:var(--red)">48.78</div></div>
     <div class="trace-row"><div class="trace-label">GT</div><div class="trace-val" style="color:var(--green)">0.4877</div></div>
     <div class="trace-row"><div class="trace-label">Scores</div><div class="trace-val">Readability: 4.0, Correctness: 4.0</div></div>
-    <div class="img-single"><img src="../Text2Vis/workspace_test1/sample_1/output.png" alt="生成的图表"><div class="img-label">生成的图表</div></div>
+    <div class="img-single"><img src="assets/external/Text2Vis/workspace_test1/sample_1/output.png" alt="生成的图表"><div class="img-label">生成的图表</div></div>
     <div class="trace-verdict warn">48.78% = 0.4877，数值本质相同，只是格式不同。这类错误可以通过统一输出格式规范来解决。</div>
   </div>
 
@@ -170,7 +170,7 @@
     <div class="trace-row"><div class="trace-label">Model</div><div class="trace-val" style="color:var(--red)">37.5</div></div>
     <div class="trace-row"><div class="trace-label">GT</div><div class="trace-val" style="color:var(--green)">0.375</div></div>
     <div class="trace-row"><div class="trace-label">Scores</div><div class="trace-val">Correctness: 5.0</div></div>
-    <div class="img-single"><img src="../Text2Vis/workspace_test1/sample_1078/output.png" alt="生成的图表"><div class="img-label">生成的图表</div></div>
+    <div class="img-single"><img src="assets/external/Text2Vis/workspace_test1/sample_1078/output.png" alt="生成的图表"><div class="img-label">生成的图表</div></div>
     <div class="trace-verdict warn">37.5% = 0.375，计算完全正确，只是百分比 vs 小数的表示差异。</div>
   </div>
 </div>
@@ -190,7 +190,7 @@
     <div class="trace-row"><div class="trace-label">Question</div><div class="trace-val">Considering the output values across the three days, which power plant exhibits the highest variability in output and also shows significant deviations from the group trend?</div></div>
     <div class="trace-row"><div class="trace-label">Model</div><div class="trace-val" style="color:var(--red)">Plant G, Plant G, Plant F</div></div>
     <div class="trace-row"><div class="trace-label">GT</div><div class="trace-val" style="color:var(--green)">Plant G</div></div>
-    <div class="img-single"><img src="../Text2Vis/workspace_test1/sample_1026/output.png" alt="生成的图表"><div class="img-label">生成的图表</div></div>
+    <div class="img-single"><img src="assets/external/Text2Vis/workspace_test1/sample_1026/output.png" alt="生成的图表"><div class="img-label">生成的图表</div></div>
     <div class="trace-verdict warn">模型给出了多个答案（包含正确的 Plant G），但格式不符合预期的单一答案。</div>
   </div>
   <div class="trace-card">
@@ -201,7 +201,7 @@
     <div class="trace-row"><div class="trace-label">Question</div><div class="trace-val">Based on the sales funnel data, identify the stage with the greatest percentage drop-off... Calculate the cumulative conversion rate...</div></div>
     <div class="trace-row"><div class="trace-label">Model</div><div class="trace-val" style="color:var(--red)">Negotiation, 1%, 100%</div></div>
     <div class="trace-row"><div class="trace-label">GT</div><div class="trace-val" style="color:var(--green)">1</div></div>
-    <div class="img-single"><img src="../Text2Vis/workspace_test1/sample_1040/output.png" alt="生成的图表"><div class="img-label">生成的图表</div></div>
+    <div class="img-single"><img src="assets/external/Text2Vis/workspace_test1/sample_1040/output.png" alt="生成的图表"><div class="img-label">生成的图表</div></div>
     <div class="trace-verdict warn">模型回答了完整的多部分答案，但 GT 只期望一个数字。</div>
   </div>
 </div>
@@ -222,7 +222,7 @@
     <div class="trace-row"><div class="trace-label">Model</div><div class="trace-val" style="color:var(--red)">(execution failed)</div></div>
     <div class="trace-row"><div class="trace-label">GT</div><div class="trace-val" style="color:var(--green)">Flights, 36</div></div>
     <div class="trace-row"><div class="trace-label">Scores</div><div class="trace-val">Readability: 0.0, Correctness: 0.0</div></div>
-    <div class="img-single"><img src="../Text2Vis/workspace_test1/sample_100/output.png" alt="生成的图表"><div class="img-label">生成的图表（执行失败）</div></div>
+    <div class="img-single"><img src="assets/external/_missing/28330f6d0ecc.svg" alt="生成的图表"><div class="img-label">生成的图表（执行失败）</div></div>
     <div class="trace-verdict fail">代码执行失败，无法生成图表，所有评分为 0。</div>
   </div>
 </div>
@@ -243,7 +243,7 @@
     <div class="trace-row"><div class="trace-label">Model</div><div class="trace-val" style="color:var(--green)">United States</div></div>
     <div class="trace-row"><div class="trace-label">GT</div><div class="trace-val" style="color:var(--green)">United States (match!)</div></div>
     <div class="trace-row"><div class="trace-label">Scores</div><div class="trace-val">Readability: 4.5, Correctness: 3.0</div></div>
-    <div class="img-single"><img src="../Text2Vis/workspace_test1/sample_1017/output.png" alt="生成的图表"><div class="img-label">生成的图表（答案正确但图表质量不达标）</div></div>
+    <div class="img-single"><img src="assets/external/Text2Vis/workspace_test1/sample_1017/output.png" alt="生成的图表"><div class="img-label">生成的图表（答案正确但图表质量不达标）</div></div>
     <div class="trace-verdict warn">答案正确，但图表的 correctness 评分只有 3.0，说明图表虽然能回答问题，但可视化质量不达标。</div>
   </div>
   <div class="trace-card">
@@ -255,7 +255,7 @@
     <div class="trace-row"><div class="trace-label">Model</div><div class="trace-val" style="color:var(--green)">School E</div></div>
     <div class="trace-row"><div class="trace-label">GT</div><div class="trace-val" style="color:var(--green)">School E (match!)</div></div>
     <div class="trace-row"><div class="trace-label">Scores</div><div class="trace-val">Correctness: 3.0</div></div>
-    <div class="img-single"><img src="../Text2Vis/workspace_test1/sample_1029/output.png" alt="生成的图表"><div class="img-label">生成的图表（答案正确但图表质量不足）</div></div>
+    <div class="img-single"><img src="assets/external/Text2Vis/workspace_test1/sample_1029/output.png" alt="生成的图表"><div class="img-label">生成的图表（答案正确但图表质量不足）</div></div>
     <div class="trace-verdict warn">答案正确但图表质量不足。</div>
   </div>
 </div>
