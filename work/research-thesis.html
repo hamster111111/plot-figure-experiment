@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>F-A GroundedChart — 差异化论证</title>
+  <link rel="stylesheet" href="research-styles.css">
+</head>
+<body>
+
+<nav class="top-nav">
+  <a class="nav-home" href="research-overview.html">Overview</a>
+  <a href="research-summary.html">01 Summary</a>
+  <a href="research-benchmarks.html">02 Benchmarks</a>
+  <a href="research-failure.html">03 失败分析</a>
+  <a href="research-competitors.html">04 竞品</a>
+  <a class="active" href="research-thesis.html">05 论证</a>
+  <a href="research-selection.html">06 选型</a>
+  <a href="research-timeline.html">07 Timeline</a>
+</nav>
+
+<h1 class="section-title good">差异化论证 — 为什么 F-A 方向成立（以及现在该怎么定义）</h1>
+
+<div class="note-box green">
+  一句话：数据保真度是科学图表生成中一个真实、可定位、且无人解决的问题。但我们的证据强度在不同 benchmark 上差异很大——VisEval 是强支撑，Text2Vis 需要谨慎解读，MatPlotBench 基本不相关。
+</div>
+
+<!-- ===== 新 framing ===== -->
+<div class="section">
+  <div class="section-title good">F-A 现在最好变成什么？</div>
+  <div class="grid-2">
+    <div class="card" style="border-left:3px solid var(--green);">
+      <div class="card-title" style="color:var(--green);">推荐版本</div>
+      <div class="card-body">
+        <p><strong>F-A = faithful language-to-chart generation 的 execution-grounded verification-and-repair framework</strong></p>
+        <ul>
+          <li><strong>输入：</strong>NL query + structured data + 初始 plotting code</li>
+          <li><strong>验证对象：</strong>NL 意图对应的数据操作是否真的体现在代码和最终图表数据里</li>
+          <li><strong>修复对象：</strong>group-by / filter / join / aggregation / sort / type 等操作级错误</li>
+          <li><strong>输出目标：</strong>不是只生成能跑的代码，而是生成 <strong>data-faithful</strong> 的图表代码</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card" style="border-left:3px solid var(--red);">
+      <div class="card-title" style="color:var(--red);">不推荐版本</div>
+      <div class="card-body">
+        <ul>
+          <li>不要再讲成泛化的"科学图表真实性"或"图表防幻觉"系统，范围太大</li>
+          <li>不要把它写成单纯的 data check agent，这样 novelty 太弱</li>
+          <li>不要把 Text2Vis 的低分直接拿来证明必要性，论证会失焦</li>
+          <li>不要把视觉质量、答案抽取、示意图生成混进同一个故事里</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="note-box">
+    <strong>最稳的 EMNLP 风格 claim：</strong>我们研究的是 <strong>语言意图 → 数据操作 → 图表数据</strong> 三者之间的语义一致性，并提出一个可执行、可归因、可修复的验证框架来提升图表生成的数据保真度。
+  </div>
+</div>
+
+<!-- ===== 为什么没人做 ===== -->
+<div class="section">
+  <div class="section-title">Plot/Figure 的数据保真度为什么没人做？</div>
+  <div class="card">
+    <div class="card-body">
+      <p><strong>不是因为太简单或没必要。</strong>恰恰相反，原因是：</p>
+      <ul>
+        <li><strong>领域 framing 问题：</strong>大家把任务定义成了"代码生成"或"视觉还原"，评测指标也跟着走——MatPlotBench 评视觉相似度，ChartMimic 评图像匹配。没人设计指标去量化"图里的数据对不对"</li>
+        <li><strong>沉默错误：</strong>数据保真度错误是"沉默"的。图表看起来完全正常（Text2Vis 里 readability 5.0, correctness 5.0 的案例，答案照样错），不像执行失败那样显眼</li>
+        <li><strong>评测空白：</strong>VisEval 是少数做了 data_check 的 benchmark，而且比较新。在它之前，这个维度根本没有被系统性地测量过</li>
+      </ul>
+      <p style="margin-top:8px;color:var(--yellow);">结论：不是没必要，是没人意识到这是个独立的问题维度。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 证据强度诚实评估 ===== -->
+<div class="section">
+  <div class="section-title warn">Benchmark 证据强度 — 诚实评估</div>
+  <p style="font-size:0.88em;color:var(--text2);margin-bottom:16px;">三个 benchmark 对 F-A 的支撑力差异很大，不能一概而论。</p>
+
+  <!-- VisEval -->
+  <div class="card" style="border-left:3px solid var(--green);">
+    <div class="card-title" style="color:var(--green);">VisEval — 强支撑</div>
+    <div class="card-body">
+      <p>953 例 data_check 失败中：</p>
+      <ul>
+        <li>missing_groupby (551) + missing_filter (107) + wrong_agg (27) = <strong>685 例，占 72%</strong></li>
+        <li>这些是货真价实的数据保真度问题——图里画的数据就是错的</li>
+        <li>F-A 直接对口，根因明确，可针对性解决</li>
+      </ul>
+      <p style="margin-top:8px;"><strong>口径转换实证：</strong>去掉 data_check 后 pass rate 从 36.8% 跳到 85.2%（+48.4pp）。同口径下我们与 GPT-4 baseline (75.27%) 和 Gemini-2.5-Pro (83.71%) 处于同一水平——说明模型代码生成能力没问题，<strong>瓶颈就在数据保真度</strong>。</p>
+      <p style="margin-top:6px;color:var(--green);"><strong>结论：VisEval 是 F-A 最强的论据。口径转换数据让这个论据从"定性判断"变成了"定量证明"。</strong></p>
+    </div>
+  </div>
+
+  <!-- Text2Vis -->
+  <div class="card" style="border-left:3px solid var(--yellow);">
+    <div class="card-title" style="color:var(--yellow);">Text2Vis — 需要谨慎解读 ⚠️</div>
+    <div class="card-body">
+      <p>1,062 例 answer_mismatch 中，大部分<strong>不是</strong>图表数据错误：</p>
+      <ul>
+        <li><strong>wrong_entity (544):</strong> 很多案例图表本身是对的（readability 5.0, correctness 5.0），错在"从图中提取答案"这一步。这是推理/阅读理解错误，不是图表数据错误</li>
+        <li><strong>wrong_value (351):</strong> 同理，可能是计算推理错误，图表数据本身可能没问题</li>
+        <li><strong>format_mismatch (92) + pct_vs_decimal (42) + partial_overlap (29) = 163 例：</strong>格式/评测标准问题，根本不是真正的错误</li>
+        <li><strong>exec_failure (172) + low_correctness (75) = 247 例：</strong>这部分 F-A 可能有帮助</li>
+      </ul>
+      <p style="margin-top:6px;color:var(--yellow);"><strong>结论：Text2Vis 的 33.4% pass rate 听起来很惨，但 F-A 能直接解决的可能只有 ~19% 的失败。不能把 Text2Vis 的数字直接拿来撑场面。</strong></p>
+    </div>
+  </div>
+
+  <!-- MatPlotBench -->
+  <div class="card" style="border-left:3px solid var(--red);">
+    <div class="card-title" style="color:var(--red);">MatPlotBench — 弱支撑</div>
+    <div class="card-body">
+      <p>评的是视觉相似度，不是数据正确性。</p>
+      <ul>
+        <li>43% 低分案例中，大部分是颜色、布局、样式差异</li>
+        <li>只有 7 例 0 分（完全错误主题）可能涉及数据保真度</li>
+        <li>MatPlotBench 的评测维度和 F-A 的目标基本不重叠</li>
+      </ul>
+      <p style="margin-top:6px;color:var(--red);"><strong>结论：MatPlotBench 不适合作为 F-A 的核心论据。</strong></p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 主要失败原因 ===== -->
+<div class="section">
+  <div class="section-title">失败的本质 — 三个 Benchmark 在说不同的事</div>
+  <div class="card">
+    <div class="card-body">
+      <table style="margin-top:8px;">
+        <thead><tr><th>Benchmark</th><th>主因</th><th>本质</th><th>F-A 相关度</th></tr></thead>
+        <tbody>
+          <tr><td>VisEval</td><td>缺少 GROUP BY 聚合 (60%)</td><td>代码级数据处理错误</td><td><span class="tag tag-green">直接对口</span></td></tr>
+          <tr><td>Text2Vis</td><td>答案提取/推理错误 (84%)</td><td>模型理解力问题</td><td><span class="tag tag-yellow">帮不上太多</span></td></tr>
+          <tr><td>MatPlotBench</td><td>视觉样式差异</td><td>渲染问题</td><td><span class="tag tag-red">不对口</span></td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:10px;">核心矛盾：VisEval 的失败是"数据就画错了"，Text2Vis 的失败更多是"数据画对了但答案算错了"。这两个问题需要不同的解决方案。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 有利 vs 不利 ===== -->
+<div class="section">
+  <div class="section-title">实验结果 — 有利 vs 不利</div>
+  <div class="grid-2">
+    <div class="card" style="border-left:3px solid var(--green);">
+      <div class="card-title" style="color:var(--green);">对我们有利</div>
+      <div class="card-body">
+        <ul>
+          <li>VisEval 953 例失败中 72% 是数据保真度问题，根因明确（missing_groupby 60%）</li>
+          <li><strong>口径转换铁证：</strong>去掉 data_check 后 pass rate 36.8%→85.2%，同口径下与 Gemini-2.5-Pro (83.71%) 持平——瓶颈就在数据保真度</li>
+          <li>12 个竞品系统 0 个做数据保真度，空白是真实的</li>
+          <li>CoDA/VisPath/PlotGen 都没开源，无法直接对比，给了我们空间</li>
+          <li>问题可复现、可量化、根因可定位——不是玄学</li>
+          <li>Plot/Figure 赛道和 Sci Illustration 赛道的区分清晰，我们的定位明确</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card" style="border-left:3px solid var(--red);">
+      <div class="card-title" style="color:var(--red);">对我们不利</div>
+      <div class="card-body">
+        <ul>
+          <li>Text2Vis 的失败大部分是推理/提取错误，不是图表数据错误。如果把 33.4% 当核心论据，站不稳</li>
+          <li>format_mismatch + pct_vs_decimal (134 例) 是评测标准问题，拿来凑数会被质疑</li>
+          <li>MatPlotBench 评的是视觉相似度，和数据保真度关系不大</li>
+          <li>missing_groupby 虽然占 60%，但修复方式相对直接，需要论证为什么需要一个系统而不是一条规则</li>
+          <li>我们用的是 DeepSeek-V3（弱于 GPT-4/Gemini），reviewer 可能说"换个好模型就行了"</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ===== 论据重构 ===== -->
+<div class="section">
+  <div class="section-title good">修正后的三个论据</div>
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-title">论据 1: 问题真实存在（但范围比表面窄）</div>
+      <div class="card-body">
+        <ul>
+          <li>VisEval: 953 例 data_check 失败中 72% 是数据保真度问题；口径转换后 pass rate 从 36.8%→85.2%，<strong>48.4pp 的落差全部来自 data_check</strong> ← <strong>强证据</strong></li>
+          <li>Text2Vis: 大部分失败是推理/提取错误，F-A 直接相关的约 19% ← <strong>需谨慎引用</strong></li>
+          <li>诚实表述：数据保真度问题在 NL+数据→图表 任务中真实存在且严重，但不是所有图表生成失败的主因</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">论据 2: 根因可定位（但需要超越简单规则）</div>
+      <div class="card-body">
+        <ul>
+          <li>60% missing_groupby — 明确的代码级根因</li>
+          <li>12% missing_filter — 可检测的逻辑错误</li>
+          <li>风险：reviewer 会问"加个 GROUP BY 检查器不就行了？"</li>
+          <li>应对：需要证明 F-A 是通用的数据验证框架，不只是规则匹配</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">论据 3: 竞品空白（真实且已验证）</div>
+      <div class="card-body">
+        <ul>
+          <li>Plot/Figure 赛道 7 个系统，0 个做数据保真度</li>
+          <li>Sci Illustration 赛道 5 个系统，与 F-A 完全正交</li>
+          <li>CoDA/VisPath/PlotGen 未开源（已验证），无法直接对比</li>
+          <li>RAGvis 实测 5/5 失败，AutoFigure 不验证数据</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 方向判断 ===== -->
+<div class="section">
+  <div class="section-title">方向判断 — 值得做，但需要调整 framing</div>
+  <div class="card">
+    <div class="card-body">
+      <p><strong>做的理由：</strong></p>
+      <ul>
+        <li>VisEval 的 60% missing_groupby 是一个明确的、可定位的、系统性的缺陷，且没有任何竞品在解决</li>
+        <li>这个问题在实际应用中很危险——用户看到一张"看起来正确"的图表，但数据是错的</li>
+        <li>竞品空白是真实的（12 个系统 0 个做数据保真度）</li>
+      </ul>
+      <p style="margin-top:10px;"><strong>风险与应对：</strong></p>
+      <ul>
+        <li><span style="color:var(--red);">风险：</span>Text2Vis 的数字不能直接用 → <span style="color:var(--green);">应对：</span>论文聚焦 VisEval 类任务，Text2Vis 作为补充而非核心</li>
+        <li><span style="color:var(--red);">风险：</span>missing_groupby 看起来太简单 → <span style="color:var(--green);">应对：</span>证明 F-A 是通用框架（覆盖 groupby/filter/agg/type 等多类错误）</li>
+        <li><span style="color:var(--red);">风险：</span>"换个好模型就行了" → <span style="color:var(--green);">应对：</span>需要在 GPT-4/Claude 上也跑一遍，证明问题不只是弱模型的问题</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 技术路线 ===== -->
+<div class="section">
+  <div class="section-title">F-A 最好长成一个什么系统？</div>
+  <div class="card">
+    <div class="card-body">
+      <ul>
+        <li><strong>Step 1. Intent / operator plan extraction</strong> — 从 NL query 中显式抽取维度、度量、聚合、过滤、排序、图表类型等结构化意图</li>
+        <li><strong>Step 2. Execution-grounded verification</strong> — 执行代码或中间查询，拿到实际被画出来的数据，再与 operator plan / source data 对比</li>
+        <li><strong>Step 3. Localized repair</strong> — 将错误定位到 missing_groupby / wrong_filter / wrong_agg / wrong_join / wrong_type 等操作级，再定向修复代码</li>
+        <li><strong>Step 4. Final rendering sanity check</strong> — 确认修复后代码仍可执行，且不明显损害视觉可读性</li>
+      </ul>
+      <p style="margin-top:8px;color:var(--text2);">关键点：这不是松散的"三个方向"，而是一个完整的 verify-and-repair pipeline。这样才能把问题讲成一个框架，而不是若干小技巧。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== EMNLP 论文叙事 ===== -->
+<div class="section">
+  <div class="section-title good">按 EMNLP 模板重写后的方向</div>
+
+  <div class="card" style="border-left:3px solid var(--accent);">
+    <div class="card-title">1. Problem / Scene</div>
+    <div class="card-body">
+      <p><strong>目标场景：</strong>用户给出自然语言请求和结构化数据，希望模型直接生成可发表级别的图表代码。</p>
+      <ul>
+        <li><strong>典型请求：</strong>"show total sales by product category in ascending order" 这类请求同时包含维度、度量、聚合、过滤、排序和图表类型约束</li>
+        <li><strong>真实风险：</strong>模型往往能生成可执行、视觉上合理的图，但图中数据可能并不对应用户想要的 aggregation / filter / join 结果</li>
+        <li><strong>关键难点：</strong>这类错误是 silent failure。图表看起来正常，却在数据语义上是错的</li>
+        <li><strong>论文问题定义：</strong>faithful language-to-chart generation 不是只让代码能跑，而是让最终图表数据忠实对应自然语言意图和源数据操作</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card" style="border-left:3px solid var(--red);">
+    <div class="card-title" style="color:var(--red);">2. Limitation of Prior Work</div>
+    <div class="card-body">
+      <ul>
+        <li><strong>现有方法的优化目标错位：</strong>大多优化 executability、visual similarity、或 end-to-end answer quality，而不是数据操作语义本身</li>
+        <li><strong>缺少显式中间表示：</strong>现有系统通常不会把 query 中的 group-by / filter / join / aggregation 显式抽出来再验证</li>
+        <li><strong>缺少执行后验证：</strong>它们很少回到 source data 和实际被画出来的数据上，检查二者是否一致</li>
+        <li><strong>现有高分不等于高保真：</strong>强模型和强 agent 可以提高 pass rate，但在缺少 strict data_check 的口径下，高分并不能证明图表数据正确</li>
+        <li><strong>因此 reviewer-safe 的问题不是“模型还不会画图”，而是“现有系统没有验证 language intent 到 plotted data 的语义一致性”</strong></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card" style="border-left:3px solid var(--green);">
+    <div class="card-title" style="color:var(--green);">3. Our Framework</div>
+    <div class="card-body">
+      <p><strong>推荐表述：</strong>We propose an <strong>execution-grounded verification-and-repair framework</strong> for faithful language-to-chart generation.</p>
+      <ul>
+        <li><strong>核心思想：</strong>先把自然语言中的数据操作意图结构化，再把代码真实执行出来的数据 trace 抽出来，两者做语义对齐</li>
+        <li><strong>不是做一个泛化的“图表防幻觉 agent”：</strong>而是针对 structured data-to-chart generation 的 operator-level verification</li>
+        <li><strong>不是规则补丁：</strong>框架不只查 missing_groupby，而是统一处理 aggregation、filter、join、sort、type 等一组可组合的数据操作错误</li>
+        <li><strong>论文贡献点：</strong>把“意图表示 + 执行验证 + 局部修复”连成一个完整闭环，而不是单点 heuristic</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card" style="border-left:3px solid var(--yellow);">
+    <div class="card-title" style="color:var(--yellow);">4. Key Modules</div>
+    <div class="card-body">
+      <table>
+        <thead><tr><th>Module</th><th>Function</th><th>Why it matters</th></tr></thead>
+        <tbody>
+          <tr><td>Intent Parser</td><td>从 NL query 抽取维度、度量、聚合、过滤、排序、图表类型</td><td>没有显式 operator plan，就无法判断代码到底偏离了哪里</td></tr>
+          <tr><td>Execution Tracer</td><td>执行初始代码或中间查询，提取实际被绘制的数据表征</td><td>把“模型打算做什么”变成“模型实际上画了什么”</td></tr>
+          <tr><td>Operator-level Verifier</td><td>比较 operator plan、source data、plotted data 之间的一致性</td><td>把错误定位到 groupby/filter/agg/join/type 等操作级，而不是只给一个总分</td></tr>
+          <tr><td>Localized Repairer</td><td>基于错误类型定向修复代码，再重新验证</td><td>把问题做成可修复的 framework，而不是一次性打回重写</td></tr>
+          <tr><td>Rendering Sanity Check</td><td>确认修复后代码仍可执行且可读性不明显下降</td><td>防止 fidelity 提升是以破坏可执行性或图表质量为代价</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" style="border-left:3px solid var(--purple);">
+    <div class="card-title" style="color:var(--purple);">5. Results</div>
+    <div class="card-body">
+      <p><strong>当前已有证据：</strong></p>
+      <ul>
+        <li>VisEval 中 953 个 data_check failure 说明问题真实存在，而且 72% 可归因到 operator-level data processing errors</li>
+        <li>36.8% → 85.2% 的口径拆解说明：原始代码生成能力不是唯一瓶颈，strict data fidelity 才是主要难点</li>
+        <li>Text2Vis 和 MatPlotBench 只能作为迁移或 sanity evidence，不能冒充主证据</li>
+      </ul>
+      <p style="margin-top:8px;"><strong>如果要达到 EMNLP 主会水准，paper 至少要证明：</strong></p>
+      <ul>
+        <li><strong>主实验：</strong>在 VisEval 的 fidelity-sensitive 指标上取得显著绝对提升，最好达到 double-digit gain</li>
+        <li><strong>机制证据：</strong>提升不能只来自 missing_groupby，而要覆盖 filter / aggregation / join / type 等多个 error families</li>
+        <li><strong>泛化证据：</strong>除 VisEval 外，还要在第二个 benchmark 或高质量 operator diagnostic set 上证明收益</li>
+        <li><strong>强模型证据：</strong>至少在一个更强 backbone 上仍有增益，否则 reviewer 会归因于 base model 太弱</li>
+        <li><strong>代价控制：</strong>executability 和 visual quality 不能明显退化，否则会被认为只是 trade-off 而非真实进步</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="note-box red">
+    <strong>严格判断：</strong>如果最后只能证明“修一个高频 groupby bug”，或者只能在单一 benchmark 上提升，这更像 Findings / ARR / workshop。只有当它被证明是一个跨 operator、跨模型、跨评测设置都成立的 verification-and-repair framework，才像 EMNLP main 的叙事。
+  </div>
+</div>
+
+<!-- ===== 给师兄的建议 ===== -->
+<div class="section">
+  <div class="note-box">
+    <strong>给师兄的建议：</strong>F-A 值得继续做，但必须收窄成 <strong>faithful language-to-chart generation</strong> 的 verification-and-repair 问题，而不是泛化的"真实性"口号。主动承认 Text2Vis 和 MatPlotBench 不是核心证据，把 VisEval + operator-level repair 作为主线，会更像一篇可 defend 的 EMNLP 论文。下一步建议：先做一个最小 prototype，证明它不只会修 missing_groupby，而能稳定覆盖 groupby/filter/agg/type 等多类错误。
+  </div>
+</div>
+
+<div class="page-nav">
+  <a href="research-competitors.html">&larr; 04 竞品全景</a>
+  <a href="research-selection.html">06 Benchmark 选型 &rarr;</a>
+</div>
+
+</body>
+</html>
+
+
+
+
+
+

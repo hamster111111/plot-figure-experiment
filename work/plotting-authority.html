@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>权威 Plotting Bench & Framework Landscape</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1f2630;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text2: #8b949e;
+    --accent: #58a6ff;
+    --green: #3fb950;
+    --yellow: #d29922;
+    --red: #f85149;
+    --blue: #79c0ff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: linear-gradient(180deg, #0d1117 0%, #10161f 100%);
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .wrap {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 28px 20px 48px;
+  }
+  h1 {
+    margin: 0 0 8px;
+    font-size: 1.9rem;
+    line-height: 1.2;
+  }
+  .subtitle {
+    color: var(--text2);
+    margin-bottom: 28px;
+  }
+  .subtitle .stamp {
+    color: var(--blue);
+    margin-left: 8px;
+    font-size: 0.92em;
+  }
+  .top-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 14px;
+    margin-bottom: 26px;
+  }
+  .hero-card, .section-card {
+    background: rgba(22, 27, 34, 0.88);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+  }
+  .hero-card h2,
+  .section-title {
+    margin: 0 0 10px;
+    font-size: 1.02rem;
+  }
+  .hero-card p,
+  .section-card p,
+  li {
+    color: var(--text2);
+    font-size: 0.94rem;
+  }
+  .good { color: var(--green); }
+  .warn { color: var(--yellow); }
+  .bad { color: var(--red); }
+  .section {
+    margin-top: 28px;
+  }
+  .section-title {
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 14px;
+    background: rgba(22, 27, 34, 0.8);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  th, td {
+    padding: 11px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    text-align: left;
+    font-size: 0.9rem;
+  }
+  th {
+    color: var(--accent);
+    background: rgba(88, 166, 255, 0.06);
+    font-weight: 600;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(88, 166, 255, 0.04); }
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 0.76rem;
+    border: 1px solid var(--border);
+    margin-right: 6px;
+    white-space: nowrap;
+  }
+  .tag-high {
+    color: var(--green);
+    border-color: rgba(63, 185, 80, 0.45);
+    background: rgba(63, 185, 80, 0.1);
+  }
+  .tag-mid {
+    color: var(--yellow);
+    border-color: rgba(210, 153, 34, 0.45);
+    background: rgba(210, 153, 34, 0.1);
+  }
+  .tag-low {
+    color: var(--red);
+    border-color: rgba(248, 81, 73, 0.45);
+    background: rgba(248, 81, 73, 0.1);
+  }
+  .tag-top {
+    color: var(--green);
+    border-color: rgba(63, 185, 80, 0.45);
+  }
+  .tag-good {
+    color: var(--yellow);
+    border-color: rgba(210, 153, 34, 0.45);
+  }
+  .muted {
+    color: var(--text2);
+  }
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 14px;
+    margin-top: 14px;
+  }
+  .callout {
+    border-left: 3px solid var(--accent);
+    padding-left: 12px;
+    margin-top: 10px;
+  }
+  a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  a:hover { text-decoration: underline; }
+  ul {
+    margin: 10px 0 0 18px;
+    padding: 0;
+  }
+  @media (max-width: 860px) {
+    table, thead, tbody, th, td, tr { display: block; }
+    thead { display: none; }
+    table {
+      border: none;
+      background: transparent;
+    }
+    tr {
+      margin-bottom: 14px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      background: rgba(22, 27, 34, 0.88);
+    }
+    td {
+      border-bottom: 1px solid var(--border);
+    }
+    td:last-child { border-bottom: none; }
+    td::before {
+      content: attr(data-label);
+      display: block;
+      font-size: 0.78rem;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>权威 Plotting Bench 与 Framework Landscape</h1>
+  <p class="subtitle">
+    面向当前方向筛选 plotting / chart generation 相关的 benchmark 与 framework，重点区分“真 plotting”、“方向相反的 chart-to-code”、以及“看起来相关但其实是 illustration”。
+    <span class="stamp">Last updated: 2026-04-19</span>
+  </p>
+
+  <div class="top-grid">
+    <div class="hero-card">
+      <h2 class="good">当前最该盯的主 bench</h2>
+      <p><strong>Text2Vis</strong> 和 <strong>VisEval</strong> 是现在最适合当前思路的两块主实验地。前者最贴 <code>answer + chart</code> 一致性，后者最像社区权威 NL2Vis benchmark。</p>
+    </div>
+    <div class="hero-card">
+      <h2 class="warn">补充 bench</h2>
+      <p><strong>PandasPlotBench</strong>、<strong>PaperBananaBench/plot</strong>、<strong>MatPlotBench</strong> 都有用，但更适合补充实验、ablation、case study，而不是单独撑主叙事。</p>
+    </div>
+    <div class="hero-card">
+      <h2 class="bad">不建议混进主实验</h2>
+      <p><strong>FigureBench</strong>、<strong>SciGenBench</strong>、<strong>ChartMimic</strong>、<strong>Plot2Code</strong> 看起来相关，但要么偏 illustration，要么方向是 <code>chart image -&gt; code</code>，不适合当主 plotting bench。</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Benchmarks</div>
+    <table>
+      <thead>
+        <tr>
+          <th>名称</th>
+          <th>会议 / 权威度</th>
+          <th>任务</th>
+          <th>规模</th>
+          <th>为什么重要</th>
+          <th>对当前方向适配度</th>
+          <th>推荐用法</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td data-label="名称"><strong>Text2Vis</strong><br><span class="muted"><a href="https://aclanthology.org/2025.emnlp-main.1622/" target="_blank">EMNLP 2025 Main</a></span></td>
+          <td data-label="会议 / 权威度"><span class="tag tag-top">顶会</span></td>
+          <td data-label="任务"><code>NL + table -&gt; answer + visualization</code></td>
+          <td data-label="规模">1,985</td>
+          <td data-label="为什么重要">目前最贴近 <code>reasoning-to-render consistency</code>。不仅测图，还测答案与代码执行。</td>
+          <td data-label="适配度"><span class="tag tag-high">很高</span></td>
+          <td data-label="推荐用法">当前最适合 <strong>Plan2Chart</strong> 的主实验。</td>
+        </tr>
+        <tr>
+          <td data-label="名称"><strong>VisEval</strong><br><span class="muted"><a href="https://www.microsoft.com/en-us/research/publication/viseval-a-benchmark-for-data-visualization-in-the-era-of-large-language-models/" target="_blank">IEEE VIS / TVCG 2024</a></span></td>
+          <td data-label="会议 / 权威度"><span class="tag tag-top">Best Paper</span></td>
+          <td data-label="任务"><code>NL query + DB -&gt; visualization</code></td>
+          <td data-label="规模">2,524</td>
+          <td data-label="为什么重要">NL2Vis 社区权威 benchmark，自动化评测清晰：Validity / Legality / Readability。</td>
+          <td data-label="适配度"><span class="tag tag-high">高</span></td>
+          <td data-label="推荐用法">第二主实验或外部权威验证。</td>
+        </tr>
+        <tr>
+          <td data-label="名称"><strong>nvBench 2.0</strong><br><span class="muted"><a href="https://openreview.net/forum?id=PuzbYHf1GR" target="_blank">NeurIPS 2025 D&amp;B</a></span></td>
+          <td data-label="会议 / 权威度"><span class="tag tag-top">顶会</span></td>
+          <td data-label="任务"><code>ambiguous NL -&gt; multiple valid vis</code></td>
+          <td data-label="规模">7,878 query / 24,076 vis</td>
+          <td data-label="为什么重要">对歧义和 stepwise reasoning 有价值，但输出是 Vega-Lite，不是 Python plotting code。</td>
+          <td data-label="适配度"><span class="tag tag-mid">中高</span></td>
+          <td data-label="推荐用法">如果你强调“分析计划 / 消歧”，可以做辅实验；否则放 related work。</td>
+        </tr>
+        <tr>
+          <td data-label="名称"><strong>MatPlotBench</strong><br><span class="muted"><a href="https://aclanthology.org/2024.findings-acl.701/" target="_blank">ACL 2024 Findings</a></span></td>
+          <td data-label="会议 / 权威度"><span class="tag tag-top">经典</span></td>
+          <td data-label="任务"><code>instruction -&gt; matplotlib code</code></td>
+          <td data-label="规模">100</td>
+          <td data-label="为什么重要">经典、被广泛引用、后续方法常在其上报分。</td>
+          <td data-label="适配度"><span class="tag tag-mid">中</span></td>
+          <td data-label="推荐用法">小规模 ablation / case study，不适合当主 bench。</td>
+        </tr>
+        <tr>
+          <td data-label="名称"><strong>PandasPlotBench</strong><br><span class="muted"><a href="https://github.com/JetBrains-Research/PandasPlotBench" target="_blank">JetBrains / 2025</a></span></td>
+          <td data-label="会议 / 权威度"><span class="tag tag-good">较强</span></td>
+          <td data-label="任务"><code>DataFrame + instruction -&gt; plotting code</code></td>
+          <td data-label="规模">175</td>
+          <td data-label="为什么重要">更纯的 dataframe plotting code benchmark，且有多种指令粒度。</td>
+          <td data-label="适配度"><span class="tag tag-high">高</span></td>
+          <td data-label="推荐用法">补充 plotting code 实验，尤其适合验证 prompt sensitivity。</td>
+        </tr>
+        <tr>
+          <td data-label="名称"><strong>PaperBananaBench/plot</strong><br><span class="muted">项目内 plot split</span></td>
+          <td data-label="会议 / 权威度"><span class="tag tag-mid">中</span></td>
+          <td data-label="任务"><code>raw data + visual intent -&gt; matplotlib code -&gt; image</code></td>
+          <td data-label="规模">本地 plot test 240</td>
+          <td data-label="为什么重要">每条样本有结构化 raw data，且都有 <code>gt_code</code>，适合做 AST / trace 自定义指标。</td>
+          <td data-label="适配度"><span class="tag tag-mid">中</span></td>
+          <td data-label="推荐用法">补充实验，不建议当唯一主 bench。</td>
+        </tr>
+        <tr>
+          <td data-label="名称"><strong>ChartMimic</strong><br><span class="muted"><a href="https://proceedings.iclr.cc/paper_files/paper/2025/hash/42806406dd99e30c3796bc98b2670fa2-Abstract-Conference.html" target="_blank">ICLR 2025</a></span></td>
+          <td data-label="会议 / 权威度"><span class="tag tag-top">顶会</span></td>
+          <td data-label="任务"><code>chart image + instruction -&gt; code</code></td>
+          <td data-label="规模">4,800</td>
+          <td data-label="为什么重要">chart-to-code 方向很权威，评测严谨。</td>
+          <td data-label="适配度"><span class="tag tag-low">低</span></td>
+          <td data-label="推荐用法">只适合 related work 或方向相反的补充比较。</td>
+        </tr>
+        <tr>
+          <td data-label="名称"><strong>FigureBench</strong><br><span class="muted"><a href="https://huggingface.co/datasets/WestlakeNLP/FigureBench" target="_blank">AutoFigure / ICLR 2026</a></span></td>
+          <td data-label="会议 / 权威度"><span class="tag tag-top">顶会</span></td>
+          <td data-label="任务"><code>long scientific text -&gt; illustration</code></td>
+          <td data-label="规模">3,300</td>
+          <td data-label="为什么重要">长文本 scientific illustration benchmark，很强，但明确偏 conceptual figures。</td>
+          <td data-label="适配度"><span class="tag tag-low">很低</span></td>
+          <td data-label="推荐用法">不要当 plotting 主 bench；只适合 illustration 方向。</td>
+        </tr>
+        <tr>
+          <td data-label="名称"><strong>SciGenBench</strong><br><span class="muted"><a href="https://scigenbench.github.io/" target="_blank">AAAI 2026</a></span></td>
+          <td data-label="会议 / 权威度"><span class="tag tag-top">顶会</span></td>
+          <td data-label="任务"><code>scientific image synthesis</code></td>
+          <td data-label="规模">约 1.4k</td>
+          <td data-label="为什么重要">权威 scientific image benchmark，但 plot 只是其一部分，不是中心任务。</td>
+          <td data-label="适配度"><span class="tag tag-low">低到中</span></td>
+          <td data-label="推荐用法">可做 broad scientific figure 辅实验，不适合纯 plotting 主实验。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Framework / Method Papers</div>
+    <table>
+      <thead>
+        <tr>
+          <th>名称</th>
+          <th>会议</th>
+          <th>核心机制</th>
+          <th>与你当前方向的关系</th>
+          <th>结论</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td data-label="名称"><strong>RL-Text2Vis</strong><br><span class="muted"><a href="https://aclanthology.org/2026.eacl-long.317/" target="_blank">EACL 2026 Long</a></span></td>
+          <td data-label="会议"><span class="tag tag-top">A 会</span></td>
+          <td data-label="核心机制">多目标 RL，联合优化文本正确性、代码执行、视觉质量。</td>
+          <td data-label="关系">最接近 <code>answer + chart</code> 联动优化的现有强方法。</td>
+          <td data-label="结论"><span class="tag tag-high">必须看</span></td>
+        </tr>
+        <tr>
+          <td data-label="名称"><strong>CoDA</strong><br><span class="muted"><a href="https://openreview.net/forum?id=M4RKeHIAxw" target="_blank">ICLR 2026 Poster</a></span></td>
+          <td data-label="会议"><span class="tag tag-top">A 会</span></td>
+          <td data-label="核心机制">agentic data visualization，metadata analysis + planning + coding + reflection。</td>
+          <td data-label="关系">强竞品 / related work；比传统 plotting 更接近复杂 data visualization。</td>
+          <td data-label="结论"><span class="tag tag-high">必须处理</span></td>
+        </tr>
+        <tr>
+          <td data-label="名称"><strong>METAL</strong><br><span class="muted"><a href="https://aclanthology.org/2025.acl-long.1452/" target="_blank">ACL 2025 Long</a></span></td>
+          <td data-label="会议"><span class="tag tag-top">A 会</span></td>
+          <td data-label="核心机制">VLM multi-agent chart generation + test-time scaling。</td>
+          <td data-label="关系">更偏 visual-property-aware chart generation，不是 data grounding 主线。</td>
+          <td data-label="结论"><span class="tag tag-mid">应读</span></td>
+        </tr>
+        <tr>
+          <td data-label="名称"><strong>RAGvis</strong><br><span class="muted"><a href="https://aclanthology.org/2025.emnlp-main.836/" target="_blank">EMNLP 2025 Main</a></span></td>
+          <td data-label="会议"><span class="tag tag-top">A 会</span></td>
+          <td data-label="核心机制">graph-guided retrieval-augmented generation for data visualization。</td>
+          <td data-label="关系">和“分析计划 / 操作语义 / data-to-vis”比一般 plotting paper 更接近。</td>
+          <td data-label="结论"><span class="tag tag-high">建议重点看</span></td>
+        </tr>
+        <tr>
+          <td data-label="名称"><strong>MatPlotAgent</strong><br><span class="muted"><a href="https://aclanthology.org/2024.findings-acl.701/" target="_blank">ACL 2024 Findings</a></span></td>
+          <td data-label="会议"><span class="tag tag-top">A 系列</span></td>
+          <td data-label="核心机制">query expansion + code generation/debug + visual refinement。</td>
+          <td data-label="关系">经典 baseline，必须引用；但问题定义偏老，bench 太小。</td>
+          <td data-label="结论"><span class="tag tag-high">必须引用</span></td>
+        </tr>
+        <tr>
+          <td data-label="名称"><strong>VisCoder</strong><br><span class="muted"><a href="https://aclanthology.org/2025.findings-emnlp.160/" target="_blank">EMNLP 2025 Findings</a></span></td>
+          <td data-label="会议"><span class="tag tag-good">B 会以上</span></td>
+          <td data-label="核心机制">200K visualization code SFT + self-correction tuning。</td>
+          <td data-label="关系">如果你需要开源 plotting code baseline，这篇非常实用。</td>
+          <td data-label="结论"><span class="tag tag-mid">实用型必读</span></td>
+        </tr>
+        <tr>
+          <td data-label="名称"><strong>ChartCoder</strong><br><span class="muted"><a href="https://aclanthology.org/2025.acl-long.363/" target="_blank">ACL 2025 Long</a></span></td>
+          <td data-label="会议"><span class="tag tag-top">A 会</span></td>
+          <td data-label="核心机制">chart-to-code MLLM + Snippet-of-Thought。</td>
+          <td data-label="关系">方向相反，但对 chart-code 结构表示和多模态对齐有启发。</td>
+          <td data-label="结论"><span class="tag tag-mid">可做 related work</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">当前方向的推荐实验栈</div>
+    <div class="cards">
+      <div class="section-card">
+        <h3 class="good">如果继续 Plan2Chart</h3>
+        <p><strong>主实验：</strong>Text2Vis + VisEval</p>
+        <p><strong>补充：</strong>PandasPlotBench + PaperBananaBench/plot</p>
+        <p><strong>小规模 case study：</strong>MatPlotBench</p>
+        <div class="callout">
+          <p>原因：Plan2Chart 的核心是 <code>answer + chart + shared analytical plan</code>。只有 Text2Vis 真正在奖励这个贡献，VisEval 则提供权威 NL2Vis 外部验证。</p>
+        </div>
+      </div>
+      <div class="section-card">
+        <h3 class="warn">如果还保留 F-A</h3>
+        <p><strong>最适合的角色：</strong>补充模块，不再当主方向。</p>
+        <p><strong>可测场景：</strong>PaperBananaPlot 自定义 AST / provenance 指标，MatPlotBench 小样本 case study。</p>
+        <p><strong>风险：</strong>很多 bench 最终只看图像，不直接奖励 provenance / traceability / transform correctness。</p>
+      </div>
+      <div class="section-card">
+        <h3 class="bad">不建议作为主实验</h3>
+        <p><strong>FigureBench：</strong>偏 illustration，不是 plotting。</p>
+        <p><strong>SciGenBench：</strong>scientific image 太混，plot 信号被稀释。</p>
+        <p><strong>ChartMimic / Plot2Code：</strong>方向是 chart image -&gt; code，和 data-to-chart 不同。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">批判性提醒</div>
+    <div class="section-card">
+      <ul>
+        <li>不要把 <strong>chart-to-code</strong> 和 <strong>data/query-to-chart</strong> 混成一类。它们都叫 plotting，但研究问题不同。</li>
+        <li>不要把 <strong>scientific illustration</strong> 和 <strong>data plotting</strong> 混成一类。FigureBench、AutoFigure 这一支和当前问题只有表面相似。</li>
+        <li>不要只看 benchmark 名字里的 “figure / chart / plot”。一定要看输入是什么、输出是什么、原生指标奖励什么。</li>
+        <li>如果方法核心卖点是 <strong>shared analytical plan</strong> 或 <strong>reasoning-to-render consistency</strong>，那就必须优先选能测答案和图表联动的 benchmark，而不是只看最终图像相似度。</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</body>
+</html>

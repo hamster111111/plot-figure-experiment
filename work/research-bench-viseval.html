@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F-A GroundedChart — VisEval 错误轨迹详情</title>
+<link rel="stylesheet" href="research-styles.css">
+<style>
+  .img-single img { max-width:480px; width:100%; border-radius:6px; border:1px solid var(--border); margin:8px 0; }
+  .img-single .img-label { font-size:0.75em; color:var(--text2); margin-top:4px; }
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a class="nav-home" href="research-overview.html">Overview</a>
+  <a href="research-benchmarks.html">&larr; 02 Benchmarks</a>
+  <a class="active" href="research-bench-viseval.html">VisEval 详情</a>
+</nav>
+
+<div class="section">
+  <div class="section-title">VisEval — 953 例 data_check 失败的错误分类与真实轨迹</div>
+
+  <div class="card">
+    <div class="card-title">错误类型分布</div>
+    <div class="card-body">
+      <div class="bar-chart">
+        <div class="bar-row">
+          <div class="bar-label">length_mismatch</div>
+          <div class="bar-track"><div class="bar-fill" style="width:60.1%;background:var(--blue)"></div></div>
+          <div class="bar-value">573 (60.1%)</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">data_point_not_found</div>
+          <div class="bar-track"><div class="bar-fill" style="width:36%;background:var(--yellow)"></div></div>
+          <div class="bar-value">343 (36.0%)</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">wrong_data_type</div>
+          <div class="bar-track"><div class="bar-fill" style="width:3.4%;background:var(--purple)"></div></div>
+          <div class="bar-value">32 (3.4%)</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">duplicate_data</div>
+          <div class="bar-track"><div class="bar-fill" style="width:0.4%;background:var(--red)"></div></div>
+          <div class="bar-value">4 (0.4%)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== length_mismatch / extra_data_points ===== -->
+<div class="section">
+  <div class="section-title danger">length_mismatch / extra_data_points（438 例）</div>
+  <p>生成的图表数据点数量多于 Ground Truth。通常是因为模型没有做 GROUP BY 聚合，直接画了原始数据的每一行。</p>
+
+  <div class="trace-card">
+    <div class="trace-header">
+      <div class="trace-title">vis_id: 1003</div>
+      <div class="trace-tags"><span class="tag tag-blue">Pie</span><span class="tag tag-yellow">Medium</span></div>
+    </div>
+    <div class="trace-row"><div class="trace-label">NL Query</div><div class="trace-val">Show the product name and total order quantity for each product with a pie chart.</div></div>
+    <div class="trace-row"><div class="trace-label">GT SQL</div><div class="trace-val"><code>SELECT T1.product_name, SUM(T2.order_quantity) FROM products AS T1 JOIN order_items AS T2 ON T1.product_id = T2.product_id GROUP BY T1.product_name</code></div></div>
+    <div class="trace-row"><div class="trace-label">生成代码</div><div class="trace-val"></div></div>
+    <div class="code-block">ax.pie(df['product_price'], labels=df['product_name'], autopct='%1.1f%%')</div>
+    <div class="trace-row"><div class="trace-label">GT Data</div><div class="trace-val">x=["Apple","gucci","jcrew"], y=[23,21,40] (3 groups)</div></div>
+    <div class="trace-row"><div class="trace-label">Rationale</div><div class="trace-val" style="color:var(--red)">visualization data length 15 != ground truth length 3.</div></div>
+    <div class="trace-row"><div class="trace-label">Code Issue</div><div class="trace-val"><span class="tag tag-red">wrong_agg_count_vs_sum</span></div></div>
+    <div class="img-single"><img src="../VisEval/eval_logs3/1003/0.svg" alt="生成的图表"><div class="img-label">生成的图表（15 个数据点，应为 3 个）</div></div>
+    <div class="trace-verdict fail">模型用了 product_price 列而非 SUM(order_quantity)，且没有 GROUP BY，导致 15 个数据点 vs GT 的 3 个分组。</div>
+  </div>
+
+  <div class="trace-card">
+    <div class="trace-header">
+      <div class="trace-title">vis_id: 102@y_name@ASC</div>
+      <div class="trace-tags"><span class="tag tag-blue">Bar</span><span class="tag tag-red">Hard</span></div>
+    </div>
+    <div class="trace-row"><div class="trace-label">NL Query</div><div class="trace-val">Return a bar chart about the number bookings for each apartment number, I want to list y axis in ascending order.</div></div>
+    <div class="trace-row"><div class="trace-label">GT SQL</div><div class="trace-val"><code>SELECT apt_number, COUNT(apt_number) FROM Apartment_Bookings AS T1 JOIN Apartments AS T2 ON T1.apt_id = T2.apt_id GROUP BY apt_number ORDER BY COUNT(apt_number) ASC</code></div></div>
+    <div class="trace-row"><div class="trace-label">生成代码</div><div class="trace-val"></div></div>
+    <div class="code-block">df['apt_number'].value_counts()</div>
+    <div class="trace-row"><div class="trace-label">GT Data</div><div class="trace-val">10 apartments with counts [1,1,1,1,1,1,1,2,3,3]</div></div>
+    <div class="trace-row"><div class="trace-label">Rationale</div><div class="trace-val" style="color:var(--red)">visualization data length 15 != ground truth length 10.</div></div>
+    <div class="trace-row"><div class="trace-label">Code Issue</div><div class="trace-val"><span class="tag tag-red">missing_groupby</span></div></div>
+    <div class="img-single"><img src="../VisEval/eval_logs3/102@y_name@ASC/0.svg" alt="生成的图表"><div class="img-label">生成的图表（15 行原始数据 vs GT 10 个分组）</div></div>
+    <div class="trace-verdict fail">模型没有做 JOIN + GROUP BY，直接对单表做 value_counts，得到 15 行而非 10 个分组。</div>
+  </div>
+</div>
+
+<!-- ===== length_mismatch / missing_data_points ===== -->
+<div class="section">
+  <div class="section-title warn">length_mismatch / missing_data_points（135 例）</div>
+  <p>生成的图表数据点数量少于 Ground Truth。通常是过滤条件错误或分组不完整。</p>
+
+  <div class="trace-card">
+    <div class="trace-header">
+      <div class="trace-title">vis_id: 103</div>
+      <div class="trace-tags"><span class="tag tag-blue">Pie</span><span class="tag tag-red">Hard</span></div>
+    </div>
+    <div class="trace-row"><div class="trace-label">NL Query</div><div class="trace-val">Give me a pie chart showing the number of buildings managed by 'Kyle' and group by apartment type codes.</div></div>
+    <div class="trace-row"><div class="trace-label">GT SQL</div><div class="trace-val"><code>SELECT apt_type_code, COUNT(apt_type_code) FROM Apartment_Buildings AS T1 JOIN Apartments AS T2 ON T1.building_id = T2.building_id WHERE T1.building_manager = "Kyle" GROUP BY apt_type_code</code></div></div>
+    <div class="trace-row"><div class="trace-label">生成代码</div><div class="trace-val">Filters by Kyle but uses <code>building_description</code> instead of <code>apt_type_code</code> for grouping, gets only 1 result</div></div>
+    <div class="trace-row"><div class="trace-label">GT Data</div><div class="trace-val">x=["Duplex","Flat","Studio"], y=[2,1,1] (3 types)</div></div>
+    <div class="trace-row"><div class="trace-label">Rationale</div><div class="trace-val" style="color:var(--red)">visualization data length 1 != ground truth length 3.</div></div>
+    <div class="trace-row"><div class="trace-label">Code Issue</div><div class="trace-val"><span class="tag tag-red">missing_groupby</span></div></div>
+    <div class="img-single"><img src="../VisEval/eval_logs3/103/0.svg" alt="生成的图表"><div class="img-label">生成的图表（只有 1 条数据，应为 3 个分组）</div></div>
+    <div class="trace-verdict fail">模型过滤了 Kyle 但用了错误的列做分组，只得到 1 条数据而非 3 个 apartment type。</div>
+  </div>
+
+  <div class="trace-card">
+    <div class="trace-header">
+      <div class="trace-title">vis_id: 1138@y_name@ASC</div>
+      <div class="trace-tags"><span class="tag tag-blue">Bar</span><span class="tag tag-red">Hard</span></div>
+    </div>
+    <div class="trace-row"><div class="trace-label">NL Query</div><div class="trace-val">Show the sum of price supplied by supplier id 3 for different product type code in a bar chart, sort in asc...</div></div>
+    <div class="trace-row"><div class="trace-label">GT SQL</div><div class="trace-val"><code>filters by supplier_id = 3, groups by product_type_code</code></div></div>
+    <div class="trace-row"><div class="trace-label">生成代码</div><div class="trace-val"></div></div>
+    <div class="code-block">df[df['product_id'] == 3]</div>
+    <div class="trace-row"><div class="trace-label">GT Data</div><div class="trace-val">x=["Hardware","Clothes"], y=[803.74, 1634.73]</div></div>
+    <div class="trace-row"><div class="trace-label">Rationale</div><div class="trace-val" style="color:var(--red)">visualization data length 1 != ground truth length 2.</div></div>
+    <div class="trace-row"><div class="trace-label">Code Issue</div><div class="trace-val"><span class="tag tag-red">missing_filter</span></div></div>
+    <div class="img-single"><img src="../VisEval/eval_logs3/1138@y_name@ASC/0.svg" alt="生成的图表"><div class="img-label">生成的图表（过滤了错误的列）</div></div>
+    <div class="trace-verdict fail">模型过滤了 product_id=3 而非 supplier_id=3，选错了过滤列。</div>
+  </div>
+</div>
+
+<!-- ===== data_point_not_found ===== -->
+<div class="section">
+  <div class="section-title warn">data_point_not_found（343 例）</div>
+  <p>生成的数据点在 Ground Truth 中找不到匹配。通常是聚合方式错误或列选择错误，导致数值不对。</p>
+
+  <div class="trace-card">
+    <div class="trace-header">
+      <div class="trace-title">vis_id: 1015@y_name@DESC</div>
+      <div class="trace-tags"><span class="tag tag-blue">Bar</span><span class="tag tag-red">Hard</span></div>
+    </div>
+    <div class="trace-row"><div class="trace-label">NL Query</div><div class="trace-val">Show all distinct product categories along with the number of mailshots in each category, bar chart, high to low.</div></div>
+    <div class="trace-row"><div class="trace-label">GT SQL</div><div class="trace-val"><code>SELECT product_category, count(*) FROM mailshot_campaigns GROUP BY product_category ORDER BY count(*) DESC</code></div></div>
+    <div class="trace-row"><div class="trace-label">生成代码</div><div class="trace-val"></div></div>
+    <div class="code-block">df['product_category'].value_counts()</div>
+    <div class="trace-row"><div class="trace-label">GT Data</div><div class="trace-val">x=["food","clothes"], y=[11,9]</div></div>
+    <div class="trace-row"><div class="trace-label">Rationale</div><div class="trace-val" style="color:var(--red)">{"field_x": "food", "field_y": 11} not found.</div></div>
+    <div class="trace-row"><div class="trace-label">Code Issue</div><div class="trace-val"><span class="tag tag-red">missing_groupby</span></div></div>
+    <div class="img-single"><img src="../VisEval/eval_logs3/1015@y_name@DESC/0.svg" alt="生成的图表"><div class="img-label">生成的图表（value_counts 而非 JOIN+GROUP BY）</div></div>
+    <div class="trace-verdict fail">模型用 value_counts 而非 JOIN + GROUP BY，得到的计数值与 GT 不匹配。</div>
+  </div>
+
+  <div class="trace-card">
+    <div class="trace-header">
+      <div class="trace-title">vis_id: 1018</div>
+      <div class="trace-tags"><span class="tag tag-blue">Pie</span><span class="tag tag-yellow">Medium</span></div>
+    </div>
+    <div class="trace-row"><div class="trace-label">NL Query</div><div class="trace-val">A pie chart showing the number of customer addresses in each premises type.</div></div>
+    <div class="trace-row"><div class="trace-label">GT SQL</div><div class="trace-val"><code>SELECT premises_type, COUNT(premises_type) FROM customer_addresses AS T1 JOIN premises AS T2 ON T1.premise_id = T2.premise_id GROUP BY premises_type</code></div></div>
+    <div class="trace-row"><div class="trace-label">生成代码</div><div class="trace-val"></div></div>
+    <div class="code-block">df['premises_type'].value_counts()</div>
+    <div class="trace-row"><div class="trace-label">GT Data</div><div class="trace-val">x=["Warehouse","Residence","Office"], y=[6,3,6]</div></div>
+    <div class="trace-row"><div class="trace-label">Rationale</div><div class="trace-val" style="color:var(--red)">data points not found</div></div>
+    <div class="trace-row"><div class="trace-label">Code Issue</div><div class="trace-val"><span class="tag tag-red">missing_groupby</span></div></div>
+    <div class="img-single"><img src="../VisEval/eval_logs3/1018/0.svg" alt="生成的图表"><div class="img-label">生成的图表（缺少 JOIN，分类和数值都与 GT 不同）</div></div>
+    <div class="trace-verdict fail">缺少 JOIN 操作，直接在 customer_addresses 表上计数，得到的分类和数值都与 GT 不同。</div>
+  </div>
+</div>
+
+<!-- ===== wrong_data_type ===== -->
+<div class="section">
+  <div class="section-title purple">wrong_data_type（32 例）</div>
+  <p>数据类型错误——通常是 x 轴应该是分类型（categorical）但模型用了数值型（quantitative），比如用数字索引代替了分类标签。</p>
+
+  <div class="trace-card">
+    <div class="trace-header">
+      <div class="trace-title">vis_id: 1087@y_name@DESC</div>
+      <div class="trace-tags"><span class="tag tag-blue">Bar</span><span class="tag tag-red">Hard</span></div>
+    </div>
+    <div class="trace-row"><div class="trace-label">NL Query</div><div class="trace-val">Return a bar chart showing how many members have visited for each college location, show from high to low by the y axis.</div></div>
+    <div class="trace-row"><div class="trace-label">GT SQL</div><div class="trace-val"><code>SELECT College_Location, COUNT(College_Location) FROM college AS T1 JOIN member AS T2 ON T1.College_ID = T2.College_ID GROUP BY College_Location ORDER BY COUNT(College_Location) DESC</code></div></div>
+    <div class="trace-row"><div class="trace-label">生成代码</div><div class="trace-val">Used <code>ax.barh(...)</code> making x-axis quantitative instead of categorical</div></div>
+    <div class="trace-row"><div class="trace-label">GT Data</div><div class="trace-val">x=["McGill","Western Ontario","St. Francis Xavier","Ottawa","Minnesota"], y=[3,2,2,2,1]</div></div>
+    <div class="trace-row"><div class="trace-label">Rationale</div><div class="trace-val" style="color:var(--red)">The data type of x(quantitative) is wrong.</div></div>
+    <div class="img-single"><img src="../VisEval/eval_logs3/1087@y_name@DESC/0.svg" alt="生成的图表"><div class="img-label">生成的图表（barh 导致 x 轴为数值型）</div></div>
+    <div class="trace-verdict fail">模型用了水平柱状图 barh，导致 x 轴被解析为数值型而非分类标签。</div>
+  </div>
+
+  <div class="trace-card">
+    <div class="trace-header">
+      <div class="trace-title">vis_id: 117@y_name@ASC</div>
+      <div class="trace-tags"><span class="tag tag-blue">Bar</span><span class="tag tag-yellow">Medium</span></div>
+    </div>
+    <div class="trace-row"><div class="trace-label">NL Query</div><div class="trace-val">Draw a bar chart of asset make versus the number of asset make, I want to order y axis from low to high order.</div></div>
+    <div class="trace-row"><div class="trace-label">GT SQL</div><div class="trace-val"><code>SELECT asset_make, COUNT(asset_make) FROM Assets GROUP BY asset_make ORDER BY COUNT(asset_make) ASC</code></div></div>
+    <div class="trace-row"><div class="trace-label">生成代码</div><div class="trace-val">Used numeric indices <code>range(len(...))</code> as x-axis instead of asset_make names</div></div>
+    <div class="trace-row"><div class="trace-label">Rationale</div><div class="trace-val" style="color:var(--red)">The data type of x(quantitative) is wrong.</div></div>
+    <div class="img-single"><img src="../VisEval/eval_logs3/117@y_name@ASC/0.svg" alt="生成的图表"><div class="img-label">生成的图表（x 轴是数值索引而非分类标签）</div></div>
+    <div class="trace-verdict fail">模型用 range(len()) 作为 x 轴（数值索引），而非 asset_make 名称（分类标签）。</div>
+  </div>
+</div>
+
+<!-- ===== duplicate_data ===== -->
+<div class="section">
+  <div class="section-title danger">duplicate_data（4 例）</div>
+  <p>生成的数据中存在重复的数据点，通常是分组不唯一导致。</p>
+
+  <div class="trace-card">
+    <div class="trace-header">
+      <div class="trace-title">vis_id: 2847</div>
+      <div class="trace-tags"><span class="tag tag-blue">Pie</span><span class="tag tag-red">Hard</span></div>
+    </div>
+    <div class="trace-row"><div class="trace-label">NL Query</div><div class="trace-val">List the top 5 genres by number of tracks. List genres name and total tracks by a pie chart.</div></div>
+    <div class="trace-row"><div class="trace-label">GT SQL</div><div class="trace-val"><code>SELECT T1.name, COUNT(*) FROM genres AS T1 JOIN tracks AS T2 ON T2.genre_id = T1.id GROUP BY T1.id ORDER BY count(*) DESC LIMIT 5</code></div></div>
+    <div class="trace-row"><div class="trace-label">生成代码</div><div class="trace-val"></div></div>
+    <div class="code-block">df['name'].value_counts().head(5)</div>
+    <div class="trace-row"><div class="trace-label">Rationale</div><div class="trace-val" style="color:var(--red)">found more than one</div></div>
+    <div class="img-single"><img src="../VisEval/eval_logs3/2847/0.svg" alt="生成的图表"><div class="img-label">生成的图表（出现重复 genre 名称）</div></div>
+    <div class="trace-verdict fail">没有通过 genre_id JOIN，直接用 name 列计数，导致出现重复的 genre 名称。</div>
+  </div>
+</div>
+
+<!-- ===== 代码级根因分析 ===== -->
+<div class="section">
+  <div class="section-title">代码级根因分析</div>
+
+  <div class="card">
+    <div class="card-title">code_issue 分布</div>
+    <div class="card-body">
+      <div class="bar-chart">
+        <div class="bar-row">
+          <div class="bar-label">missing_groupby</div>
+          <div class="bar-track"><div class="bar-fill" style="width:60.2%;background:var(--red)"></div></div>
+          <div class="bar-value">551 (60.2%)</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">unknown</div>
+          <div class="bar-track"><div class="bar-fill" style="width:25.2%;background:var(--yellow)"></div></div>
+          <div class="bar-value">231 (25.2%)</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">missing_filter</div>
+          <div class="bar-track"><div class="bar-fill" style="width:11.7%;background:var(--blue)"></div></div>
+          <div class="bar-value">107 (11.7%)</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">wrong_agg_count_vs_sum</div>
+          <div class="bar-track"><div class="bar-fill" style="width:2.9%;background:var(--purple)"></div></div>
+          <div class="bar-value">27 (2.9%)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note-box green">结论：60% 的 data_check 失败可以追溯到一个明确的代码级根因——缺少 GROUP BY 聚合。这不是随机错误，而是模型在数据处理逻辑上的系统性缺陷。</div>
+</div>
+
+<div class="page-nav">
+  <a href="research-benchmarks.html">&larr; 返回 Benchmark 总览</a>
+  <a href="research-bench-text2vis.html">Text2Vis 错误轨迹 &rarr;</a>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F-A GroundedChart — 竞品情报与调研笔记</title>
+<style>
+  :root {
+    --bg: #0d1117; --surface: #161b22; --border: #30363d;
+    --text: #e6edf3; --text2: #8b949e; --accent: #58a6ff;
+    --green: #3fb950; --yellow: #d29922; --red: #f85149; --purple: #bc8cff;
+    --orange: #d18616;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: -apple-system,'Segoe UI',sans-serif; background:var(--bg); color:var(--text); line-height:1.6; padding:24px; max-width:1200px; margin:0 auto; }
+  h1 { font-size:1.5em; margin-bottom:4px; }
+  .subtitle { color:var(--text2); margin-bottom:28px; font-size:0.9em; }
+  .section { margin-bottom:32px; }
+  .section-title {
+    font-size:1.05em; font-weight:600; padding:8px 14px; margin-bottom:14px;
+    border-left:3px solid var(--accent); background:rgba(88,166,255,0.06);
+    border-radius:0 6px 6px 0;
+  }
+  .section-title.warn { border-left-color:var(--yellow); background:rgba(210,153,34,0.06); }
+  .section-title.good { border-left-color:var(--green); background:rgba(63,185,80,0.06); }
+  .section-title.danger { border-left-color:var(--red); background:rgba(248,81,73,0.06); }
+
+  table { width:100%; border-collapse:collapse; font-size:0.88em; margin-bottom:16px; }
+  th,td { padding:8px 12px; border:1px solid var(--border); text-align:left; }
+  th { background:var(--surface); color:var(--accent); font-weight:600; position:sticky; top:0; }
+  tr:hover td { background:rgba(88,166,255,0.04); }
+
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px; margin-bottom:12px; }
+  .card-title { font-weight:600; color:var(--accent); margin-bottom:6px; }
+  .card-body { font-size:0.88em; color:var(--text2); line-height:1.6; }
+  .card-body strong { color:var(--text); }
+  .card-body p { margin-bottom:6px; }
+
+  .tag { display:inline-block; font-size:0.72em; padding:2px 8px; border-radius:10px; margin-right:4px; }
+  .tag-green { background:rgba(63,185,80,0.15); color:var(--green); }
+  .tag-yellow { background:rgba(210,153,34,0.15); color:var(--yellow); }
+  .tag-red { background:rgba(248,81,73,0.15); color:var(--red); }
+  .tag-blue { background:rgba(88,166,255,0.15); color:var(--accent); }
+  .tag-purple { background:rgba(188,140,255,0.15); color:var(--purple); }
+
+  .note-box {
+    background:rgba(210,153,34,0.08); border:1px solid rgba(210,153,34,0.3);
+    border-radius:8px; padding:12px 16px; font-size:0.88em; color:var(--text2); margin-bottom:12px;
+  }
+  .note-box strong { color:var(--yellow); }
+  .note-box.green { background:rgba(63,185,80,0.08); border-color:rgba(63,185,80,0.3); }
+  .note-box.green strong { color:var(--green); }
+  .note-box.red { background:rgba(248,81,73,0.08); border-color:rgba(248,81,73,0.3); }
+  .note-box.red strong { color:var(--red); }
+
+  a { color:var(--accent); text-decoration:none; }
+  a:hover { text-decoration:underline; }
+  .timestamp { font-size:0.78em; color:var(--text2); }
+  .divider { border:none; border-top:1px solid var(--border); margin:24px 0; }
+  ul { padding-left:20px; margin:6px 0; }
+  li { margin-bottom:4px; font-size:0.88em; color:var(--text2); }
+  li strong { color:var(--text); }
+</style>
+</head>
+<body>
+
+<h1>F-A GroundedChart — 竞品情报与调研笔记</h1>
+<p class="subtitle">复现 & 实验过程中收集的竞品信息、注意事项、关键发现 <span class="timestamp">Last updated: 2026-04-19 21:00</span></p>
+
+<!-- ============ SECTION 1: MatPlotBench Leaderboard ============ -->
+<div class="section">
+  <div class="section-title">MatPlotBench 竞品排行榜（在 100 样本上报告过成绩的论文）</div>
+
+  <table>
+    <tr>
+      <th>排名</th><th>系统</th><th>分数</th><th>Backbone</th><th>会议</th><th>CCF</th><th>开源</th><th>与 F-A 关系</th>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td><strong>CoDA</strong> <span class="tag tag-red">最强竞品</span></td>
+      <td>OS=79.5%<br><span class="timestamp">不同指标体系 (EPR/VSR/OS)</span></td>
+      <td>Gemini-2.5-Pro</td>
+      <td>ICLR 2026</td>
+      <td>A</td>
+      <td><a href="https://arxiv.org/abs/2510.03194">arXiv</a></td>
+      <td><span class="tag tag-green">正交</span> 优化生成质量，不做数据保真</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td><strong>VisPath</strong></td>
+      <td>Plot Score=66.12</td>
+      <td>GPT-4o mini</td>
+      <td>在审</td>
+      <td>—</td>
+      <td><a href="https://arxiv.org/abs/2502.11140">arXiv</a></td>
+      <td><span class="tag tag-green">正交</span> 多路径推理，不做数据保真</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td><strong>PlotGen</strong> (Adobe)</td>
+      <td>Plot Score=65.67</td>
+      <td>GPT-4</td>
+      <td>ACM IUI 2025</td>
+      <td>B</td>
+      <td><a href="https://arxiv.org/abs/2502.00988">arXiv</a></td>
+      <td><span class="tag tag-green">正交</span> 多模态检索反馈，不做数据保真</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td><strong>MatPlotAgent</strong> (THUNLP)</td>
+      <td>Plot Score=61.16</td>
+      <td>GPT-4</td>
+      <td>ACL 2024 Findings</td>
+      <td>A</td>
+      <td><a href="https://github.com/thunlp/MatPlotAgent">GitHub</a></td>
+      <td><span class="tag tag-blue">复现目标</span> 我们的第一个 baseline</td>
+    </tr>
+    <tr style="background:rgba(88,166,255,0.06)">
+      <td>—</td>
+      <td><strong>我们的复现</strong> <span class="tag tag-blue">已完成</span></td>
+      <td>Plot Score=56.4 avg<br>Pass Rate=57.0%</td>
+      <td>DeepSeek-V3 + Qwen-VL</td>
+      <td>—</td>
+      <td>—</td>
+      <td>—</td>
+      <td><span class="tag tag-blue">Baseline</span> 评分用 Qwen-VL 替代 GPT-4V</td>
+    </tr>
+  </table>
+
+  <div class="note-box green">
+    <strong>关键发现：</strong>所有竞品都在优化"生成质量"（更好的 prompt、多路径推理、多 agent 协作）。<strong>没有任何一个在做数据保真度和结构幻觉防御。</strong>F-A GroundedChart 解决的是一个所有现有系统都忽略的维度——这些改进和我们的改进是正交的，可以叠加。
+  </div>
+</div>
+
+<!-- ============ SECTION 2: MatPlotAgent 复现笔记 ============ -->
+<div class="section">
+  <div class="section-title warn">MatPlotAgent 复现注意事项</div>
+
+  <div class="card">
+    <div class="card-title">代码结构</div>
+    <div class="card-body">
+      <p><strong>仓库：</strong><a href="https://github.com/thunlp/MatPlotAgent">thunlp/MatPlotAgent</a> — 已 clone 到 <code>D:\Code\autoReaserch\MatPlotAgent\</code></p>
+      <p><strong>3 个 Agent 串联：</strong></p>
+      <ul>
+        <li><strong>QueryExpansionAgent</strong> — 把简单指令扩展为详细代码编写步骤</li>
+        <li><strong>PlotAgent</strong> — 生成 matplotlib 代码 + 最多 4 轮自动 debug</li>
+        <li><strong>VisualRefineAgent</strong> — GPT-4V 看图反馈 → 再生成一版</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">需要修改的硬编码</div>
+    <div class="card-body">
+      <ul>
+        <li><strong><code>agents/config/openai.py</code></strong> — API_KEY 和 BASE_URL（当前是 <code>yor_api_key_here</code>）</li>
+        <li><strong><code>workflow.py:131</code></strong> — 数据路径硬编码为 Linux 绝对路径 <code>/home/zhoupeng/project/...</code>，需改为本地路径</li>
+        <li><strong><code>visual_refine_agent/agent.py:57</code></strong> — 写死了 <code>gpt-4-vision-preview</code>，需改为 <code>gpt-4o</code> 或其他可用模型</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Benchmark 数据分布</div>
+    <div class="card-body">
+      <p><strong>总计 100 个样本</strong>，每个有 simple_instruction + expert_instruction</p>
+      <ul>
+        <li><strong>ID 1-75（76 个）：</strong>代码内生成数据（<code>np.random.seed(...)</code>），不需要外部文件。matplotlib gallery 风格。</li>
+        <li><strong>ID 76-100（24 个）：</strong>需要从外部 CSV 读数据画图。<code>benchmark_data/data/{id}/data.csv</code></li>
+      </ul>
+      <p><strong>32 个样本</strong>在指令中提到 csv/data/dataset，但只有 24 个提供了实际 CSV 文件。</p>
+    </div>
+  </div>
+
+  <div class="note-box red">
+    <strong>对 F-A 的影响：</strong>只有 ID 76-100 这 24 个样本有外部数据源，才能做数据溯源和编造率检测。前 76 个没有外部数据文件，无法测"数据保真度"。MatPlotBench 对 F-A 来说太小了，只能做补充实验，不能做主实验。
+  </div>
+</div>
+
+<!-- ============ SECTION 2.5: 复现结果 ============ -->
+<div class="section">
+  <div class="section-title good">MatPlotAgent 复现结果（DeepSeek-V3 + Qwen-VL）</div>
+
+  <div class="note-box">
+    <strong>实验配置：</strong>文本生成 DeepSeek-V3 (deepseek-chat)，视觉反馈 Qwen-VL-Max，评分 Qwen-VL-Max（原版用 GPT-4 + GPT-4V）。100 样本全部生成成功，89/100 完成 visual refine。评分 prompt 与原版完全一致。
+  </div>
+
+  <table>
+    <tr><th>指标</th><th>我们的复现</th><th>原论文 (GPT-4)</th><th>说明</th></tr>
+    <tr><td><strong>生成成功率</strong></td><td>100/100</td><td>—</td><td>所有样本都生成了 PNG</td></tr>
+    <tr><td><strong>平均分</strong></td><td>56.4/100</td><td>—</td><td>原论文未报告平均分</td></tr>
+    <tr><td><strong>中位数</strong></td><td>60</td><td>—</td><td></td></tr>
+    <tr><td><strong>Pass Rate (≥50)</strong></td><td>57.0%</td><td>61.16%</td><td>差距 4%，合理（模型差异 + 评分模型差异）</td></tr>
+    <tr><td><strong>高质量 (≥70)</strong></td><td>39.0%</td><td>—</td><td></td></tr>
+  </table>
+
+  <div class="card">
+    <div class="card-title">分数分布</div>
+    <div class="card-body">
+      <table>
+        <tr><th>分段</th><th>0</th><th>1-20</th><th>21-40</th><th>41-50</th><th>51-60</th><th>61-70</th><th>71-80</th><th>81-90</th><th>91-100</th></tr>
+        <tr><td><strong>数量</strong></td><td>7</td><td>16</td><td>15</td><td>10</td><td>8</td><td>8</td><td>0</td><td>14</td><td>22</td></tr>
+      </table>
+      <p style="margin-top:8px">呈<strong>两极分化</strong>：要么高分（81-100 共 36 个），要么低分（0-40 共 38 个），中间段很少。说明系统对简单图表很强，对复杂图表几乎无能为力。</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">按图表类型分类的表现</div>
+    <div class="card-body">
+      <table>
+        <tr><th>类型</th><th>样本数</th><th>平均分</th><th>Pass Rate</th><th>典型失败原因</th></tr>
+        <tr>
+          <td><strong>Standard 2D</strong><br><span class="timestamp">折线/柱状/散点/饼图等</span></td>
+          <td>52</td><td>64.7</td><td>65%</td>
+          <td>细节不对（colormap、刻度范围、标注位置）</td>
+        </tr>
+        <tr>
+          <td><strong>3D 图表</strong><br><span class="timestamp">voxel/surface/tricontour</span></td>
+          <td>21</td><td>53.0</td><td>52%</td>
+          <td>视角/光照/颜色映射难以通过文本精确控制</td>
+        </tr>
+        <tr>
+          <td><strong>CSV 数据图</strong><br><span class="timestamp">ID 76-100，需读外部数据</span></td>
+          <td>13</td><td>59.8</td><td>69%</td>
+          <td>数据解析 + 复杂图表类型双重挑战</td>
+        </tr>
+        <tr>
+          <td><strong>特殊可视化</strong><br><span class="timestamp">Sankey/chord/Hinton/bullseye/dendrogram</span></td>
+          <td>11</td><td style="color:var(--red)">22.7</td><td style="color:var(--red)">18%</td>
+          <td>需要冷门库（plotly/holoviews），LLM 对 API 不熟</td>
+        </tr>
+        <tr>
+          <td><strong>地理投影</strong><br><span class="timestamp">Mercator/cartopy</span></td>
+          <td>3</td><td style="color:var(--red)">45.0</td><td>33%</td>
+          <td>需要 cartopy/basemap，参数不熟</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">≤50 分样本失败原因分析（48/100）</div>
+    <div class="card-body">
+      <table>
+        <tr><th>失败类别</th><th>数量</th><th>avg</th><th>典型 ID</th><th>根因</th></tr>
+        <tr>
+          <td><span class="tag tag-red">特殊可视化</span></td><td>9</td><td>13</td>
+          <td>37,39,41,42,81,85,88,90,94</td>
+          <td>Sankey/chord/Hinton/bullseye/sunburst — LLM 不熟悉冷门库 API，生成的图结构完全不对</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-yellow">复杂多子图</span></td><td>12</td><td>28</td>
+          <td>1,5,12,13,35,36,53,58,59,70,71,74</td>
+          <td>多子图精确布局/比例/对齐要求高，LLM 容易丢失子图间关系</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-yellow">3D 图表</span></td><td>11</td><td>28</td>
+          <td>20,21,29,30,31,32,33,55,60,79,80</td>
+          <td>3D 视角/光照/体素填充等视觉细节难以通过文本对齐</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-blue">基础图表细节错</span></td><td>8</td><td>36</td>
+          <td>4,6,38,48,66,67,72,73</td>
+          <td>图表类型对了但 colormap/刻度/标注/数据分布不匹配</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-purple">CSV 数据</span></td><td>6</td><td>33</td>
+          <td>89,92,95,96,98,100</td>
+          <td>数据解析错误 + 复杂图表类型</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-yellow">地理投影</span></td><td>2</td><td>25</td>
+          <td>18,34</td>
+          <td>cartopy/basemap 参数不熟</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="note-box red">
+    <strong>关键洞察：</strong>48 个低分样本中，绝大多数失败原因是<strong>代码生成能力不足</strong>（不熟悉冷门 API、复杂布局控制差、3D 渲染细节丢失），而非"数据被编造"。真正的数据保真问题只出现在 CSV 类的一小部分。这说明<strong>"数据保真"单独作为贡献点太窄</strong>，需要重新定位 F-A 的切入角度。
+  </div>
+</div>
+
+<!-- ============ SECTION 3.5: Text2Vis 复现结果 ============ -->
+<div class="section">
+  <div class="section-title good">Text2Vis 复现结果（DeepSeek-V3 + Qwen-VL）</div>
+
+  <div class="note-box">
+    <strong>实验配置：</strong>文本生成 & 答案判定 DeepSeek-V3 (deepseek-chat)，图表评分 Qwen-VL-Max。test1 子集 1,746 样本全部完成。评分 prompt 与原版完全一致（Answer Match + Readability 0-5 + Correctness 0-5），Final Pass 需四维全达标。
+  </div>
+
+  <table>
+    <tr><th>指标</th><th>我们的复现</th><th>原论文 GPT-4o</th><th>说明</th></tr>
+    <tr><td><strong>Code Exec Rate</strong></td><td>98.8%</td><td>—</td><td>1725/1746 生成了 PNG</td></tr>
+    <tr><td><strong>Answer Match</strong></td><td>38.1%</td><td>~49%</td><td>主要瓶颈</td></tr>
+    <tr><td><strong>Avg Readability</strong></td><td>4.75/5</td><td>—</td><td>图表可读性极高</td></tr>
+    <tr><td><strong>Avg Correctness</strong></td><td>4.05/5</td><td>—</td><td></td></tr>
+    <tr><td><strong>Final Pass Rate</strong></td><td>33.4%</td><td>~49%</td><td>差距主要来自 answer match</td></tr>
+  </table>
+
+  <div class="card">
+    <div class="card-title">失败根因分布（1163 个未通过样本）</div>
+    <div class="card-body">
+      <table>
+        <tr><th>失败类型</th><th>数量</th><th>占比</th><th>说明</th></tr>
+        <tr>
+          <td><span class="tag tag-red">答案不匹配</span></td><td>1067</td><td>91.7%</td>
+          <td>绝对主因——模型推理/计算错误</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-yellow">图表正确性不足</span></td><td>74</td><td>6.4%</td>
+          <td>答案对了但图里数据不对（correctness < 3.5）</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-blue">代码执行失败</span></td><td>21</td><td>1.8%</td>
+          <td>极少</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-blue">可读性不足</span></td><td>1</td><td>0.1%</td>
+          <td>几乎不存在</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">答案不匹配细分（1067 个）</div>
+    <div class="card-body">
+      <table>
+        <tr><th>子类</th><th>数量</th><th>占比</th><th>典型例子</th></tr>
+        <tr>
+          <td><strong>完全答错</strong></td><td>553</td><td>51.8%</td>
+          <td>GT="Fragile" GEN="Africa"；推理方向错误</td>
+        </tr>
+        <tr>
+          <td><strong>数值算错</strong></td><td>318</td><td>29.8%</td>
+          <td>GT=0.026 GEN=13%（CAGR 算成绝对值）；GT=6 GEN=2005（年份 vs 数值混淆）</td>
+        </tr>
+        <tr>
+          <td><strong>格式差异</strong></td><td>167</td><td>15.7%</td>
+          <td>GT=0.4877 GEN=48.78（小数 vs 百分比）；评测方法问题</td>
+        </tr>
+        <tr>
+          <td><strong>部分重叠</strong></td><td>29</td><td>2.7%</td>
+          <td>答案有交集但判定不匹配</td>
+        </tr>
+      </table>
+      <p style="margin-top:8px"><strong>数值算错的两极：</strong>112 个小误差（10-50%，计算精度丢失）vs 142 个大误差（>500%，根本性理解错误如把百分比变化率算成绝对值、把年份当答案）。</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">按难度和图表类型</div>
+    <div class="card-body">
+      <table>
+        <tr><th>难度</th><th>样本数</th><th>Pass Rate</th><th>Answer Match</th><th>Exec Rate</th></tr>
+        <tr><td>easy</td><td>300</td><td>53.0%</td><td>57.0%</td><td>99.7%</td></tr>
+        <tr><td>medium</td><td>216</td><td>39.4%</td><td>44.4%</td><td>98.6%</td></tr>
+        <tr><td>hard</td><td>1038</td><td>27.7%</td><td>32.3%</td><td>98.7%</td></tr>
+        <tr><td>extra hard</td><td>191</td><td>26.7%</td><td>33.5%</td><td>97.9%</td></tr>
+      </table>
+      <p style="margin-top:8px">Top 图表类型：Bar 55.6% > Pie 37.0% > Line 37.5% > Subplot 32.0%。最差：Dot 12.7%、Waterfall 17.0%、Area 17.5%。</p>
+    </div>
+  </div>
+
+  <div class="note-box red">
+    <strong>对 F-A 方向的关键洞察：</strong>
+    <p>① 91.7% 的失败来自"答案不匹配"，本质是<strong>数据推理/计算能力不足</strong>，不是数据编造。模型看到了正确的源数据但算错了。</p>
+    <p>② 真正的"数据保真"问题（图里画了源数据中不存在的数值）集中在 chart correctness < 3.5 的 74 个样本（6.4%），比 MatPlotBench 上的比例更高。</p>
+    <p>③ 15.7% 的"格式差异"（百分比 vs 小数）暴露了评测方法的缺陷——这是 F-A 可以改进评测维度的切入点。</p>
+    <p>④ 代码执行率 98.8% + 可读性 4.75/5 说明<strong>画图本身不是瓶颈</strong>，"理解数据 → 正确推理 → 忠实呈现"才是真正的 gap。</p>
+  </div>
+</div>
+
+<!-- ============ SECTION 4: Benchmark 选型 ============ -->
+<div class="section">
+  <div class="section-title good">F-A 实验 Benchmark 选型</div>
+
+  <table>
+    <tr><th>用途</th><th>Benchmark</th><th>规模</th><th>会议</th><th>为什么选</th></tr>
+    <tr>
+      <td rowspan="3"><strong>主实验</strong></td>
+      <td>SciGenBench</td><td>1,400</td><td>AAAI 2026</td>
+      <td>最大科学图表专用 bench，5 个学科，有 rule-based 指标可扩展</td>
+    </tr>
+    <tr>
+      <td>VisEval</td><td>2,524</td><td>IEEE VIS 2024</td>
+      <td>NL2Vis 社区最权威，微软出品，三维评测体系</td>
+    </tr>
+    <tr>
+      <td>PlotCraft</td><td>1,000</td><td>arXiv 2025</td>
+      <td>48 种图表类型覆盖最广，阿里 Qwen 团队</td>
+    </tr>
+    <tr>
+      <td rowspan="2"><strong>泛化验证</strong></td>
+      <td>PaperBananaBench</td><td>500</td><td>ACL 2026</td>
+      <td>顶会，有 code exec rate 指标</td>
+    </tr>
+    <tr>
+      <td>MatPlotBench</td><td>100</td><td>ACL 2024</td>
+      <td>经典 bench，方便与 PlotGen/CoDA/VisPath 对比</td>
+    </tr>
+  </table>
+
+  <div class="note-box green">
+    <strong>实验策略：</strong>这些 bench 原本不测"数据保真度"。我们需要用 NumericTrace 的 AST 方法在这些 bench 上额外测量编造率——这反而是加分项：揭示现有 bench 忽略的盲区。同时报告原有指标（代码通过率、视觉相似度）不下降，证明接地约束不损害其他质量。
+  </div>
+</div>
+
+<!-- ============ SECTION 4.5: VisEval 复现结果 ============ -->
+<div class="section">
+  <div class="section-title good">VisEval 复现结果（DeepSeek-V3 + 官方 Legality Check）</div>
+
+  <div class="note-box">
+    <strong>实验配置：</strong>代码生成 DeepSeek-V3 (deepseek-chat)，评测使用 VisEval 官方 evaluator（SVG 解构 + 数据精确匹配）。1,150 个 vis instance（展开为 2,524 个 NL query）全部完成。跳过 Readability（需 ChromeDriver + VLM），只跑 Validity + Legality。
+  </div>
+
+  <table>
+    <tr><th>指标</th><th>结果</th><th>说明</th></tr>
+    <tr><td><strong>Instance Pass Rate</strong></td><td>36.8% (423/1150)</td><td>所有 query 全通过才算 PASS</td></tr>
+    <tr><td><strong>Code Exec Rate</strong></td><td>~88%</td><td>135 个 execution 失败</td></tr>
+    <tr><td><strong>SVG Deconstruction</strong></td><td>~98.5%</td><td>仅 17 个解析失败</td></tr>
+  </table>
+
+  <div class="card">
+    <div class="card-title">失败根因分布（每个 query 的首个失败点）</div>
+    <div class="card-body">
+      <table>
+        <tr><th>失败类型</th><th>次数</th><th>说明</th></tr>
+        <tr>
+          <td><span class="tag tag-red">data_check</span></td><td>953</td>
+          <td>图里画的数据和源数据不匹配——<strong>数据保真度问题的直接证据</strong></td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-yellow">order_check</span></td><td>146</td>
+          <td>数据排序不对</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-yellow">execution</span></td><td>135</td>
+          <td>代码执行失败</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-blue">chart_type</span></td><td>96</td>
+          <td>图表类型选错</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-blue">deconstruction</span></td><td>17</td>
+          <td>SVG 解析失败</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-blue">surface-form</span></td><td>4</td>
+          <td>格式问题</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">按难度和图表类型</div>
+    <div class="card-body">
+      <table>
+        <tr><th>难度</th><th>样本数</th><th>Pass Rate</th></tr>
+        <tr><td>Easy</td><td>247</td><td>67.6%</td></tr>
+        <tr><td>Medium</td><td>498</td><td>39.8%</td></tr>
+        <tr><td>Hard</td><td>282</td><td>16.3%</td></tr>
+        <tr><td>Extra Hard</td><td>123</td><td style="color:var(--red)">9.8%</td></tr>
+      </table>
+      <p style="margin-top:8px">图表类型：Scatter 55.9% > Grouping Scatter 43.8% > Line 41.8% > Pie 38.0% > Bar 35.0% > Stacked Bar 34.8% > Grouping Line 33.3%</p>
+    </div>
+  </div>
+
+  <div class="note-box red">
+    <strong>对 F-A 方向的关键洞察：</strong>
+    <p>① <strong>953 个 data_check 失败是"数据保真度"问题的直接证据。</strong>VisEval 的 legality check 精确验证图里画的数据是否来自源表——DeepSeek-V3 在这个维度上大量失败。这不是"推理算错"（Text2Vis 的问题），而是"数据映射错"——模型选错了列、聚合方式不对、或者画了不存在的数据。</p>
+    <p>② 和 Text2Vis 形成互补：Text2Vis 上 91.7% 失败来自答案推理错误，VisEval 上 70%+ 失败来自数据映射错误。两个 bench 从不同角度证明了"数据保真"是真实且严重的问题。</p>
+    <p>③ VisEval 的 data_check 天然适合做 F-A 的评测维度——它已经在验证"图里画的数据是否来自源表"，和 NumericTrace 的思路高度吻合。</p>
+  </div>
+</div>
+
+<!-- ============ SECTION: METAL 调研 ============ -->
+<div class="section">
+  <div class="section-title">METAL — 多 Agent 迭代图表生成（ACL 2025）</div>
+
+  <div class="card">
+    <div class="card-title">基本信息</div>
+    <div class="card-body">
+      <p><strong>论文：</strong>METAL: A Multi-Agent Framework for Chart Generation with Test-Time Refinement</p>
+      <p><strong>会议：</strong>ACL 2025 <span class="tag tag-green">CCF-A</span></p>
+      <p><strong>代码：</strong><a href="https://github.com/metal-chart-generation/metal">GitHub</a> — 已 clone 到 <code>D:\Code\autoReaserch\METAL\</code></p>
+      <p><strong>Benchmark：</strong>ChartMimic（chart-to-code mimicking，给参考图生成代码复现）</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">架构</div>
+    <div class="card-body">
+      <p>三 Agent 迭代循环：</p>
+      <ul>
+        <li><strong>Generation Agent</strong> — 根据参考图 + 指令生成 matplotlib 代码</li>
+        <li><strong>Critique Agent</strong> — VLM 对比生成图 vs 参考图，给出修改建议</li>
+        <li><strong>Revision Agent</strong> — 根据 critique 修改代码，循环直到满意或达到最大轮次</li>
+      </ul>
+      <p>本质是 <strong>Generate → Critique → Revise</strong> 的 test-time refinement loop。</p>
+    </div>
+  </div>
+
+  <div class="note-box">
+    <strong>与 F-A 的关系：</strong>METAL 做的是 chart mimicking（给图复现），不是 NL→chart 或 data→chart。它不涉及数据保真度问题——输入是参考图片而非源数据。和 F-A GroundedChart 方向<strong>完全正交</strong>。但其 multi-agent critique loop 的架构思路可以借鉴。
+  </div>
+</div>
+
+<!-- ============ SECTION: RAGvis 调研 ============ -->
+<div class="section">
+  <div class="section-title warn">RAGvis — KG 驱动的 EDA 可视化推荐（EMNLP 2025）</div>
+
+  <div class="card">
+    <div class="card-title">基本信息</div>
+    <div class="card-body">
+      <p><strong>论文：</strong>RAGvis: Retrieval-Augmented Generation for Automatic Visualization Recommendation</p>
+      <p><strong>会议：</strong>EMNLP 2025 <span class="tag tag-green">CCF-B</span>（Google Research）</p>
+      <p><strong>代码：</strong><a href="https://github.com/google/ragvis">GitHub</a> — 已 clone 到 <code>D:\Code\autoReaserch\RAGvis\</code></p>
+      <p><strong>基础设施：</strong>PostgreSQL + PGVector（列 embedding 存储，25K 条）、Eclipse RDF4J（知识图谱，2M triples）、fasttext cc.en.300.bin（7GB 列 embedding 模型）</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">架构</div>
+    <div class="card-body">
+      <p><strong>离线阶段：</strong>从 Kaggle 10 万+ notebook 中提取 EDA 操作，构建知识图谱（列→EDA 操作→图表类型）+ 列 embedding 向量库</p>
+      <p><strong>在线阶段：</strong></p>
+      <ul>
+        <li><strong>Data Profiling</strong> — 对输入 CSV 的每列做类型检测 + embedding 生成（需 fasttext 50d + 300d）</li>
+        <li><strong>KG Retrieval</strong> — 在 PG 中找相似列 → 在 RDF4J 中查这些列的历史 EDA 操作</li>
+        <li><strong>LLM Refinement</strong> — 用 LLM 从检索到的 EDA ops 中筛选最有价值的</li>
+        <li><strong>Code Generation</strong> — LLM 生成 Python 可视化代码</li>
+        <li><strong>Execute & Fix</strong> — 执行代码，失败则 LLM 自动修复（最多 3 轮）</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">实测结果（在 VisEval 失败案例上）</div>
+    <div class="card-body">
+      <p><strong>测试案例：</strong>vis_id=1018，NL query="A pie chart showing the number of customer addresses in each premises type"</p>
+      <p><strong>RAGvis 返回的 EDA ops：</strong></p>
+      <ul>
+        <li>bar chart on address_type_code</li>
+        <li>distribution on date_address_from</li>
+        <li>distribution on date_address_to</li>
+        <li>scatter on (date_address_from, date_address_to)</li>
+        <li>heatmap</li>
+      </ul>
+      <p><strong>结果：5 个代码片段全部执行失败，0 个图表生成成功。</strong></p>
+      <p style="margin-top:8px"><strong>根本问题：</strong>RAGvis 不接受 NL query 作为输入。它是 EDA 推荐系统（给 CSV → 推荐可视化），不是 NL→chart 生成器。对于"画一个 pie chart"这种精确需求，它返回的是 bar/distribution/scatter/heatmap — 完全不对口。</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">论文声称的 ~100% Pass Rate 解读</div>
+    <div class="card-body">
+      <p>RAGvis 论文在 VisEval 上报告了接近 100% 的 "pass rate"，但这个指标只衡量<strong>代码可执行性</strong>（executability），不衡量数据正确性。</p>
+      <ul>
+        <li><span class="tag tag-red">不测 data_check</span> — 不验证图里画的数据是否来自源表</li>
+        <li><span class="tag tag-red">不测 NL 对齐</span> — 不验证生成的图是否匹配用户的自然语言描述</li>
+        <li><span class="tag tag-yellow">只测 executability</span> — 代码能跑起来就算 pass</li>
+      </ul>
+      <p style="margin-top:8px">这和 VisEval 官方的 Legality Check（chart_type + data_check + order_check）是完全不同的评测维度。</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">搭建踩坑记录</div>
+    <div class="card-body">
+      <ul>
+        <li><span class="tag tag-red">内存杀手</span> fasttext cc.en.300.bin 加载需 ~7GB RAM，cc.en.50.bin 需 ~1.2GB。16GB 机器跑不动原版，需用 sentence-transformers (~80MB) 替代</li>
+        <li><span class="tag tag-yellow">SPARQL 慢</span> RDF4J 查 2M triples，单次 fetch_eda_operations 需 ~60s。5 列 × 2 similar = 10 次查询 ≈ 10 分钟</li>
+        <li><span class="tag tag-yellow">Windows 兼容</span> fasttext 在 Windows + Python 3.12/3.13 编译失败，需用 fasttext-wheel 替代</li>
+        <li><span class="tag tag-blue">Docker 依赖</span> 需要 PG + RDF4J 两个容器，KG 数据 ~2M triples 需从 GitHub Release 下载</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="note-box red">
+    <strong>对 F-A 方向的关键洞察：</strong>
+    <p>① RAGvis 和 F-A GroundedChart 解决的是<strong>完全不同的问题</strong>。RAGvis 做"给数据推荐 EDA"，F-A 做"根据 NL 描述生成数据保真的图表"。</p>
+    <p>② RAGvis 的 ~100% pass rate 是 executability metric，不是 data fidelity。在 VisEval 的 data_check 维度上，RAGvis 的架构根本不适用。</p>
+    <p>③ 这对 F-A 是好消息：即使是 Google Research 的 EMNLP 2025 工作，也没有触及"数据保真度"这个维度。我们的方向有明确的差异化价值。</p>
+    <p>④ RAGvis 的 KG 检索思路（从历史 EDA 中学习）可以作为 related work 讨论，但不构成直接竞争。</p>
+  </div>
+</div>
+
+<!-- ============ SECTION 5: 引用关系 ============ -->
+<div class="section">
+  <div class="section-title">引用 MatPlotBench 但未在其上报告成绩的论文</div>
+
+  <div class="card">
+    <div class="card-body">
+      <ul>
+        <li><strong>PandasPlotBench</strong> (EMNLP 2025 Findings, JetBrains) — 175 样本，扩展到 Seaborn/Plotly，参考了 MatPlotBench 方法论但用自己的 bench</li>
+        <li><strong>VisCoder</strong> (EMNLP 2025 Findings, TIGER-AI-Lab) — 微调开源 LLM 做可视化代码生成，在 PandasPlotBench 上评测</li>
+        <li><strong>VisCoder2</strong> (arXiv 2025, TIGER-AI-Lab) — 多语言可视化 benchmark (VisPlotBench)，8 种可视化语言</li>
+        <li><strong>PlotCraft</strong> (arXiv 2025, 阿里 Qwen) — 982 样本，48 种图表类型，用自己的 bench</li>
+        <li><strong>VIS-Shepherd</strong> (arXiv 2025) — 训练 7B 参数的 MLLM critic 做可视化评测</li>
+        <li><strong>Cognify</strong> (MLSys 2025, UCSD) — 通用 Gen-AI workflow 优化器，用 MatPlotAgent 作为 workflow 之一</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SECTION 5: 关键风险 ============ -->
+<div class="section">
+  <div class="section-title danger">风险与待确认事项</div>
+
+  <div class="card">
+    <div class="card-title">风险清单</div>
+    <div class="card-body">
+      <ul>
+        <li><span class="tag tag-red">高</span> <strong>CoDA (ICLR 2026) 代码是否开源？</strong>如果开源，需要作为 baseline 跑。如果不开源，可以只引用其数字。</li>
+        <li><span class="tag tag-red">高</span> <strong>PlotGen (IUI 2025) 代码是否开源？</strong>同上。</li>
+        <li><span class="tag tag-yellow">中</span> <strong>SciGenBench / VisEval 的数据格式是否适配 GroundedChart？</strong>需要确认这些 bench 的输入是否包含可溯源的源数据文件（CSV/JSON），否则无法做数据保真度评测。</li>
+        <li><span class="tag tag-yellow">中</span> <strong>评测指标不统一。</strong>CoDA 用 EPR/VSR/OS，MatPlotAgent 用 GPT-4V Plot Score，VisEval 用 Validity/Legality/Readability。需要在论文中统一报告多套指标。</li>
+        <li><span class="tag tag-blue">低</span> <strong>MatPlotBench 只有 100 个样本。</strong>统计显著性可能不够。需要用更大的 bench 做主实验。</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SECTION 6: 时间线 ============ -->
+<div class="section">
+  <div class="section-title">调研时间线</div>
+  <div class="card">
+    <div class="card-body">
+      <p><strong>2026-04-18</strong> — 初始调研。Clone MatPlotAgent，分析代码结构。搜集 MatPlotBench 竞品排行榜（CoDA/VisPath/PlotGen）。确认所有竞品与 F-A 方向正交。整理 17 个 chart code generation benchmark。</p>
+      <p><strong>2026-04-18</strong> — 完成 MatPlotAgent 复现。DeepSeek-V3 + Qwen-VL 跑完 100 样本，Pass Rate 57%（原版 GPT-4 为 61.16%）。分析 48 个低分样本，发现主要失败原因是代码生成能力不足（特殊图表 API 不熟、3D/多子图控制差），而非数据保真问题。</p>
+      <p><strong>2026-04-19</strong> — 完成 Text2Vis (EMNLP 2025) 复现。DeepSeek-V3 + Qwen-VL 跑完 test1 全部 1,746 样本，Final Pass Rate 33.4%。失败分析发现 91.7% 的失败来自答案推理错误（数值算错 29.8%、完全答错 51.8%），代码执行率高达 98.8%。确认"画图能力"不是瓶颈，"数据推理 → 忠实呈现"才是真正 gap。</p>
+      <p><strong>2026-04-19</strong> — 完成 VisEval (IEEE VIS 2024) 复现。DeepSeek-V3 + 官方 SVG legality check 跑完全部 1,150 个 instance，Pass Rate 36.8%。关键发现：953 个 data_check 失败——图里画的数据和源数据不匹配，是"数据保真度"问题的直接证据。与 Text2Vis 互补：一个测推理错误，一个测数据映射错误。</p>
+      <p><strong>2026-04-19</strong> — 调研 METAL (ACL 2025)。三 Agent 迭代 chart mimicking 框架，跑 ChartMimic benchmark。与 F-A 完全正交——做图片复现不涉及数据保真。</p>
+      <p><strong>2026-04-19</strong> — 完整搭建并实测 RAGvis (EMNLP 2025, Google)。部署 PG+PGVector (25K embeddings) + RDF4J (2M triples)，用 sentence-transformers 替代 fasttext 解决 16GB 内存限制。在 VisEval 失败案例上实测：RAGvis 是 EDA 推荐系统，不接受 NL query，返回的图表类型与需求不匹配，5 个代码片段全部执行失败。论文声称的 ~100% pass rate 仅衡量 executability，不测 data_check。确认 F-A 方向的差异化价值。</p>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

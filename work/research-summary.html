@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F-A GroundedChart — Executive Summary</title>
+<link rel="stylesheet" href="research-styles.css">
+</head>
+<body>
+
+<nav class="top-nav">
+  <a class="nav-home" href="research-overview.html">Overview</a>
+  <a class="active" href="research-summary.html">01 Summary</a>
+  <a href="research-benchmarks.html">02 Benchmarks</a>
+  <a href="research-failure.html">03 失败分析</a>
+  <a href="research-competitors.html">04 竞品</a>
+  <a href="research-thesis.html">05 论证</a>
+  <a href="research-selection.html">06 选型</a>
+  <a href="research-timeline.html">07 Timeline</a>
+</nav>
+
+<h1>Executive Summary</h1>
+<p class="subtitle">Page 01 / 07 — F-A GroundedChart Research Report <span class="timestamp">2026-04-19</span></p>
+
+<!-- Hero: Core Thesis -->
+<div class="hero">
+  <h2>Core Thesis</h2>
+  <p class="one-liner"><strong>现有图表生成系统都在优化"图好不好看"，没有人管"数据对不对"</strong></p>
+  <p class="finding">Key Finding: VisEval 63.2% failed, 953 data_check failures; Text2Vis 91.7% failures from answer mismatch; 6 competitors none solve data fidelity</p>
+</div>
+
+<div class="section">
+  <div class="card" style="border-left:3px solid var(--green);">
+    <div class="card-title">Recommended Reframing</div>
+    <div class="card-body">
+      <p><strong>F-A 最好被定义为：</strong><br>an <strong>execution-grounded verification-and-repair framework for faithful language-to-chart generation</strong>.</p>
+      <ul>
+        <li><strong>任务边界：</strong>输入是自然语言查询 + 结构化数据 + 初始图表代码；目标是在渲染前验证并修复数据处理逻辑</li>
+        <li><strong>核心对象：</strong>aggregation / filter / group-by / join / sort / type mismatch，而不是泛化的"科学图表真实性"</li>
+        <li><strong>论文定位：</strong>强调 NL 意图、结构化数据操作、以及最终绘图数据之间的语义对齐，这比单纯做一个 data check agent 更像 EMNLP 论文</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Stat Boxes -->
+<div class="section">
+  <div class="section-title danger">Benchmark Pass Rates — All Below 60%</div>
+  <div class="stat-row">
+    <div class="stat-box yellow">
+      <div class="num">57.0%</div>
+      <div class="label">MatPlotBench Pass Rate<br>100 samples · Avg Score 56.4</div>
+    </div>
+    <div class="stat-box red">
+      <div class="num">33.4%</div>
+      <div class="label">Text2Vis Final Pass<br>1,746 samples · Answer Match 38.1%</div>
+    </div>
+    <div class="stat-box red">
+      <div class="num">36.8%</div>
+      <div class="label">VisEval Instance Pass<br>1,150 instances · data_check 953 fails</div>
+    </div>
+  </div>
+</div>
+
+<!-- Backbone Note -->
+<div class="note-box blue">
+  <strong>Backbone:</strong> DeepSeek-V3 (code generation) + Qwen-VL (visual evaluation). All results reproduced on local 16GB machine.
+</div>
+
+<!-- Key Takeaways -->
+<div class="section">
+  <div class="card">
+    <div class="card-title">Key Takeaways</div>
+    <div class="card-body">
+      <ul>
+        <li><strong>VisEval 的 data_check 是最大失败源（953例），60% 根因是 missing_groupby</strong></li>
+        <li><strong>Text2Vis 的 answer_mismatch 占 91.7%</strong>，51% 是 wrong_entity，33% 是 wrong_value</li>
+        <li><strong>6 个竞品系统</strong>（CoDA / VisPath / PlotGen / MatPlotAgent / METAL / RAGvis）<strong>无一专门解决数据保真度</strong></li>
+        <li><strong>RAGvis</strong> (Google, EMNLP 2025) 实测 5/5 代码执行失败，确认其为 EDA 推荐器而非 NL→chart</li>
+        <li><strong>因此最稳的论文版本不是广义 F-A，</strong>而是面向 language-to-chart generation 的 verification-and-repair framework</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="page-nav">
+  <a href="research-overview.html">&larr; 返回总览</a>
+  <a href="research-benchmarks.html">02 Benchmark 复现 &rarr;</a>
+</div>
+
+</body>
+</html>
+
+

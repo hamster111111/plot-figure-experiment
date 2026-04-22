@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F-A GroundedChart — Text2Vis 错误轨迹详情</title>
+<link rel="stylesheet" href="research-styles.css">
+<style>
+  .img-single img { max-width:480px; width:100%; border-radius:6px; border:1px solid var(--border); margin:8px 0; }
+  .img-single .img-label { font-size:0.75em; color:var(--text2); margin-top:4px; }
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a class="nav-home" href="research-overview.html">Overview</a>
+  <a href="research-benchmarks.html">&larr; 02 Benchmarks</a>
+  <a class="active" href="research-bench-text2vis.html">Text2Vis 详情</a>
+</nav>
+
+<div class="section">
+  <div class="section-title">Text2Vis — 1,309 例失败的错误分类与真实轨迹</div>
+
+  <div class="card">
+    <div class="card-title">fail_type 分布</div>
+    <div class="card-body">
+      <div class="bar-chart">
+        <div class="bar-row">
+          <div class="bar-label">answer_mismatch</div>
+          <div class="bar-track"><div class="bar-fill" style="width:81%;background:var(--red)"></div></div>
+          <div class="bar-value">1,062 (81.1%)</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">exec_failure</div>
+          <div class="bar-track"><div class="bar-fill" style="width:13%;background:var(--yellow)"></div></div>
+          <div class="bar-value">172 (13.1%)</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">low_correctness</div>
+          <div class="bar-track"><div class="bar-fill" style="width:6%;background:var(--purple)"></div></div>
+          <div class="bar-value">75 (5.7%)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== answer_mismatch / wrong_entity ===== -->
+<div class="section">
+  <div class="section-title danger">answer_mismatch / wrong_entity — 544 例 (51.2% of answer mismatches)</div>
+  <div class="card">
+    <div class="card-body">模型返回了完全错误的实体名称。不是数据造假，而是从正确的图表中提取答案时选错了目标。</div>
+  </div>
+  <div class="trace-card">
+    <div class="trace-header">
+      <div class="trace-title">Sample #0</div>
+      <div class="trace-tags"><span class="tag tag-blue">Bar</span><span class="tag tag-yellow">hard</span></div>
+    </div>
+    <div class="trace-row"><div class="trace-label">Question</div><div class="trace-val">Which country or region's projected share of the population in extreme poverty in 2023 is closest to the average projected share among all the entities listed?</div></div>
+    <div class="trace-row"><div class="trace-label">Model</div><div class="trace-val" style="color:var(--red)">Africa</div></div>
+    <div class="trace-row"><div class="trace-label">GT</div><div class="trace-val" style="color:var(--green)">Fragile</div></div>
+    <div class="trace-row"><div class="trace-label">Scores</div><div class="trace-val">Readability: 5.0, Correctness: 5.0</div></div>
+    <div class="img-single"><img src="../Text2Vis/workspace_test1/sample_0/output.png" alt="生成的图表"><div class="img-label">生成的图表（图表质量满分，但答案选错了实体）</div></div>
+    <div class="trace-verdict fail">图表画对了（readability和correctness都是满分），但从图中提取答案时选错了实体。模型选了"Africa"而非"Fragile"作为最接近平均值的实体。</div>
+  </div>
+
+  <div class="trace-card">
+    <div class="trace-header">
+      <div class="trace-title">Sample #10</div>
+      <div class="trace-tags"><span class="tag tag-blue">Bar</span><span class="tag tag-yellow">hard</span></div>
+    </div>
+    <div class="trace-row"><div class="trace-label">Question</div><div class="trace-val">What is the highest Compound Annual Growth Rate (CAGR) among the data values from 2002 to 2014 across all countries?</div></div>
+    <div class="trace-row"><div class="trace-label">Model</div><div class="trace-val" style="color:var(--red)">Algeria (returned entity name)</div></div>
+    <div class="trace-row"><div class="trace-label">GT</div><div class="trace-val" style="color:var(--green)">14.95 (expected numeric value)</div></div>
+    <div class="trace-row"><div class="trace-label">Scores</div><div class="trace-val">Readability: 4.5, Correctness: 3.0</div></div>
+    <div class="img-single"><img src="../Text2Vis/workspace_test1/sample_10/output.png" alt="生成的图表"><div class="img-label">生成的图表</div></div>
+    <div class="trace-verdict fail">模型返回了国家名而非数值。题目问的是"最高的 CAGR 值"，应该回答 14.95，但模型理解为"哪个国家的 CAGR 最高"。</div>
+  </div>
+</div>
+
+<!-- ===== answer_mismatch / wrong_value ===== -->
+<div class="section">
+  <div class="section-title danger">answer_mismatch / wrong_value — 351 例 (33.1%)</div>
+  <div class="card">
+    <div class="card-body">模型和 GT 都是数值答案，但数值差距显著。这是计算/推理错误，不是格式问题。</div>
+  </div>
+
+  <div class="trace-card">
+    <div class="trace-header">
+      <div class="trace-title">Sample #1021</div>
+      <div class="trace-tags"><span class="tag tag-purple">Donut</span><span class="tag tag-yellow">hard</span></div>
+    </div>
+    <div class="trace-row"><div class="trace-label">Question</div><div class="trace-val">Given the revenue generated from six financial products totaling $1,550 million, calculate the percentage contribution of each product to the total revenue. Then, determine the difference between the highest and lowest percentage contributions.</div></div>
+    <div class="trace-row"><div class="trace-label">Model</div><div class="trace-val" style="color:var(--red)">68.39</div></div>
+    <div class="trace-row"><div class="trace-label">GT</div><div class="trace-val" style="color:var(--green)">0.5484</div></div>
+    <div class="trace-row"><div class="trace-label">Scores</div><div class="trace-val">Readability: 5.0, Correctness: 5.0</div></div>
+    <div class="img-single"><img src="../Text2Vis/workspace_test1/sample_1021/output.png" alt="生成的图表"><div class="img-label">生成的图表</div></div>
+    <div class="trace-verdict fail">数量级完全不对。GT 期望的是小数形式的百分比差值 (0.5484)，模型可能没做百分比转换或用了错误的基数，得到 68.39。</div>
+  </div>
+  <div class="trace-card">
+    <div class="trace-header">
+      <div class="trace-title">Sample #1057</div>
+      <div class="trace-tags"><span class="tag tag-blue">Histogram</span><span class="tag tag-yellow">hard</span></div>
+    </div>
+    <div class="trace-row"><div class="trace-label">Question</div><div class="trace-val">Analyzing the provided dataset of daily energy outputs (in MWh) from eight wind turbines, compute the mean and standard deviation, and determine the number of turbines whose energy output is within one standard deviation of the mean.</div></div>
+    <div class="trace-row"><div class="trace-label">Model</div><div class="trace-val" style="color:var(--red)">4</div></div>
+    <div class="trace-row"><div class="trace-label">GT</div><div class="trace-val" style="color:var(--green)">7</div></div>
+    <div class="img-single"><img src="../Text2Vis/workspace_test1/sample_1057/output.png" alt="生成的图表"><div class="img-label">生成的图表</div></div>
+    <div class="trace-verdict fail">统计计算错误。模型计算出 4 个 turbine 在一个标准差内，而 GT 是 7 个。可能是均值或标准差计算有误。</div>
+  </div>
+</div>
+
+<!-- ===== answer_mismatch / format_mismatch ===== -->
+<div class="section">
+  <div class="section-title warn">answer_mismatch / format_mismatch — 92 例 (8.7%)</div>
+  <div class="card">
+    <div class="card-body">数值非常接近（ratio 0.99-1.01）但格式不同，或者年份差一年等边界情况。</div>
+  </div>
+
+  <div class="trace-card">
+    <div class="trace-header">
+      <div class="trace-title">Sample #1072</div>
+      <div class="trace-tags"><span class="tag tag-blue">Line</span><span class="tag tag-yellow">hard</span></div>
+    </div>
+    <div class="trace-row"><div class="trace-label">Question</div><div class="trace-val">In which year did the combined energy production from Solar and Wind first exceed 50% of the total energy production from all four sources combined?</div></div>
+    <div class="trace-row"><div class="trace-label">Model</div><div class="trace-val" style="color:var(--red)">2022</div></div>
+    <div class="trace-row"><div class="trace-label">GT</div><div class="trace-val" style="color:var(--green)">2021</div></div>
+    <div class="img-single"><img src="../Text2Vis/workspace_test1/sample_1072/output.png" alt="生成的图表"><div class="img-label">生成的图表</div></div>
+    <div class="trace-verdict warn">差一年。可能是边界条件判断不同（"first exceed" 的精确时间点）。</div>
+  </div>
+
+  <div class="trace-card">
+    <div class="trace-header">
+      <div class="trace-title">Sample #1123</div>
+      <div class="trace-tags"><span class="tag tag-blue">Stacked Bar</span><span class="tag tag-yellow">hard</span></div>
+    </div>
+    <div class="trace-row"><div class="trace-label">Question</div><div class="trace-val">In which year did the combined proportion of Clothing and Cosmetics sales to total sales first exceed 60%?</div></div>
+    <div class="trace-row"><div class="trace-label">Model</div><div class="trace-val" style="color:var(--red)">2021</div></div>
+    <div class="trace-row"><div class="trace-label">GT</div><div class="trace-val" style="color:var(--green)">2022</div></div>
+    <div class="img-single"><img src="../Text2Vis/workspace_test1/sample_1123/output.png" alt="生成的图表"><div class="img-label">生成的图表</div></div>
+    <div class="trace-verdict warn">同样是"first exceed"的边界判断差异。</div>
+  </div>
+</div>
+
+<!-- ===== answer_mismatch / format_pct_vs_decimal ===== -->
+<div class="section">
+  <div class="section-title warn">answer_mismatch / format_pct_vs_decimal — 42 例 (4.0%)</div>
+  <div class="card">
+    <div class="card-body">答案数值本质相同，但一个是百分比形式，一个是小数形式（如 48.78 vs 0.4877）。</div>
+  </div>
+  <div class="trace-card">
+    <div class="trace-header">
+      <div class="trace-title">Sample #1</div>
+      <div class="trace-tags"><span class="tag tag-blue">Bar</span><span class="tag tag-green">medium</span></div>
+    </div>
+    <div class="trace-row"><div class="trace-label">Question</div><div class="trace-val">Calculate the percentage increase in the sex ratio at birth from the first child to the third child in China in 2000.</div></div>
+    <div class="trace-row"><div class="trace-label">Model</div><div class="trace-val" style="color:var(--red)">48.78</div></div>
+    <div class="trace-row"><div class="trace-label">GT</div><div class="trace-val" style="color:var(--green)">0.4877</div></div>
+    <div class="trace-row"><div class="trace-label">Scores</div><div class="trace-val">Readability: 4.0, Correctness: 4.0</div></div>
+    <div class="img-single"><img src="../Text2Vis/workspace_test1/sample_1/output.png" alt="生成的图表"><div class="img-label">生成的图表</div></div>
+    <div class="trace-verdict warn">48.78% = 0.4877，数值本质相同，只是格式不同。这类错误可以通过统一输出格式规范来解决。</div>
+  </div>
+
+  <div class="trace-card">
+    <div class="trace-header">
+      <div class="trace-title">Sample #1078</div>
+      <div class="trace-tags"><span class="tag tag-blue">Line</span><span class="tag tag-yellow">hard</span></div>
+    </div>
+    <div class="trace-row"><div class="trace-label">Question</div><div class="trace-val">What was the highest year-over-year percentage growth in Solar Energy Production between 2018 and 2022?</div></div>
+    <div class="trace-row"><div class="trace-label">Model</div><div class="trace-val" style="color:var(--red)">37.5</div></div>
+    <div class="trace-row"><div class="trace-label">GT</div><div class="trace-val" style="color:var(--green)">0.375</div></div>
+    <div class="trace-row"><div class="trace-label">Scores</div><div class="trace-val">Correctness: 5.0</div></div>
+    <div class="img-single"><img src="../Text2Vis/workspace_test1/sample_1078/output.png" alt="生成的图表"><div class="img-label">生成的图表</div></div>
+    <div class="trace-verdict warn">37.5% = 0.375，计算完全正确，只是百分比 vs 小数的表示差异。</div>
+  </div>
+</div>
+
+<!-- ===== answer_mismatch / partial_overlap ===== -->
+<div class="section">
+  <div class="section-title warn">answer_mismatch / partial_overlap — 29 例 (2.7%)</div>
+  <div class="card">
+    <div class="card-body">模型答案包含了正确答案，但附带了多余信息，或者只给出了部分正确答案。</div>
+  </div>
+
+  <div class="trace-card">
+    <div class="trace-header">
+      <div class="trace-title">Sample #1026</div>
+      <div class="trace-tags"><span class="tag tag-purple">Dot Plot</span><span class="tag tag-yellow">hard</span></div>
+    </div>
+    <div class="trace-row"><div class="trace-label">Question</div><div class="trace-val">Considering the output values across the three days, which power plant exhibits the highest variability in output and also shows significant deviations from the group trend?</div></div>
+    <div class="trace-row"><div class="trace-label">Model</div><div class="trace-val" style="color:var(--red)">Plant G, Plant G, Plant F</div></div>
+    <div class="trace-row"><div class="trace-label">GT</div><div class="trace-val" style="color:var(--green)">Plant G</div></div>
+    <div class="img-single"><img src="../Text2Vis/workspace_test1/sample_1026/output.png" alt="生成的图表"><div class="img-label">生成的图表</div></div>
+    <div class="trace-verdict warn">模型给出了多个答案（包含正确的 Plant G），但格式不符合预期的单一答案。</div>
+  </div>
+  <div class="trace-card">
+    <div class="trace-header">
+      <div class="trace-title">Sample #1040</div>
+      <div class="trace-tags"><span class="tag tag-purple">Funnel</span><span class="tag tag-yellow">hard</span></div>
+    </div>
+    <div class="trace-row"><div class="trace-label">Question</div><div class="trace-val">Based on the sales funnel data, identify the stage with the greatest percentage drop-off... Calculate the cumulative conversion rate...</div></div>
+    <div class="trace-row"><div class="trace-label">Model</div><div class="trace-val" style="color:var(--red)">Negotiation, 1%, 100%</div></div>
+    <div class="trace-row"><div class="trace-label">GT</div><div class="trace-val" style="color:var(--green)">1</div></div>
+    <div class="img-single"><img src="../Text2Vis/workspace_test1/sample_1040/output.png" alt="生成的图表"><div class="img-label">生成的图表</div></div>
+    <div class="trace-verdict warn">模型回答了完整的多部分答案，但 GT 只期望一个数字。</div>
+  </div>
+</div>
+
+<!-- ===== exec_failure ===== -->
+<div class="section">
+  <div class="section-title danger">exec_failure — 172 例 (13.1%)</div>
+  <div class="card">
+    <div class="card-body">生成的代码无法执行。可能是语法错误、缺少依赖、或引用了不存在的列/变量。</div>
+  </div>
+
+  <div class="trace-card">
+    <div class="trace-header">
+      <div class="trace-title">Sample #100</div>
+      <div class="trace-tags"><span class="tag tag-blue">Boxplot</span><span class="tag tag-red">extra hard</span></div>
+    </div>
+    <div class="trace-row"><div class="trace-label">Question</div><div class="trace-val">Given the proportion of transactions for flights and hotel rooms booked through suppliers and OTAs, which booking type has the highest supplier share...</div></div>
+    <div class="trace-row"><div class="trace-label">Model</div><div class="trace-val" style="color:var(--red)">(execution failed)</div></div>
+    <div class="trace-row"><div class="trace-label">GT</div><div class="trace-val" style="color:var(--green)">Flights, 36</div></div>
+    <div class="trace-row"><div class="trace-label">Scores</div><div class="trace-val">Readability: 0.0, Correctness: 0.0</div></div>
+    <div class="img-single"><img src="../Text2Vis/workspace_test1/sample_100/output.png" alt="生成的图表"><div class="img-label">生成的图表（执行失败）</div></div>
+    <div class="trace-verdict fail">代码执行失败，无法生成图表，所有评分为 0。</div>
+  </div>
+</div>
+
+<!-- ===== low_correctness ===== -->
+<div class="section">
+  <div class="section-title purple">low_correctness — 75 例 (5.7%)</div>
+  <div class="card">
+    <div class="card-body">答案匹配正确，但图表质量评分低于 3.5（满分 5）。图表可能有布局、标签、颜色等问题。</div>
+  </div>
+
+  <div class="trace-card">
+    <div class="trace-header">
+      <div class="trace-title">Sample #1017</div>
+      <div class="trace-tags"><span class="tag tag-purple">Choropleth Map</span><span class="tag tag-yellow">hard</span></div>
+    </div>
+    <div class="trace-row"><div class="trace-label">Question</div><div class="trace-val">Considering the synthetic data provided for CO2 emissions per capita and population sizes, calculate the total CO2 emissions for each country...</div></div>
+    <div class="trace-row"><div class="trace-label">Model</div><div class="trace-val" style="color:var(--green)">United States</div></div>
+    <div class="trace-row"><div class="trace-label">GT</div><div class="trace-val" style="color:var(--green)">United States (match!)</div></div>
+    <div class="trace-row"><div class="trace-label">Scores</div><div class="trace-val">Readability: 4.5, Correctness: 3.0</div></div>
+    <div class="img-single"><img src="../Text2Vis/workspace_test1/sample_1017/output.png" alt="生成的图表"><div class="img-label">生成的图表（答案正确但图表质量不达标）</div></div>
+    <div class="trace-verdict warn">答案正确，但图表的 correctness 评分只有 3.0，说明图表虽然能回答问题，但可视化质量不达标。</div>
+  </div>
+  <div class="trace-card">
+    <div class="trace-header">
+      <div class="trace-title">Sample #1029</div>
+      <div class="trace-tags"><span class="tag tag-purple">Dot Plot</span><span class="tag tag-red">extra hard</span></div>
+    </div>
+    <div class="trace-row"><div class="trace-label">Question</div><div class="trace-val">Among the schools listed, which school demonstrates the least variation in test scores while also having an average score above 90?</div></div>
+    <div class="trace-row"><div class="trace-label">Model</div><div class="trace-val" style="color:var(--green)">School E</div></div>
+    <div class="trace-row"><div class="trace-label">GT</div><div class="trace-val" style="color:var(--green)">School E (match!)</div></div>
+    <div class="trace-row"><div class="trace-label">Scores</div><div class="trace-val">Correctness: 3.0</div></div>
+    <div class="img-single"><img src="../Text2Vis/workspace_test1/sample_1029/output.png" alt="生成的图表"><div class="img-label">生成的图表（答案正确但图表质量不足）</div></div>
+    <div class="trace-verdict warn">答案正确但图表质量不足。</div>
+  </div>
+</div>
+
+<!-- ===== 结论 ===== -->
+<div class="section">
+  <div class="note-box green">结论：Text2Vis 的失败以 answer_mismatch 为绝对主导（81.1%），其中 wrong_entity（51%）和 wrong_value（33%）是两大核心问题。这说明模型在数据推理和计算环节系统性不可靠——即使代码能执行、图能画出来，从数据中提取正确答案仍然是最大瓶颈。</div>
+</div>
+
+<div class="page-nav">
+  <a href="research-bench-viseval.html">&larr; VisEval 错误轨迹</a>
+  <a href="research-bench-matplot.html">MatPlotBench 错误轨迹 &rarr;</a>
+</div>
+
+</body>
+</html>

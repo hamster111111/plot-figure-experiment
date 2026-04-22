@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>F-A GroundedChart — MatPlotBench 错误轨迹详情</title>
+  <link rel="stylesheet" href="research-styles.css">
+<style>
+  .img-compare { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:10px 0; }
+  .img-compare img { width:100%; border-radius:6px; border:1px solid var(--border); }
+  .img-compare .img-label { font-size:0.75em; color:var(--text2); text-align:center; margin-top:4px; }
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a class="nav-home" href="research-overview.html">Overview</a>
+  <a href="research-benchmarks.html">&larr; 02 Benchmarks</a>
+  <a class="active" href="research-bench-matplot.html">MatPlotBench 详情</a>
+</nav>
+
+<div class="section">
+  <h2 class="section-title">MatPlotBench — 100 样本评测的分数分布与真实评测样例</h2>
+
+  <div class="note-box blue">
+    MatPlotBench 使用 GPT-4o 对生成图表与 Ground Truth 图表进行视觉对比打分（0-100），评测维度包括数据值、图表结构、颜色方案、标签、坐标轴等。以下按分数段展示真实评测样例。
+  </div>
+
+  <div class="bar-chart">
+    <div class="bar-row">
+      <span class="bar-label">0 分 (完全错误)</span>
+      <div class="bar-track"><div class="bar-fill red" style="width:7%"></div></div>
+      <span class="bar-value">7 例</span>
+    </div>
+    <div class="bar-row">
+      <span class="bar-label">1-30 分 (严重偏差)</span>
+      <div class="bar-track"><div class="bar-fill yellow" style="width:25%"></div></div>
+      <span class="bar-value">25 例</span>
+    </div>
+    <div class="bar-row">
+      <span class="bar-label">31-49 分 (部分正确)</span>
+      <div class="bar-track"><div class="bar-fill purple" style="width:11%"></div></div>
+      <span class="bar-value">11 例</span>
+    </div>
+    <div class="bar-row">
+      <span class="bar-label">50-70 分 (基本通过)</span>
+      <div class="bar-track"><div class="bar-fill blue" style="width:21%"></div></div>
+      <span class="bar-value">21 例</span>
+    </div>
+    <div class="bar-row">
+      <span class="bar-label">71-100 分 (良好)</span>
+      <div class="bar-track"><div class="bar-fill green" style="width:36%"></div></div>
+      <span class="bar-value">36 例</span>
+    </div>
+  </div>
+</div>
+
+<!-- 0 分 — 完全错误 -->
+<div class="section">
+  <h2 class="section-title danger">0 分 — 完全错误 (7 例)</h2>
+  <p>生成的图表与 Ground Truth 完全不同——错误的主题、错误的数据、或者完全空白。</p>
+
+  <div class="trace-card">
+    <div class="trace-header">
+      <span class="trace-title">Trace 1</span>
+      <div class="trace-tags"><span class="tag tag-red">ID: 5</span><span class="tag tag-red">Score: 0</span></div>
+    </div>
+    <div class="trace-row"><span class="trace-label">GPT-4o 评测摘要</span><span class="trace-val">Generated a pie chart about 'Fruit Distribution in Basket' and a stacked bar chart about 'Apple Preference by Age Group.' The ground truth contains only a pie chart titled 'Age of approvers' showing age group percentages. Completely wrong topic and data.</span></div>
+    <div class="img-compare">
+      <div><img src="../MatPlotAgent/workspace_full/example_5/novice.png" alt="Generated"><div class="img-label">Generated</div></div>
+      <div><img src="../MatPlotAgent/benchmark_data/ground_truth/example_5.png" alt="GT"><div class="img-label">Ground Truth</div></div>
+    </div>
+    <div class="trace-verdict fail">生成了完全无关的图表——水果分布 vs 年龄分布。模型可能误解了输入数据或 prompt。</div>
+  </div>
+
+  <div class="trace-card">
+    <div class="trace-header">
+      <span class="trace-title">Trace 2</span>
+      <div class="trace-tags"><span class="tag tag-red">ID: 42</span><span class="tag tag-red">Score: 0</span></div>
+    </div>
+    <div class="trace-row"><span class="trace-label">GPT-4o 评测摘要</span><span class="trace-val">Generated a flow diagram with labeled segments and arrows (nodes like "RB", "T2"), while the ground truth is a completely different visualization. The generated plot's layout, structure, and data are entirely unrelated to the target.</span></div>
+    <div class="img-compare">
+      <div><img src="../MatPlotAgent/workspace_full/example_42/novice.png" alt="Generated"><div class="img-label">Generated</div></div>
+      <div><img src="../MatPlotAgent/benchmark_data/ground_truth/example_42.png" alt="GT"><div class="img-label">Ground Truth</div></div>
+    </div>
+    <div class="trace-verdict fail">生成了完全无关的流程图，与 GT 的图表类型和数据都不匹配。模型完全误解了任务。</div>
+  </div>
+</div>
+
+<!-- 1-30 分 — 严重偏差 -->
+<div class="section">
+  <h2 class="section-title danger">1-30 分 — 严重偏差 (25 例)</h2>
+  <p>图表有一定结构但数据范围、颜色、布局等严重偏离 Ground Truth。</p>
+
+  <div class="trace-card">
+    <div class="trace-header">
+      <span class="trace-title">Trace 1</span>
+      <div class="trace-tags"><span class="tag tag-yellow">ID: 12</span><span class="tag tag-yellow">Score: 30</span></div>
+    </div>
+    <div class="trace-row"><span class="trace-label">GPT-4o 评测摘要</span><span class="trace-val">Both figures show two bar plots with transparency effects. However, the generated plot has wrong data ranges (y: -1 to 1 vs ground truth -1 to 2), incorrect bar heights and positions, and different color schemes. The transparency effects are partially correct but applied inconsistently.</span></div>
+    <div class="img-compare">
+      <div><img src="../MatPlotAgent/workspace_full/example_12/novice.png" alt="Generated"><div class="img-label">Generated</div></div>
+      <div><img src="../MatPlotAgent/benchmark_data/ground_truth/example_12.png" alt="GT"><div class="img-label">Ground Truth</div></div>
+    </div>
+    <div class="trace-verdict fail">图表结构对了（两个柱状图），但数据范围、柱高、颜色都不对。</div>
+  </div>
+
+  <div class="trace-card">
+    <div class="trace-header">
+      <span class="trace-title">Trace 2</span>
+      <div class="trace-tags"><span class="tag tag-yellow">ID: 18</span><span class="tag tag-yellow">Score: 20</span></div>
+    </div>
+    <div class="trace-row"><span class="trace-label">GPT-4o 评测摘要</span><span class="trace-val">Generated an Aitoff-Hammer projection with coastline but mismatched geographic features vs ground truth. The projection type is correct but specific geographic annotations, color schemes, and data overlays differ significantly.</span></div>
+    <div class="img-compare">
+      <div><img src="../MatPlotAgent/workspace_full/example_18/novice.png" alt="Generated"><div class="img-label">Generated</div></div>
+      <div><img src="../MatPlotAgent/benchmark_data/ground_truth/example_18.png" alt="GT"><div class="img-label">Ground Truth</div></div>
+    </div>
+    <div class="trace-verdict fail">地图投影类型正确，但地理标注、颜色方案和数据叠加层都不匹配。</div>
+  </div>
+</div>
+
+<!-- 31-49 分 — 部分正确 -->
+<div class="section">
+  <h2 class="section-title warn">31-49 分 — 部分正确 (11 例)</h2>
+  <p>图表结构基本正确，但细节（数据点分布、等高线、子图布局等）有明显差异。</p>
+
+  <div class="trace-card">
+    <div class="trace-header">
+      <span class="trace-title">Trace 1</span>
+      <div class="trace-tags"><span class="tag tag-purple">ID: 4</span><span class="tag tag-purple">Score: 40</span></div>
+    </div>
+    <div class="trace-row"><span class="trace-label">GPT-4o 评测摘要</span><span class="trace-val">Both plots visualize data points with standard deviation contours (1σ, 2σ, 3σ) around a central point. However, the data points distribution differs — the ground truth shows a dense cluster while the generated plot has a more spread-out distribution. Contour shapes and colors also differ.</span></div>
+    <div class="img-compare">
+      <div><img src="../MatPlotAgent/workspace_full/example_4/novice.png" alt="Generated"><div class="img-label">Generated</div></div>
+      <div><img src="../MatPlotAgent/benchmark_data/ground_truth/example_4.png" alt="GT"><div class="img-label">Ground Truth</div></div>
+    </div>
+    <div class="trace-verdict warn">概念正确（标准差等高线），但数据分布和等高线形状不匹配。</div>
+  </div>
+
+  <div class="trace-card">
+    <div class="trace-header">
+      <span class="trace-title">Trace 2</span>
+      <div class="trace-tags"><span class="tag tag-purple">ID: 13</span><span class="tag tag-purple">Score: 40</span></div>
+    </div>
+    <div class="trace-row"><span class="trace-label">GPT-4o 评测摘要</span><span class="trace-val">Both contain five subplots: four bar plots with hatch patterns and one cosine curve with filled areas. The bar plot hatch patterns partially match but have different densities. The cosine curve shape is correct but fill colors and boundary shapes differ.</span></div>
+    <div class="img-compare">
+      <div><img src="../MatPlotAgent/workspace_full/example_13/novice.png" alt="Generated"><div class="img-label">Generated</div></div>
+      <div><img src="../MatPlotAgent/benchmark_data/ground_truth/example_13.png" alt="GT"><div class="img-label">Ground Truth</div></div>
+    </div>
+    <div class="trace-verdict warn">5 个子图结构匹配，但填充图案密度和颜色细节不同。</div>
+  </div>
+</div>
+
+<!-- 50-70 分 — 基本通过 -->
+<div class="section">
+  <h2 class="section-title good">50-70 分 — 基本通过 (21 例)</h2>
+  <p>主要结构和数据正确，但存在细节差异（颜色、标签位置、样式等）。</p>
+
+  <div class="trace-card">
+    <div class="trace-header">
+      <span class="trace-title">Trace 1</span>
+      <div class="trace-tags"><span class="tag tag-blue">ID: 1</span><span class="tag tag-blue">Score: 50</span></div>
+    </div>
+    <div class="trace-row"><span class="trace-label">GPT-4o 评测摘要</span><span class="trace-val">Both display six boxplots with various customizations (notched, horizontal, custom outlier symbols, no outliers, custom whisker lengths). The boxplot types and data distributions are largely correct, but specific styling details like outlier marker shapes, whisker cap widths, and color fills differ from the ground truth.</span></div>
+    <div class="img-compare">
+      <div><img src="../MatPlotAgent/workspace_full/example_1/novice.png" alt="Generated"><div class="img-label">Generated</div></div>
+      <div><img src="../MatPlotAgent/benchmark_data/ground_truth/example_1.png" alt="GT"><div class="img-label">Ground Truth</div></div>
+    </div>
+    <div class="trace-verdict warn">6 个 boxplot 的类型和数据分布基本正确，但样式细节（标记形状、颜色填充）有差异。</div>
+  </div>
+</div>
+
+<!-- 总结 note-box -->
+<div class="section">
+  <div class="note-box">
+    MatPlotBench 的评测是视觉相似度打分，不直接衡量数据保真度。43 例得分 ≤ 49 的失败案例中，主要问题是：数据值/范围错误、图表类型错误、子图布局不匹配。这些问题与 VisEval/Text2Vis 的发现一致——模型在数据处理环节系统性不可靠。
+  </div>
+
+  <div class="card">
+    <div class="card-title">与 VisEval/Text2Vis 的交叉验证</div>
+    <div class="card-body">
+      <ul>
+        <li>MatPlotBench 的 0 分案例（完全错误的数据/主题）对应 VisEval 的 <code>data_point_not_found</code></li>
+        <li>MatPlotBench 的 1-30 分案例（数据范围错误）对应 VisEval 的 <code>length_mismatch</code></li>
+        <li>MatPlotBench 的 31-49 分案例（细节偏差）对应 Text2Vis 的 <code>wrong_value</code></li>
+        <li>三个 benchmark 从不同角度验证了同一个问题：<strong>数据保真度是图表生成的核心瓶颈</strong></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="page-nav">
+  <a href="research-bench-text2vis.html">&larr; Text2Vis 错误轨迹</a>
+  <a href="research-benchmarks.html">返回 Benchmark 总览 &rarr;</a>
+</div>
+
+</body>
+</html>

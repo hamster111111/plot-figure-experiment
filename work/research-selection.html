@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>F-A GroundedChart — Benchmark 选型</title>
+  <link rel="stylesheet" href="research-styles.css">
+</head>
+<body>
+
+<nav class="top-nav">
+  <a class="nav-home" href="research-overview.html">Overview</a>
+  <a href="research-summary.html">01 Summary</a>
+  <a href="research-benchmarks.html">02 Benchmarks</a>
+  <a href="research-failure.html">03 失败分析</a>
+  <a href="research-competitors.html">04 竞品</a>
+  <a href="research-thesis.html">05 论证</a>
+  <a class="active" href="research-selection.html">06 选型</a>
+  <a href="research-timeline.html">07 Timeline</a>
+</nav>
+
+<h1 class="section-title purple">Benchmark 选型建议</h1>
+<p style="font-size:0.88em;color:var(--text2);margin-bottom:24px;">基于三个 benchmark 的复现数据、SOTA 对比、以及对 F-A 方向的支撑力，给出选型建议。</p>
+
+<!-- ===== 全景表 ===== -->
+<div class="section">
+  <div class="section-title">Plotting Benchmark 全景（17 个候选）</div>
+  <p style="font-size:0.85em;color:var(--text2);margin-bottom:12px;">从 32 篇相关论文中筛选出 17 个 benchmark，逐一核实其实际内容后按 F-A 相关度重新排序。详细卡片见 <a href="plotting-benchmarks.html" style="color:var(--accent);">Benchmark 卡片页</a>。</p>
+
+  <div class="note-box red" style="margin-bottom:16px;">
+    <strong>重要修正：</strong>经逐一查阅论文后发现，SciGenBench、FigureBench、PaperBananaBench、SciFigBench 实际上是科学插图（架构图/流程图/分子结构等）benchmark，不是数据驱动图表 benchmark。之前基于名称和摘要的分类有误，现已修正。ChartMimic 虽然声称有"数据保真度"指标，但实际评测中并无逐点数据对比。PlotCraft 与 VisEval 是独立数据集，非同源。
+  </div>
+
+  <div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Benchmark</th>
+        <th>规模</th>
+        <th>会议</th>
+        <th>赛道</th>
+        <th>实际内容</th>
+        <th>数据保真度？</th>
+        <th>F-A 相关度</th>
+        <th>我们的复现</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- ===== Plot/Figure 赛道 ===== -->
+      <tr style="background:rgba(63,185,80,0.08);">
+        <td><strong>VisEval</strong></td>
+        <td>2,524 queries</td>
+        <td>IEEE VIS 2024</td>
+        <td><span class="tag tag-green">Plot</span></td>
+        <td>NL+数据库表 → Matplotlib/Vega-Lite；SVG 解构逐点数据对比</td>
+        <td><span class="tag tag-green">直接可测</span></td>
+        <td><span class="tag tag-green">90%</span></td>
+        <td><span class="tag tag-green">已复现</span> 36.8% / 85.2%</td>
+      </tr>
+      <tr style="background:rgba(63,185,80,0.08);">
+        <td><strong>PlotCraft</strong></td>
+        <td>982</td>
+        <td>arXiv 2025</td>
+        <td><span class="tag tag-green">Plot</span></td>
+        <td>NL+CSV/XLSX → Python 代码；48 种图表类型，Kaggle 数据源，独立于 VisEval</td>
+        <td><span class="tag tag-yellow">不含 data_check</span></td>
+        <td><span class="tag tag-green">85%</span></td>
+        <td><span class="tag tag-yellow">未复现</span></td>
+      </tr>
+      <tr>
+        <td>MatPlotBench</td>
+        <td>100</td>
+        <td>ACL 2024</td>
+        <td><span class="tag tag-green">Plot</span></td>
+        <td>NL+数据 → Matplotlib；GPT-4o 视觉对比打分</td>
+        <td><span class="tag tag-red">不直接</span></td>
+        <td><span class="tag tag-yellow">75%</span></td>
+        <td><span class="tag tag-green">已复现</span> Avg 56.4</td>
+      </tr>
+      <tr>
+        <td>Text2Vis</td>
+        <td>1,985</td>
+        <td>EMNLP 2025</td>
+        <td><span class="tag tag-green">Plot</span></td>
+        <td>NL+数据表 → 代码+答案；20+ 图表类型，含复杂推理</td>
+        <td><span class="tag tag-yellow">间接</span></td>
+        <td><span class="tag tag-yellow">70%</span></td>
+        <td><span class="tag tag-green">已复现</span> 33.4%</td>
+      </tr>
+      <tr>
+        <td>PandasPlotBench</td>
+        <td>175</td>
+        <td>EMNLP 2025 Findings</td>
+        <td><span class="tag tag-green">Plot</span></td>
+        <td>NL+DataFrame → Matplotlib/Seaborn/Plotly；3 种 prompt 详细度</td>
+        <td><span class="tag tag-red">否</span></td>
+        <td>55%</td>
+        <td><span class="tag tag-yellow">未复现</span></td>
+      </tr>
+      <tr>
+        <td>nvBench</td>
+        <td>25,750</td>
+        <td>SIGMOD 2021</td>
+        <td><span class="tag tag-green">Plot</span></td>
+        <td>NL+数据库 → Vega-Lite spec；NL2Vis 最大数据集</td>
+        <td><span class="tag tag-red">否</span></td>
+        <td>30%</td>
+        <td><span class="tag tag-yellow">未复现</span></td>
+      </tr>
+      <tr>
+        <td>nvBench 2.0</td>
+        <td>24,076</td>
+        <td>NeurIPS 2025</td>
+        <td><span class="tag tag-green">Plot</span></td>
+        <td>歧义 NL → 多个合法 Vega-Lite spec</td>
+        <td><span class="tag tag-red">否</span></td>
+        <td>25%</td>
+        <td><span class="tag tag-yellow">未复现</span></td>
+      </tr>
+      <!-- ===== Image→Code 赛道 ===== -->
+      <tr>
+        <td>RealChart2Code</td>
+        <td>2,800+</td>
+        <td>arXiv 2026</td>
+        <td><span class="tag tag-purple">Img→Code</span></td>
+        <td>真实数据集图表图片 → Python 代码；多面板+多轮修复</td>
+        <td><span class="tag tag-red">否</span></td>
+        <td>45%</td>
+        <td><span class="tag tag-yellow">未复现</span></td>
+      </tr>
+      <tr>
+        <td>PlotGen-Bench</td>
+        <td>710</td>
+        <td>arXiv 2025</td>
+        <td><span class="tag tag-purple">Img→Code</span></td>
+        <td>图表图片 → 5 种库的 Python 代码；含动画 GIF</td>
+        <td><span class="tag tag-red">否</span></td>
+        <td>40%</td>
+        <td><span class="tag tag-yellow">未复现</span></td>
+      </tr>
+      <tr>
+        <td>Plot2Code</td>
+        <td>132</td>
+        <td>NAACL 2025</td>
+        <td><span class="tag tag-purple">Img→Code</span></td>
+        <td>Matplotlib 图片 → 代码；6 种图表类型</td>
+        <td><span class="tag tag-red">否</span></td>
+        <td>35%</td>
+        <td><span class="tag tag-yellow">未复现</span></td>
+      </tr>
+      <tr>
+        <td>ChartMimic</td>
+        <td>4,800</td>
+        <td>ICLR 2025</td>
+        <td><span class="tag tag-purple">Img→Code</span></td>
+        <td>图表图片 → Matplotlib 代码；22 种图表类型。<strong>无实际数据保真度指标</strong>（仅视觉相似度+文本/布局/类型/颜色 F1）</td>
+        <td><span class="tag tag-red">否（名不副实）</span></td>
+        <td>30%</td>
+        <td><span class="tag tag-yellow">未复现</span></td>
+      </tr>
+      <tr>
+        <td>Chart2Code</td>
+        <td>2,023</td>
+        <td>arXiv 2025</td>
+        <td><span class="tag tag-purple">Img→Code</span></td>
+        <td>图表图片/长数据表 → Python 代码；L3 任务含数据→图表</td>
+        <td><span class="tag tag-red">否</span></td>
+        <td>30%</td>
+        <td><span class="tag tag-yellow">未复现</span></td>
+      </tr>
+      <!-- ===== Illustration 赛道（与 F-A 正交）===== -->
+      <tr style="color:var(--text2);">
+        <td>PaperBananaBench</td>
+        <td>584</td>
+        <td>ACL 2026</td>
+        <td><span class="tag tag-yellow">Illustration</span></td>
+        <td>论文方法文本 → 架构/流程示意图（5-agent pipeline）。有次要 480-plot 子集来自 ChartMimic</td>
+        <td><span class="tag tag-red">否</span></td>
+        <td>25%</td>
+        <td><span class="tag tag-yellow">未复现</span></td>
+      </tr>
+      <tr style="color:var(--text2);">
+        <td>SciGenBench</td>
+        <td>1,400</td>
+        <td>AAAI 2026</td>
+        <td><span class="tag tag-yellow">Illustration</span></td>
+        <td>科学问题文本 → 几何图/电路图/分子结构/光学图等。有少量 "Universal" 子集含图表</td>
+        <td><span class="tag tag-red">否</span></td>
+        <td>20%</td>
+        <td><span class="tag tag-yellow">未复现</span></td>
+      </tr>
+      <tr style="color:var(--text2);">
+        <td>ChartEditBench</td>
+        <td>5,000</td>
+        <td>arXiv 2026</td>
+        <td><span class="tag tag-yellow">Editing</span></td>
+        <td>现有图表 + NL 编辑指令 → 修改后代码</td>
+        <td><span class="tag tag-red">否</span></td>
+        <td>20%</td>
+        <td><span class="tag tag-yellow">未复现</span></td>
+      </tr>
+      <tr style="color:var(--text2);">
+        <td>FigureBench</td>
+        <td>3,300</td>
+        <td>ICLR 2026</td>
+        <td><span class="tag tag-yellow">Illustration</span></td>
+        <td>长论文文本 → 架构图/方法概览图。输入平均 12k tokens，无结构化数据</td>
+        <td><span class="tag tag-red">否</span></td>
+        <td>15%</td>
+        <td><span class="tag tag-yellow">未复现</span></td>
+      </tr>
+      <tr style="color:var(--text2);">
+        <td>SciFigBench</td>
+        <td>2,219</td>
+        <td>CVPR 2026</td>
+        <td><span class="tag tag-yellow">Illustration</span></td>
+        <td>论文方法描述 → pipeline/方法图。100% 示意图，零数据图表</td>
+        <td><span class="tag tag-red">否</span></td>
+        <td>10%</td>
+        <td><span class="tag tag-yellow">未复现</span></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<!-- ===== 赛道分布 ===== -->
+<div class="section">
+  <div class="section-title">按赛道分布 — 核实后的分类</div>
+  <div class="grid-2">
+    <div class="card" style="border-left:3px solid var(--green);">
+      <div class="card-title" style="color:var(--green);">Plot/Figure — 数据驱动图表（7 个）</div>
+      <div class="card-body">
+        <p><strong>VisEval, PlotCraft, MatPlotBench, Text2Vis, PandasPlotBench, nvBench, nvBench 2.0</strong></p>
+        <p style="margin-top:6px;">输入是 NL + 结构化数据（CSV/数据库/DataFrame），输出是绑定真实数据的图表代码。数据保真度问题在这类任务中最突出。</p>
+        <p style="margin-top:4px;color:var(--green);"><strong>F-A 的主战场。其中只有 VisEval 内置了 data_check。</strong></p>
+      </div>
+    </div>
+    <div class="card" style="border-left:3px solid var(--purple);">
+      <div class="card-title" style="color:var(--purple);">Image → Code（5 个）</div>
+      <div class="card-body">
+        <p>ChartMimic, Chart2Code, RealChart2Code, PlotGen-Bench, Plot2Code</p>
+        <p style="margin-top:6px;">输入是图表图片，输出是复现代码。核心挑战是视觉理解。ChartMimic 声称有数据保真度指标，但实际只有视觉相似度 + 文本/布局/类型/颜色 F1，无逐点数据对比。</p>
+      </div>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="card" style="border-left:3px solid var(--yellow);">
+      <div class="card-title" style="color:var(--yellow);">Illustration — 科学插图（4 个）⚠️ 之前误分类</div>
+      <div class="card-body">
+        <p>SciGenBench, FigureBench, PaperBananaBench, SciFigBench</p>
+        <p style="margin-top:6px;">输入是论文文本/科学问题描述（无结构化数据），输出是架构图、流程图、几何图、电路图、分子结构等。与 F-A 完全正交——"数据保真度"概念不适用。</p>
+        <p style="margin-top:4px;color:var(--yellow);"><strong>之前基于名称误判为数据图表 benchmark，现已修正。</strong></p>
+      </div>
+    </div>
+    <div class="card" style="border-left:3px solid var(--text2);">
+      <div class="card-title">Chart Editing（1 个）</div>
+      <div class="card-body">
+        <p>ChartEditBench</p>
+        <p style="margin-top:6px;">输入是现有图表 + NL 编辑指令，输出是修改后的代码。与 F-A 的生成场景不同。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 逐个分析 ===== -->
+<div class="section">
+  <div class="section-title good">VisEval — 推荐作为主实验 Benchmark</div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">我们的复现数据</div>
+      <div class="card-body">
+        <ul>
+          <li>1,150 实例，Pass Rate <strong>36.8%</strong>（含 data_check）</li>
+          <li>953 例 data_check 失败，其中 72% 是数据保真度问题</li>
+          <li>口径转换：去掉 data_check 后 <strong>85.2%</strong>，与 Gemini-2.5-Pro (83.71%) 持平</li>
+          <li>48.4pp 的落差全部来自 data_check——精确量化了数据保真度瓶颈</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">SOTA 对比</div>
+      <div class="card-body">
+        <ul>
+          <li>SOTA: Claude-4.1-Opus <strong>96.14%</strong>（PlotCraft, 2025）— 但不含严格 data_check</li>
+          <li>开源 SOTA: PlotCraftor-30B <strong>93.81%</strong>（基于 Qwen3-Coder）</li>
+          <li>GPT-4 baseline: <strong>75.27%</strong>（VisEval 原文, 2024）</li>
+          <li>同口径下我们的 85.2% 处于 GPT-4 ~ Gemini 水平</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="note-box green">
+    <strong>选型理由：</strong>VisEval 是唯一内置 data_check 的 benchmark，能直接量化 F-A 的改进效果。SVG 解构评测方式精确到每个数据点，不依赖 LLM 打分。口径转换数据（36.8% → 85.2%）是论文中最有力的论据之一。7 种图表类型覆盖主流场景。
+  </div>
+  <div class="card">
+    <div class="card-title" style="color:var(--yellow);">注意事项</div>
+    <div class="card-body">
+      <ul>
+        <li>仅 7 种图表类型（bar, line, pie, scatter, area, heatmap, box），不含 3D、地图等</li>
+        <li>PlotCraft 等论文的 pass rate 不含严格 data_check，直接对比数字会产生误导——论文中需要明确说明口径差异</li>
+        <li>建议：在 GPT-4 / Claude 上也跑一遍，证明 data_check 失败不只是弱模型的问题</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Text2Vis -->
+<div class="section">
+  <div class="section-title warn">Text2Vis — 推荐作为补充实验</div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">我们的复现数据</div>
+      <div class="card-body">
+        <ul>
+          <li>1,892 样本，Final Pass <strong>33.4%</strong>，Answer Match 38.1%</li>
+          <li>1,309 例失败中 81% 是 answer_mismatch</li>
+          <li>answer_mismatch 中：wrong_entity 51.2% + wrong_value 33.1% = 84%</li>
+          <li>但大部分是推理/提取错误，不是图表数据错误（很多案例 readability 5.0, correctness 5.0）</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">SOTA 对比</div>
+      <div class="card-body">
+        <ul>
+          <li>SOTA: GPT-4o Agentic <strong>42%</strong>（Text2Vis 原文, EMNLP 2025）</li>
+          <li>开源 SOTA: RL-Text2Vis-14B <strong>29%</strong>（Qwen-2.5-14B + GRPO, EACL 2026）</li>
+          <li>我们的 33.4% 超过 GPT-4o Direct (26%) 和 Gemini-2.0-Flash (26%)</li>
+          <li>即使 SOTA 也只有 42%——这个 benchmark 对所有模型都很难</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="note-box" style="border-left-color:var(--yellow);">
+    <strong>选型理由：</strong>20+ 图表类型、难度分级（medium/hard/extra hard）、端到端 QA 验证。规模大（1,892 样本），统计显著性好。我们的成绩超过 GPT-4o Direct，说明复现质量可靠。
+  </div>
+  <div class="card">
+    <div class="card-title" style="color:var(--red);">诚实评估 — F-A 相关度有限</div>
+    <div class="card-body">
+      <ul>
+        <li>81% 的失败是 answer_mismatch，但其中大部分是推理/提取错误，不是图表数据错误</li>
+        <li>F-A 能直接解决的可能只有 ~19% 的失败（exec_failure + low_correctness + 部分 wrong_value）</li>
+        <li>format_mismatch (92) + pct_vs_decimal (42) = 134 例是评测标准问题，不是真正的错误</li>
+        <li><strong>论文中不能把 33.4% 的 pass rate 直接拿来论证 F-A 的必要性</strong></li>
+        <li>建议用法：作为"端到端泛化验证"，展示 F-A 在更广泛任务上的效果，但不作为核心论据</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- MatPlotBench -->
+<div class="section">
+  <div class="section-title">MatPlotBench — 可作为泛化验证</div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">我们的复现数据</div>
+      <div class="card-body">
+        <ul>
+          <li>100 样本，Avg Score <strong>56.4</strong>，Pass Rate 57%</li>
+          <li>43% 低于 50 分，7 例得 0 分（完全错误主题/数据）</li>
+          <li>失败以视觉还原度为主（颜色、布局、样式差异）</li>
+          <li>只有 0 分案例可能涉及数据保真度</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">SOTA 对比</div>
+      <div class="card-body">
+        <ul>
+          <li>SOTA: VisPath (GPT-4o mini) <strong>66.12</strong>（arXiv 2025）</li>
+          <li>PlotGen (GPT-4): <strong>65.67</strong>（ACM IUI 2025）</li>
+          <li>MatPlotAgent (GPT-4): <strong>61.16</strong>（ACL 2024）</li>
+          <li>我们的 56.4 介于 Magicoder-6.7B (51.7) 和 MatPlotAgent-GPT-4 (61.16) 之间</li>
+          <li>CoDA (Gemini-2.5-Pro): ~80 VSR（ICLR 2026），但用不同指标</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="note-box">
+    <strong>选型理由：</strong>竞品最多的 benchmark（MatPlotAgent, VisPath, PlotGen, CoDA 都在上面跑过），横向对比价值高。GPT-4o 打分虽然主观，但业界认可度高。
+  </div>
+  <div class="card">
+    <div class="card-title" style="color:var(--red);">局限性</div>
+    <div class="card-body">
+      <ul>
+        <li>样本量太小（100），统计显著性差，单个样本的分数波动影响大</li>
+        <li>评测维度是视觉相似度，不是数据正确性——和 F-A 的目标基本不重叠</li>
+        <li>GPT-4o 打分有主观性，不同 run 可能有差异</li>
+        <li>建议用法：仅作为"F-A 不损害视觉质量"的验证，不作为核心指标</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 选型策略 ===== -->
+<div class="section">
+  <div class="section-title good">推荐选型策略</div>
+  <div class="card">
+    <div class="card-body">
+      <table>
+        <thead><tr><th>角色</th><th>Benchmark</th><th>论文中的用途</th><th>核心指标</th></tr></thead>
+        <tbody>
+          <tr style="color:var(--green);"><td><strong>主实验</strong></td><td>VisEval</td><td>量化 F-A 对数据保真度的改进；口径转换对比 SOTA</td><td>Full Pass Rate (含 data_check) + 口径转换 Pass Rate</td></tr>
+          <tr style="color:var(--green);"><td><strong>主实验</strong></td><td>PlotCraft</td><td>48 种图表类型广覆盖；对比 PlotCraftor SOTA；独立数据源验证泛化</td><td>Pass Rate + 自有评测</td></tr>
+          <tr><td>补充实验</td><td>Text2Vis</td><td>端到端泛化验证；展示 F-A 在更广泛任务上的效果</td><td>Final Pass Rate + Answer Match</td></tr>
+          <tr><td>泛化验证</td><td>MatPlotBench</td><td>证明 F-A 不损害视觉质量；横向对比竞品</td><td>Plot Score</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card" style="border-left:3px solid var(--green);">
+      <div class="card-title" style="color:var(--green);">论文叙事建议</div>
+      <div class="card-body">
+        <ul>
+          <li>核心故事线围绕 VisEval 展开：36.8% → 85.2% 的口径转换是最有力的论据</li>
+          <li>Text2Vis 作为补充：展示 F-A 在端到端任务上也有帮助，但不夸大</li>
+          <li>MatPlotBench 作为 sanity check：证明加了数据验证不会让图变丑</li>
+          <li>主动说明 Text2Vis 大部分失败不是数据保真度问题——诚实比被 reviewer 质疑好</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card" style="border-left:3px solid var(--yellow);">
+      <div class="card-title" style="color:var(--yellow);">下一步实验建议</div>
+      <div class="card-body">
+        <ul>
+          <li><strong>优先级 1：</strong>在 GPT-4 / Claude 上跑 VisEval，证明 data_check 失败不只是弱模型的问题</li>
+          <li><strong>优先级 2：</strong>实现 F-A prototype，在 VisEval 上测 data_check pass rate 的提升</li>
+          <li><strong>优先级 3：</strong>复现 PlotCraft（独立数据源，48 种图表类型），验证 F-A 在不同数据集上的泛化</li>
+          <li><strong>优先级 4：</strong>在 Text2Vis 上测 F-A 对 exec_failure + low_correctness 的改善</li>
+          <li><strong>可选：</strong>PandasPlotBench (175 样本) 作为小规模快速验证</li>
+          <li><strong>注意：</strong>SciGenBench / FigureBench / PaperBananaBench / SciFigBench 是 illustration benchmark，与 F-A 正交，不建议投入</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 指标口径对照 ===== -->
+<div class="section">
+  <div class="section-title">各 Benchmark 指标口径对照</div>
+  <p style="font-size:0.85em;color:var(--text2);margin-bottom:12px;">不同 benchmark 和论文使用不同的评测指标，直接对比数字容易产生误导。以下梳理各指标的含义和可比性。</p>
+  <div class="card">
+    <div class="card-body">
+      <table>
+        <thead><tr><th>指标名称</th><th>使用者</th><th>含义</th><th>含数据保真度？</th></tr></thead>
+        <tbody>
+          <tr><td>Pass Rate (Full)</td><td>我们的 VisEval 复现</td><td>execution + surface-form + deconstruction + chart_type + data_check + order_check 全部通过</td><td><span class="tag tag-green">是</span></td></tr>
+          <tr><td>Pass Rate (PlotCraft)</td><td>PlotCraft 等论文</td><td>validity (可执行) + legality (图表类型正确)，≈ 我们的 no_data_order 口径</td><td><span class="tag tag-red">否</span></td></tr>
+          <tr><td>Final Pass</td><td>Text2Vis</td><td>Code Exec 成功 + Answer Match 正确 + Correctness ≥ 3.5</td><td><span class="tag tag-yellow">间接</span></td></tr>
+          <tr><td>Answer Match</td><td>Text2Vis</td><td>从图表提取的答案与 GT 答案匹配</td><td><span class="tag tag-yellow">间接</span></td></tr>
+          <tr><td>Plot Score</td><td>MatPlotBench</td><td>GPT-4o 视觉对比打分 (0-100)，含数据值、结构、颜色、标签等</td><td><span class="tag tag-yellow">部分</span></td></tr>
+          <tr><td>VSR</td><td>CoDA</td><td>Visual Similarity Rate，图像级相似度</td><td><span class="tag tag-red">否</span></td></tr>
+          <tr><td>Readability</td><td>VisEval / PlotCraft</td><td>图表可读性评分 (1-5)</td><td><span class="tag tag-red">否</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="note-box red">
+    <strong>核心发现：</strong>在所有主流评测指标中，只有我们的 VisEval Full Pass Rate 包含严格的数据保真度检查。PlotCraft 报告的 96.14% SOTA 和我们的 36.8% 不在同一口径上——同口径下我们是 85.2%。这个差异本身就是 F-A 最好的论据：现有评测体系系统性地忽略了数据保真度。
+  </div>
+</div>
+
+<div class="page-nav">
+  <a href="research-thesis.html">&larr; 05 差异化论证</a>
+  <a href="research-timeline.html">07 Timeline &amp; 风险 &rarr;</a>
+</div>
+
+</body>
+</html>

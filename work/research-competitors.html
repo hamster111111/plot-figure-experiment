@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F-A GroundedChart — 竞品全景</title>
+<link rel="stylesheet" href="research-styles.css">
+</head>
+<body>
+
+<nav class="top-nav">
+  <a class="nav-home" href="research-overview.html">Overview</a>
+  <a href="research-summary.html">01 Summary</a>
+  <a href="research-benchmarks.html">02 Benchmarks</a>
+  <a href="research-failure.html">03 失败分析</a>
+  <a class="active" href="research-competitors.html">04 竞品</a>
+  <a href="research-thesis.html">05 论证</a>
+  <a href="research-selection.html">06 选型</a>
+  <a href="research-timeline.html">07 Timeline</a>
+</nav>
+
+<h1 class="section-title warn">竞品全景 — 谁在做、做到什么程度</h1>
+
+<div class="note-box blue"><strong>复现说明：</strong>所有本地复现均使用 DeepSeek-V3 作为代码生成 backbone，在 16GB 本地机器上运行。标注 <span class="tag tag-green">已复现</span> 的系统有实际运行数据，<span class="tag tag-yellow">已调研</span> 的系统仅做了代码阅读和架构分析。</div>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+  <th>系统</th>
+  <th>会议</th>
+  <th>任务类型</th>
+  <th>方法</th>
+  <th>Backbone</th>
+  <th>论文最佳成绩</th>
+  <th>我们的复现</th>
+  <th>关注数据保真度？</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>CoDA <span class="tag tag-red">最强</span></td>
+  <td>ICLR 2026</td>
+  <td><span class="tag tag-blue">Plot/Figure</span></td>
+  <td>Code-Driven Agent + 迭代调试</td>
+  <td>Gemini-2.5-Pro</td>
+  <td>OS=79.5%</td>
+  <td><span class="tag tag-yellow">未开源</span> 仅论文调研</td>
+  <td><span class="tag tag-red">否</span> 优化视觉相似度</td>
+</tr>
+<tr>
+  <td>MatPlotAgent</td>
+  <td>ACL 2024</td>
+  <td><span class="tag tag-blue">Plot/Figure</span></td>
+  <td>3-Agent (Query→Code→Visual)</td>
+  <td>GPT-4</td>
+  <td>Plot Score=61.16</td>
+  <td><span class="tag tag-green">已复现</span> DeepSeek-V3: Avg 56.4, Pass 57%</td>
+  <td><span class="tag tag-red">否</span> 优化视觉匹配</td>
+</tr>
+<tr>
+  <td>AutoFigure</td>
+  <td>ICLR 2026</td>
+  <td><span class="tag tag-purple">Sci Illustration</span></td>
+  <td>LLM + 迭代精修生成科学插图</td>
+  <td>GPT-4o / Claude</td>
+  <td>FigureBench SOTA</td>
+  <td><span class="tag tag-green">已复现</span> Smoke test 3 轮，可生成 SVG/PNG</td>
+  <td><span class="tag tag-red">否</span> 优化视觉质量</td>
+</tr>
+<tr>
+  <td>VisPath</td>
+  <td>arXiv 2025</td>
+  <td><span class="tag tag-blue">Plot/Figure</span></td>
+  <td>路径规划 + 多步推理</td>
+  <td>GPT-4o mini</td>
+  <td>Plot Score=66.12</td>
+  <td><span class="tag tag-yellow">未开源</span> 仅论文调研</td>
+  <td><span class="tag tag-red">否</span> 优化代码质量</td>
+</tr>
+<tr>
+  <td>PlotGen</td>
+  <td>ACM IUI 2025</td>
+  <td><span class="tag tag-blue">Plot/Figure</span></td>
+  <td>Adobe 多轮对话生成</td>
+  <td>GPT-4</td>
+  <td>Plot Score=65.67</td>
+  <td><span class="tag tag-yellow">未开源</span> 仅论文调研</td>
+  <td><span class="tag tag-red">否</span> 优化用户意图</td>
+</tr>
+<tr>
+  <td>METAL</td>
+  <td>ACL 2025</td>
+  <td><span class="tag tag-blue">Plot/Figure</span></td>
+  <td>Generate→Critique→Revise (chart mimicking)</td>
+  <td>GPT-4o</td>
+  <td>ChartMimic 专用</td>
+  <td><span class="tag tag-yellow">已调研</span> 代码阅读，未全量运行</td>
+  <td><span class="tag tag-yellow">正交</span> 图像→图像，非数据→图表</td>
+</tr>
+<tr>
+  <td>RAGvis</td>
+  <td>EMNLP 2025</td>
+  <td><span class="tag tag-blue">Plot/Figure</span></td>
+  <td>KG-driven EDA 推荐 (Google)</td>
+  <td>Gemini</td>
+  <td>~100% exec rate</td>
+  <td><span class="tag tag-green">已复现</span> 5/5 执行失败（见下方详情）</td>
+  <td><span class="tag tag-yellow">不适用</span> EDA 推荐器，非 NL→chart</td>
+</tr>
+<tr>
+  <td>VFig</td>
+  <td>—</td>
+  <td><span class="tag tag-purple">Sci Illustration</span></td>
+  <td>VLM 生成 SVG（图像→代码）</td>
+  <td>Qwen2.5-VL / InternVL3</td>
+  <td>—</td>
+  <td><span class="tag tag-yellow">已调研</span> 需要 RL 训练，未运行</td>
+  <td><span class="tag tag-yellow">正交</span> 图像→SVG 复现，非数据→图表</td>
+</tr>
+<tr>
+  <td>SciSketch</td>
+  <td>—</td>
+  <td><span class="tag tag-purple">Sci Illustration</span></td>
+  <td>论文→示意图（两阶段 pipeline）</td>
+  <td>GPT-4o / Claude</td>
+  <td>—</td>
+  <td><span class="tag tag-yellow">已调研</span> 代码阅读</td>
+  <td><span class="tag tag-yellow">正交</span> 生成示意图，非数据图表</td>
+</tr>
+<tr>
+  <td>DiagramEval</td>
+  <td>EMNLP 2025</td>
+  <td><span class="tag tag-purple">Sci Illustration</span></td>
+  <td>图表评估框架（图→图对比）</td>
+  <td>—</td>
+  <td>—</td>
+  <td><span class="tag tag-green">已复现</span> 跑通 example</td>
+  <td><span class="tag tag-yellow">正交</span> 评估工具，非生成系统</td>
+</tr>
+<tr>
+  <td>PaperBanana</td>
+  <td>—</td>
+  <td><span class="tag tag-purple">Sci Illustration</span></td>
+  <td>论文→科学插图（多 Agent）</td>
+  <td>—</td>
+  <td><span class="tag tag-yellow">已调研</span> 代码阅读</td>
+  <td><span class="tag tag-yellow">正交</span> 生成论文插图，非数据图表</td>
+</tr>
+<tr>
+  <td>SciGenBench</td>
+  <td>—</td>
+  <td><span class="tag tag-purple">Sci Illustration</span></td>
+  <td>科学图像合成 benchmark</td>
+  <td>—</td>
+  <td><span class="tag tag-yellow">已调研</span> 数据集阅读</td>
+  <td><span class="tag tag-yellow">正交</span> benchmark，非生成系统</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="grid-2">
+
+<div class="card">
+<h3>MatPlotAgent 复现结论 <span class="tag tag-green">已复现</span></h3>
+<ul>
+<li>我们用 DeepSeek-V3 跑了 MatPlotBench 全部 100 个样本。</li>
+<li>结果：Avg Score 56.4，Pass Rate 57%（论文用 GPT-4 报告 61.16）。</li>
+<li>43% 的样本得分低于 50，其中 7 例得 0 分（完全错误的主题/数据）。</li>
+<li>MatPlotAgent 的 3-Agent 架构（Query→Code→Visual Refine）只优化视觉匹配度，不验证数据是否正确。</li>
+<li>对 F-A 的意义：<span class="tag tag-green">确认差异化</span> 即使有 Visual Refine 环节，数据错误仍然无法被发现。</li>
+</ul>
+</div>
+
+<div class="card">
+<h3>RAGvis 实测结论 <span class="tag tag-green">已复现</span></h3>
+<ul>
+<li>我们在 3 个 VisEval 失败案例上实测了 RAGvis（EMNLP 2025, Google Research）。</li>
+<li>结果：5/5 生成的代码全部执行失败。</li>
+<li>原因：RAGvis 是 EDA 操作推荐器（"这个数据集适合画什么图"），不是 NL→chart 生成器。它的 ~100% pass rate 只衡量代码可执行性，不衡量数据保真度。</li>
+<li>对 F-A 的意义：<span class="tag tag-green">确认差异化</span> 即使 Google 的系统也没有解决数据保真度问题。</li>
+</ul>
+</div>
+
+<div class="card">
+<h3>AutoFigure 复现结论 <span class="tag tag-green">已复现</span></h3>
+<ul>
+<li>AutoFigure（ICLR 2026）是 LLM 驱动的科学插图生成系统，支持迭代精修。</li>
+<li>我们跑了 3 轮 smoke test，成功生成了 SVG/PNG 科学插图。</li>
+<li>AutoFigure 的目标是"publication-ready"的视觉质量，迭代精修环节优化的是布局、颜色、标注等视觉元素。</li>
+<li>对 F-A 的意义：<span class="tag tag-green">确认差异化</span> AutoFigure 不验证图表中的数据是否与源数据一致。</li>
+</ul>
+</div>
+
+<div class="card">
+<h3>METAL 调研结论 <span class="tag tag-yellow">已调研</span></h3>
+<ul>
+<li>METAL (ACL 2025) 是多智能体 chart mimicking 框架：给一张参考图，生成视觉上相似的新图。</li>
+<li>与 F-A 完全正交：输入是图像而非数据，目标是视觉相似度而非数据准确性。</li>
+<li>但其 Generate→Critique→Revise 的多智能体架构模式值得借鉴——可以用类似的 Critique 环节来验证数据保真度。</li>
+</ul>
+</div>
+
+</div>
+
+<!-- Benchmark 复现总结 -->
+<div class="section" style="margin-top:20px;">
+  <div class="section-title good">Benchmark 复现总结</div>
+  <div class="card">
+    <div class="card-body">
+      <p>除了竞品系统，我们还独立复现了三个主流 benchmark：</p>
+      <ul>
+        <li><strong>VisEval</strong>（1,150 实例）：Pass Rate 36.8%，953 例 data_check 失败，60% 根因是缺少 GROUP BY</li>
+        <li><strong>Text2Vis</strong>（1,892 样本）：Final Pass 33.4%，81% 失败是 answer_mismatch</li>
+        <li><strong>MatPlotBench</strong>（100 样本）：Avg Score 56.4，Pass Rate 57%，43% 低于及格线</li>
+      </ul>
+      <p style="margin-top:8px;">全部使用 DeepSeek-V3 + Qwen-VL 在本地 16GB 机器上完成。详见 <a href="research-benchmarks.html">02 Benchmark 复现详情</a>。</p>
+    </div>
+  </div>
+</div>
+
+<!-- 任务类型分析 -->
+<div class="section" style="margin-top:20px;">
+  <div class="section-title">Plot/Figure vs Science Illustration — 两条赛道</div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title" style="color:var(--accent);">Plot/Figure（数据驱动图表）</div>
+      <div class="card-body">
+        <p>输入是结构化数据（表格/SQL/CSV），输出是柱状图、折线图、饼图、散点图等。核心挑战是数据处理正确性（聚合、过滤、计算）。</p>
+        <p style="margin-top:6px;"><strong>代表系统：</strong>CoDA, MatPlotAgent, VisPath, PlotGen, METAL, RAGvis</p>
+        <p><strong>代表 Benchmark：</strong>VisEval, Text2Vis, MatPlotBench, ChartMimic</p>
+        <p style="margin-top:6px;color:var(--yellow);"><strong>F-A GroundedChart 的主战场。</strong>这条赛道上所有系统都不验证数据保真度。</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:var(--purple);">Science Illustration（科学示意图）</div>
+      <div class="card-body">
+        <p>输入是论文文本/描述，输出是架构图、流程图、示意图等。核心挑战是语义理解和视觉布局，不涉及数值数据。</p>
+        <p style="margin-top:6px;"><strong>代表系统：</strong>AutoFigure, VFig, SciSketch, PaperBanana</p>
+        <p><strong>代表 Benchmark：</strong>FigureBench, SciGenBench, DiagramEval</p>
+        <p style="margin-top:6px;color:var(--text2);">与 F-A 正交。这些系统不处理结构化数据，"数据保真度"概念不适用。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 竞品空白总结 -->
+<div class="section">
+  <div class="note-box red"><strong>核心发现：</strong>在 Plot/Figure 赛道的 7 个系统中，0 个关注数据保真度。所有系统的优化目标都是视觉质量（CoDA, MatPlotAgent, PlotGen）、代码质量（VisPath）、或正交任务（METAL: 图像→图像, RAGvis: EDA 推荐）。Science Illustration 赛道的 5 个系统与 F-A 完全正交——它们不处理结构化数据。数据保真度是 Plot/Figure 赛道中被系统性忽略的维度。</div>
+</div>
+
+<div class="page-nav">
+  <a href="research-failure.html">← 03 失败深度分析</a>
+  <a href="research-thesis.html">05 差异化论证 →</a>
+</div>
+
+</body>
+</html>

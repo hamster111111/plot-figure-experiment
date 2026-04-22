@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>F-A GroundedChart — Timeline & 风险</title>
+  <link rel="stylesheet" href="research-styles.css">
+</head>
+<body>
+
+<nav class="top-nav">
+  <a class="nav-home" href="research-overview.html">Overview</a>
+  <a href="research-summary.html">01 Summary</a>
+  <a href="research-benchmarks.html">02 Benchmarks</a>
+  <a href="research-failure.html">03 失败分析</a>
+  <a href="research-competitors.html">04 竞品</a>
+  <a href="research-thesis.html">05 论证</a>
+  <a href="research-selection.html">06 选型</a>
+  <a class="active" href="research-timeline.html">07 Timeline</a>
+</nav>
+
+<h1 class="section-title">探索时间线 &amp; 已知风险</h1>
+
+<div class="grid-2">
+
+<div class="card">
+  <h2>探索时间线</h2>
+  <ul>
+    <li><strong>4/18 (Day 1):</strong> Benchmark 调研 → 选定 MatPlotBench / Text2Vis / VisEval → 完成 MatPlotBench 复现 (57%)</li>
+    <li><strong>4/19 (Day 2):</strong> Text2Vis 复现 (33.4%) → VisEval 复现 (36.8%) → 竞品调研 (CoDA/VisPath/PlotGen) → RAGvis 实测 → METAL 调研</li>
+    <li><strong>4/20 (Day 3):</strong> 失败案例深度分析 → 发现 missing_groupby 60% 根因 → 分类 Text2Vis 错误模式 → 整理全景报告</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>已知风险</h2>
+  <ul>
+    <li><span class="tag tag-red">高</span> CoDA 开源状态未知 — ICLR 2026 最强竞品，若已解决数据保真度则需调整方向</li>
+    <li><span class="tag tag-yellow">中</span> 评测指标不统一 — 各 benchmark 评测方式不同，跨 benchmark 对比困难</li>
+    <li><span class="tag tag-yellow">中</span> 数据格式兼容性 — CSV/SQL/内嵌代码格式不同，统一管道需适配层</li>
+    <li><span class="tag tag-blue">低</span> MatPlotBench 样本量 — 仅 100 样本，统计显著性有限</li>
+  </ul>
+</div>
+
+</div>
+
+<div class="page-nav">
+  <a href="research-selection.html">&larr; 06 Benchmark 选型</a>
+  <a href="research-overview.html">返回总览 &rarr;</a>
+</div>
+
+<hr class="divider">
+<p style="font-size:0.78em; color:var(--text2); text-align:center;">F-A GroundedChart Research Overview · Generated 2026-04-20</p>
+
+</body>
+</html>

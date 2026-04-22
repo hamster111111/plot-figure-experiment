@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F-A GroundedChart — 失败深度分析</title>
+<link rel="stylesheet" href="research-styles.css">
+</head>
+<body>
+
+<nav class="top-nav">
+  <a class="nav-home" href="research-overview.html">Overview</a>
+  <a href="research-summary.html">01 Summary</a>
+  <a href="research-benchmarks.html">02 Benchmarks</a>
+  <a class="active" href="research-failure.html">03 失败分析</a>
+  <a href="research-competitors.html">04 竞品</a>
+  <a href="research-thesis.html">05 论证</a>
+  <a href="research-selection.html">06 选型</a>
+  <a href="research-timeline.html">07 Timeline</a>
+</nav>
+
+<h1 class="section-title danger">失败深度分析 — 到底哪儿出了问题？</h1>
+
+<div class="note-box red">
+两个 benchmark 的失败模式高度一致——模型能生成可执行的代码，但数据处理逻辑（聚合、过滤、分组）系统性出错。这不是"偶尔算错"，而是结构性缺陷。
+</div>
+
+<div class="grid-2">
+
+<!-- LEFT COLUMN -->
+<div>
+<h2>VisEval: 953 例 data_check 失败</h2>
+
+<div class="bar-chart">
+  <div class="bar-row">
+    <span class="bar-label">length_mismatch</span>
+    <div class="bar-track"><div class="bar-fill blue" style="width:60.1%"></div></div>
+    <span class="bar-value">573 (60.1%)</span>
+  </div>
+  <div class="bar-row">
+    <span class="bar-label">data_point_not_found</span>
+    <div class="bar-track"><div class="bar-fill yellow" style="width:36.0%"></div></div>
+    <span class="bar-value">343 (36.0%)</span>
+  </div>
+  <div class="bar-row">
+    <span class="bar-label">wrong_data_type</span>
+    <div class="bar-track"><div class="bar-fill purple" style="width:3.4%"></div></div>
+    <span class="bar-value">32 (3.4%)</span>
+  </div>
+  <div class="bar-row">
+    <span class="bar-label">duplicate_data</span>
+    <div class="bar-track"><div class="bar-fill red" style="width:0.4%"></div></div>
+    <span class="bar-value">4 (0.4%)</span>
+  </div>
+</div>
+
+<div class="note-box">代码级根因分析（对 916 例 length_mismatch + data_point_not_found）：</div>
+<div class="bar-chart">
+  <div class="bar-row">
+    <span class="bar-label">missing_groupby</span>
+    <div class="bar-track"><div class="bar-fill red" style="width:60.2%"></div></div>
+    <span class="bar-value">60.2% ← 最大根因</span>
+  </div>
+  <div class="bar-row">
+    <span class="bar-label">unknown</span>
+    <div class="bar-track"><div class="bar-fill blue" style="width:25.2%"></div></div>
+    <span class="bar-value">231 (25.2%)</span>
+  </div>
+  <div class="bar-row">
+    <span class="bar-label">missing_filter</span>
+    <div class="bar-track"><div class="bar-fill yellow" style="width:11.7%"></div></div>
+    <span class="bar-value">107 (11.7%)</span>
+  </div>
+  <div class="bar-row">
+    <span class="bar-label">wrong_agg (COUNT↔SUM)</span>
+    <div class="bar-track"><div class="bar-fill purple" style="width:2.9%"></div></div>
+    <span class="bar-value">27 (2.9%)</span>
+  </div>
+</div>
+
+<div class="case-box">
+  <h3>Case #1 — missing_groupby</h3>
+  <p><strong>NL:</strong> "Show how many customer addresses in each address type code with a bar chart"</p>
+  <p><strong>GT SQL:</strong> <code>SELECT address_type_code, COUNT(*) ... GROUP BY address_type_code</code></p>
+  <p><strong>模型行为：</strong>直接画了所有 15 行原始数据，没有做 GROUP BY 聚合</p>
+  <p><strong>结果：</strong><span class="wrong">生成 15 个数据点</span> vs <span class="right">GT 只有 2 个分组</span></p>
+</div>
+
+<div class="case-box">
+  <h3>Case #2 — missing_groupby</h3>
+  <p><strong>NL:</strong> "Return a bar chart about the number of bookings for each apartment number"</p>
+  <p><strong>GT SQL:</strong> <code>SELECT apt_number, COUNT(*) ... GROUP BY apt_number</code></p>
+  <p><strong>模型行为：</strong>列出了所有 15 条 booking 记录而非按 apartment 聚合</p>
+  <p><strong>结果：</strong><span class="wrong">15 个数据点</span> vs <span class="right">GT 10 个分组</span></p>
+</div>
+
+<p>含义：模型理解了"画柱状图"，但不理解"每个 X 有多少个 Y"需要 GROUP BY 聚合。这是数据保真度的核心痛点。</p>
+
+</div>
+
+<!-- RIGHT COLUMN -->
+<div>
+<h2>Text2Vis: 1,062 例 answer_mismatch</h2>
+
+<div class="bar-chart">
+  <div class="bar-row">
+    <span class="bar-label">wrong_entity</span>
+    <div class="bar-track"><div class="bar-fill red" style="width:51.2%"></div></div>
+    <span class="bar-value">544 (51.2%)</span>
+  </div>
+  <div class="bar-row">
+    <span class="bar-label">wrong_value</span>
+    <div class="bar-track"><div class="bar-fill yellow" style="width:33.1%"></div></div>
+    <span class="bar-value">351 (33.1%)</span>
+  </div>
+  <div class="bar-row">
+    <span class="bar-label">format_mismatch</span>
+    <div class="bar-track"><div class="bar-fill blue" style="width:8.7%"></div></div>
+    <span class="bar-value">92 (8.7%)</span>
+  </div>
+  <div class="bar-row">
+    <span class="bar-label">format_pct_vs_decimal</span>
+    <div class="bar-track"><div class="bar-fill purple" style="width:4.0%"></div></div>
+    <span class="bar-value">42 (4.0%)</span>
+  </div>
+  <div class="bar-row">
+    <span class="bar-label">partial_overlap</span>
+    <div class="bar-track"><div class="bar-fill green" style="width:2.7%"></div></div>
+    <span class="bar-value">29 (2.7%)</span>
+  </div>
+</div>
+
+<div class="note-box red">wrong_entity (544例, 51%) = 模型选了完全错误的实体。不是数据造假，而是数据推理错误——从正确的图表中读出了错误的答案。</div>
+
+<div class="case-box">
+  <h3>Case — wrong_entity</h3>
+  <p><strong>Q:</strong> "Which country's projected share of population in extreme poverty in 2023 is closest to the average?"</p>
+  <p>模型答：<span class="wrong">Africa</span> · GT：<span class="right">Fragile</span></p>
+  <p>模型画对了图，但从图中提取答案时选错了实体。</p>
+</div>
+
+<div class="note-box yellow">wrong_value (351例, 33%) = 数值计算错误。模型和 GT 都是数字，但差距显著（不是格式问题）。</div>
+
+<div class="case-box">
+  <h3>Case — wrong_value</h3>
+  <p><strong>Q:</strong> "Calculate the percentage contribution of each product to total revenue ($1,550M), then determine the difference..."</p>
+  <p>模型答：<span class="wrong">68.39</span> · GT：<span class="right">0.5484</span></p>
+  <p>数量级完全不对——可能没做百分比转换，或用了错误的基数。</p>
+</div>
+
+<p>含义：即使代码能执行、图能画出来，数据推理和计算环节仍然系统性不可靠。</p>
+
+</div>
+
+</div><!-- end grid-2 -->
+
+<div class="page-nav">
+  <a href="research-benchmarks.html">&larr; 02 Benchmark 复现</a>
+  <a href="research-competitors.html">04 竞品全景 &rarr;</a>
+</div>
+
+</body>
+</html>

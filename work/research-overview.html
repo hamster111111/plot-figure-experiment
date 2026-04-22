@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F-A GroundedChart — 研究探索全景报告</title>
+<link rel="stylesheet" href="research-styles.css">
+</head>
+<body>
+
+<h1>F-A GroundedChart — 研究探索全景报告</h1>
+<p class="subtitle">给师兄的 10 分钟速览：我们做了什么、发现了什么、方向为什么成立 <span class="timestamp">Generated: 2026-04-20</span></p>
+
+<div class="hero">
+  <h2>核心命题</h2>
+  <p class="one-liner"><strong>现有图表生成系统都在优化"图好不好看"，没有人管"数据对不对"</strong></p>
+  <p class="finding">3 天探索 · 3 个 Benchmark 复现 · 6 个竞品调研 · 953+ 失败案例深度分析</p>
+  <div class="stat-row">
+    <div class="stat-box yellow">
+      <div class="num">57.0%</div>
+      <div class="label">MatPlotBench Pass Rate<br>100 样本 · Avg Score 56.4</div>
+    </div>
+    <div class="stat-box red">
+      <div class="num">33.4%</div>
+      <div class="label">Text2Vis Final Pass<br>1,746 样本 · Answer Match 38.1%</div>
+    </div>
+    <div class="stat-box red">
+      <div class="num">36.8%</div>
+      <div class="label">VisEval Instance Pass<br>1,150 实例 · data_check 953 fails</div>
+    </div>
+  </div>
+  <p style="font-size:0.82em; color:var(--text2); margin-top:12px;">Backbone: DeepSeek-V3 (代码生成) + Qwen-VL (视觉评估) · 全部在本地 16GB 机器上复现</p>
+</div>
+
+<div class="note-box green" style="margin-top:18px;">
+  <strong>推荐新 framing：</strong>F-A 不应再被表述为泛化的"科学图表真实性"系统，而应收敛为 <strong>structured data-to-chart code generation</strong> 中的 <strong>execution-grounded verification-and-repair framework</strong>：专门检测并修复 aggregation / filter / join / sort / type 等数据操作与最终绘图数据之间的不一致。
+</div>
+
+<div class="hub-grid">
+  <a class="hub-card" href="research-summary.html">
+    <div class="hub-num">01</div>
+    <div class="hub-title">Executive Summary</div>
+    <div class="hub-desc">一页纸总结：核心发现、三个 benchmark 数字、关键结论</div>
+  </a>
+  <a class="hub-card" href="research-benchmarks.html">
+    <div class="hub-num">02</div>
+    <div class="hub-title">Benchmark 复现详情</div>
+    <div class="hub-desc">MatPlotBench / Text2Vis / VisEval 三个 benchmark 的完整复现数据，按图表类型和难度细分</div>
+  </a>
+  <a class="hub-card" href="research-failure.html">
+    <div class="hub-num">03</div>
+    <div class="hub-title">失败深度分析</div>
+    <div class="hub-desc">953 例 VisEval data_check + 1,062 例 Text2Vis answer_mismatch 的根因分类与典型案例</div>
+  </a>
+  <a class="hub-card" href="research-competitors.html">
+    <div class="hub-num">04</div>
+    <div class="hub-title">竞品全景</div>
+    <div class="hub-desc">CoDA / VisPath / PlotGen / MatPlotAgent / METAL / RAGvis 六个系统对比 + 实测结论</div>
+  </a>
+  <a class="hub-card" href="research-thesis.html">
+    <div class="hub-num">05</div>
+    <div class="hub-title">差异化论证</div>
+    <div class="hub-desc">为什么 F-A 方向成立：问题真实存在、根因可定位、竞品空白，附技术路线草图</div>
+  </a>
+  <a class="hub-card" href="research-selection.html">
+    <div class="hub-num">06</div>
+    <div class="hub-title">Benchmark 选型</div>
+    <div class="hub-desc">主实验 vs 泛化验证的 benchmark 推荐，各 benchmark 优劣对比</div>
+  </a>
+  <a class="hub-card" href="research-timeline.html">
+    <div class="hub-num">07</div>
+    <div class="hub-title">Timeline & 风险</div>
+    <div class="hub-desc">三天探索时间线 + 四级风险评估（CoDA 开源状态、指标不统一等）</div>
+  </a>
+</div>
+
+<hr class="divider">
+<p style="font-size:0.78em; color:var(--text2); text-align:center;">
+  F-A GroundedChart Research Overview · Generated 2026-04-20
+</p>
+
+</body>
+</html>
+
