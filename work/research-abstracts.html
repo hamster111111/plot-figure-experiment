@@ -6,7 +6,12 @@
   <title>F-A GroundedChart — Abstract Candidates</title>
   <link rel="stylesheet" href="research-styles.css">
   <style>
-    .abstract-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+    .abstract-grid {
+      display:grid;
+      grid-template-columns:1fr;
+      gap:18px;
+      max-width:980px;
+    }
     .abstract-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:18px; }
     .abstract-card.recommended { border-color:rgba(63,185,80,0.55); box-shadow:0 8px 28px rgba(63,185,80,0.08); }
     .abstract-card .meta { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
@@ -39,9 +44,6 @@
       margin-top:8px;
       font-size:0.9rem;
       color:var(--text2);
-    }
-    @media (max-width: 1100px) {
-      .abstract-grid { grid-template-columns:1fr; }
     }
     @media (max-width: 700px) {
       .strength-risk { grid-template-columns:1fr; }
