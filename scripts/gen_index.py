@@ -77,15 +77,20 @@ def build_html(pages: list[dict[str, str]]) -> str:
   --surface: #161b22;
   --border: #30363d;
   --text: #e6edf3;
-  --muted: #8b949e;
+  --muted: #a7b0ba;
   --accent: #58a6ff;
+  --font-sans: "Segoe UI Variable", "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", "Noto Sans CJK SC", "Source Han Sans SC", sans-serif;
+  --font-mono: "Cascadia Mono", "Cascadia Code", Consolas, monospace;
 }}
 * {{ box-sizing: border-box; }}
 body {{
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: var(--font-sans);
   background: var(--bg);
   color: var(--text);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }}
 .shell {{
   width: min(1180px, calc(100vw - 32px));
@@ -106,6 +111,15 @@ h1 {{
 .sub {{
   color: var(--muted);
   line-height: 1.6;
+}}
+code {{
+  font-family: var(--font-mono);
+  font-size: 0.95em;
+  background: rgba(88, 166, 255, 0.08);
+  border: 1px solid rgba(88, 166, 255, 0.16);
+  border-radius: 6px;
+  padding: 0.08em 0.42em;
+  color: #d2e7ff;
 }}
 .section {{
   margin-bottom: 24px;
