@@ -28,6 +28,25 @@
       margin-bottom:14px;
     }
     .abstract-text p:last-child { margin-bottom:0; }
+    .abstract-cn {
+      background:rgba(88,166,255,0.05);
+      border:1px solid rgba(88,166,255,0.16);
+      border-radius:10px;
+      padding:16px;
+      color:var(--text);
+      font-size:0.95rem;
+      line-height:1.82;
+      margin-bottom:14px;
+    }
+    .abstract-cn-label {
+      display:inline-block;
+      margin-bottom:10px;
+      font-size:0.82rem;
+      color:var(--accent);
+      letter-spacing:0.06em;
+      text-transform:uppercase;
+    }
+    .abstract-cn p:last-child { margin-bottom:0; }
     .strength-risk { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
     .mini-box {
       border-radius:10px;
@@ -105,6 +124,10 @@
       <div class="abstract-text">
         <p>Large language models can generate chart code from natural-language requests and structured data, but existing systems are typically optimized for executability or visual quality rather than whether the rendered figure faithfully reflects the requested data operations. As a result, models can produce charts that look plausible while encoding incorrect filters, group-bys, aggregations, or sort orders. We study this problem as faithful language-to-chart generation and present GroundedChart, an execution-grounded verification-and-repair framework. GroundedChart first extracts a structured chart requirement plan from the user request, including data-operation and basic encoding constraints. It then derives expected artifacts from the source data with deterministic execution and compares them against traces recovered from the generated plotting program, enabling requirement-level mismatch detection and localized repair. Unlike black-box LLM judging, our framework grounds verification in executable evidence and attributes each failure to specific requirements. We evaluate GroundedChart on benchmarks for natural-language-to-chart generation, using VisEval as the primary testbed and supplementary settings from Text2Vis and MatPlotBench. Results show that GroundedChart improves chart fidelity and data-check success while preserving executability, and provides interpretable error reports for downstream analysis. Our findings suggest that semantic alignment between language intent, data transformation, and plotted traces is a distinct bottleneck in chart generation that cannot be resolved by stronger base models alone.</p>
       </div>
+      <div class="abstract-cn">
+        <div class="abstract-cn-label">中文版</div>
+        <p>大语言模型已经能够根据自然语言请求和结构化数据生成图表代码，但现有系统通常优化的是代码是否可执行、或者图表是否看起来足够好，而不是最终图表是否真实忠实地反映了用户要求的数据操作。因此，模型常常会生成“看起来合理”但实际上在过滤、分组、聚合或排序上存在错误的图表。我们将这一问题定义为 <strong>faithful language-to-chart generation</strong>，并提出 GroundedChart，一个基于执行证据的验证与修复框架。GroundedChart 首先从用户请求中抽取结构化的图表需求计划，覆盖数据操作和基础编码约束；随后通过确定性执行从源数据中构造期望证据，再与生成代码实际绘出的 plot trace 对齐，从而在 requirement level 上检测不一致并进行局部修复。不同于黑箱式的 LLM judge，我们的方法把验证建立在可执行证据之上，并能把每个错误归因到具体需求。我们在自然语言到图表生成 benchmark 上评测 GroundedChart，其中以 VisEval 为主测试集，并辅以 Text2Vis 和 MatPlotBench 的补充实验。结果表明，GroundedChart 能在保持可执行性的同时提升图表保真度和 data-check 成功率，并为后续分析提供可解释的错误报告。我们的发现说明，语言意图、数据变换与最终绘图 trace 之间的语义对齐，是图表生成中的一个独立瓶颈，不能仅靠更强的基础模型自然解决。</p>
+      </div>
       <div class="strength-risk">
         <div class="mini-box good">
           <strong>为什么这版稳</strong>
@@ -129,6 +152,10 @@
       <div class="abstract-text">
         <p>Natural-language chart generation involves more than producing runnable code: the final figure must satisfy chart requirements expressed or implied in the request, including data transformations, visual encodings, and presentation constraints such as ordering or value formatting. Existing systems lack an explicit representation of these requirements and therefore struggle to diagnose silent fidelity errors, where a chart executes successfully but violates the intended semantics. We introduce GroundedChart, a requirement-grounded framework for faithful language-to-chart generation. The framework converts a user request into a traceable requirement plan, computes expected artifacts with deterministic programs, extracts actual plot traces from generated code, and performs requirement-level verification before localized repair. This design turns chart correctness from an opaque end result into a structured, evidence-backed process linking query spans, requirement nodes, computed artifacts, plotted traces, and repair actions. We further define chart requirement fidelity as an evaluation perspective that complements executability and visual similarity. Across benchmark settings, GroundedChart produces more faithful chart code, reveals failure modes that are invisible to surface-level metrics, and supports fine-grained error analysis by requirement family. These findings suggest that structured requirement grounding is an effective foundation for building trustworthy chart generation systems.</p>
       </div>
+      <div class="abstract-cn">
+        <div class="abstract-cn-label">中文版</div>
+        <p>自然语言图表生成不只是“把代码写到能运行”为止；最终生成的图表还必须满足请求中显式或隐式提出的图表需求，包括数据变换、视觉编码以及排序、数值格式等呈现约束。现有系统缺乏对这些需求的显式表示，因此很难诊断那些“静默保真错误”：图表虽然能成功执行，却违背了原本的语义要求。我们提出 GroundedChart，一个以 requirement 为中心的 faithful language-to-chart generation 框架。该框架首先把用户请求转换为可追踪的 requirement plan，再通过确定性程序计算期望证据、从生成代码中抽取实际的 plot trace，并在局部修复之前进行 requirement-level 验证。这样的设计把原本不透明的图表正确性问题，转化为一个由 query span、requirement node、计算证据、绘图 trace 与修复动作串联起来的结构化、证据支撑的过程。进一步地，我们提出 <strong>chart requirement fidelity</strong> 这一评测视角，用来补充传统的可执行性和视觉相似性指标。在多个 benchmark 设置下，GroundedChart 能生成更符合需求的图表代码，揭示表面指标无法暴露的失败模式，并支持按 requirement family 进行细粒度错误分析。这些结果表明，结构化的 requirement grounding 是构建可信图表生成系统的一种有效基础。</p>
+      </div>
       <div class="strength-risk">
         <div class="mini-box good">
           <strong>为什么这版强</strong>
@@ -152,6 +179,10 @@
       <div class="abstract-fit">这版最适合你想把“可溯源、可归因、LLM 不负责算数真值”打成系统特色的时候，用来区别普通 agent framework。</div>
       <div class="abstract-text">
         <p>Many chart-generation errors are silent: a plotting program executes and produces a visually plausible figure, yet the underlying data no longer corresponds to the user’s request. Existing systems and benchmarks provide limited support for tracing such failures back to their causes. We present GroundedChart, an evidence-grounded framework that makes chart generation verifiable and attributable. Given a natural-language request, source data, and candidate chart code, GroundedChart extracts requirement nodes with provenance, computes expected artifacts via deterministic execution, aligns them with actual plot traces, and constructs an evidence chain for requirement-level verification and repair. This approach separates numerical truth from language modeling: LLMs are used for requirement interpretation and code revision, while filters, joins, aggregations, percentages, and ordering are checked by executable programs. The resulting verifier can abstain under ambiguity, localize mismatches to specific requirements, and prevent unconstrained rewrites during repair. Experiments on language-to-chart benchmarks show that evidence-grounded verification improves fidelity, produces more actionable diagnostics, and enables analysis of which requirement families remain challenging. Our study argues that traceability, not just generation quality, is central to building reliable chart-generation systems.</p>
+      </div>
+      <div class="abstract-cn">
+        <div class="abstract-cn-label">中文版</div>
+        <p>很多图表生成错误都是“静默”的：绘图程序能够正常执行，产出的图在视觉上也看起来合理，但底层数据已经不再对应用户原本的请求。现有系统和 benchmark 对这类错误的支持都很有限，往往无法把失败追溯到具体原因。我们提出 GroundedChart，一个以证据为基础的框架，使图表生成过程变得可验证、可归因。给定自然语言请求、源数据和候选图表代码，GroundedChart 会先抽取带 provenance 的 requirement node，再通过确定性执行计算期望证据，与实际 plot trace 对齐，并构建一条支持 requirement-level 验证与修复的 evidence chain。该方法把“数值真值”与“语言建模”明确分离：LLM 用于需求解释和代码修订，而过滤、连接、聚合、百分比与排序等则由可执行程序来检查。由此得到的 verifier 能在语义存在歧义时进行 abstain，把不一致定位到具体 requirement，并在修复时避免无约束的整体重写。在 language-to-chart benchmark 上的实验表明，基于证据的验证能提升保真度，产出更具可操作性的诊断结果，并支持分析哪些 requirement family 仍然最具挑战。我们的研究认为，真正构建可靠的图表生成系统，核心不只是生成质量，更在于可溯源性。</p>
       </div>
       <div class="strength-risk">
         <div class="mini-box good">
