@@ -64,6 +64,10 @@
       font-size:0.9rem;
       color:var(--text2);
     }
+    .target-card {
+      border-color: rgba(188,140,255,0.4);
+      box-shadow: 0 10px 30px rgba(188,140,255,0.08);
+    }
     @media (max-width: 700px) {
       .strength-risk { grid-template-columns:1fr; }
     }
@@ -212,6 +216,40 @@
       </ul>
       <p style="margin-top:10px;">更直白一点：<strong>A 是现在能 defend 的版本，C 是最值得冲的版本，B 是需要更多实现才能站稳的版本。</strong></p>
     </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title purple">期望目标版：B + C 合体摘要</div>
+  <div class="note-box blue">
+    <strong>注意：</strong>这一版是<strong>期望终局 / aspirational target</strong>，不是建议你现在立刻拿去投稿的版本。它默认你后面真的把 <strong>chart requirement fidelity</strong> 和 <strong>evidence-grounded traceability</strong> 都做实了。
+  </div>
+  <div class="abstract-card target-card">
+    <div class="meta">
+      <span class="tag tag-purple">期望目标版</span>
+      <span class="tag tag-blue">B + C Hybrid</span>
+      <span class="tag tag-yellow">Final Target</span>
+    </div>
+    <div class="abstract-name">Target Abstract · Chart Requirement Fidelity with Evidence-Grounded Traceability</div>
+    <div class="abstract-fit">这版把 <strong>B 的问题定义</strong> 和 <strong>C 的方法特征</strong> 合在一起：不仅把任务定义成 requirement fidelity，还强调验证、归因和修复都必须建立在可执行证据链上。</div>
+    <div class="abstract-text">
+      <p>Natural-language chart generation requires more than producing executable plotting code: the final figure must faithfully satisfy chart requirements expressed or implied in the user request, including data transformations, core visual encodings, and presentation constraints. Yet existing systems are primarily optimized for executability, answer accuracy, or visual similarity, offering limited support for diagnosing silent fidelity errors in which a chart appears plausible while violating the intended semantics. We present GroundedChart, an evidence-grounded and traceable verification-and-repair framework for chart requirement fidelity in language-to-chart generation. GroundedChart converts a request into a structured requirement plan with provenance, computes expected artifacts through deterministic execution, extracts actual plot traces from generated code, and aligns the two to produce requirement-level verification, attribution, and localized repair. This design separates numerical truth from language modeling: LLMs are used for requirement interpretation and code revision, while operations such as filtering, grouping, aggregation, ordering, and percentage computation are verified by executable programs. By linking query spans, requirement nodes, expected artifacts, plotted traces, verifier decisions, and post-repair outcomes, our framework turns chart correctness into a traceable, evidence-backed process rather than a black-box judgment. Experiments on natural-language-to-chart benchmarks show that GroundedChart improves requirement fidelity, uncovers failure modes invisible to surface-level metrics, and supports fine-grained analysis across requirement families. Our results suggest that reliable chart generation depends not only on stronger generation models, but also on explicit requirement grounding and evidence-based verification.</p>
+    </div>
+    <div class="abstract-cn">
+      <div class="abstract-cn-label">中文版</div>
+      <p>自然语言图表生成不只是产出一段可执行的绘图代码；最终生成的图表还必须忠实满足用户请求中显式或隐式提出的图表需求，包括数据变换、核心视觉编码以及呈现约束。现有系统往往主要优化可执行性、答案准确率或视觉相似度，因此很难诊断那些“静默保真错误”：图表表面上看起来合理，但实际上违背了原本的语义要求。我们提出 GroundedChart，一个面向 <strong>chart requirement fidelity</strong> 的、基于证据且可溯源的验证与修复框架。GroundedChart 首先将用户请求转换为带 provenance 的结构化 requirement plan，再通过确定性执行计算期望证据，从生成代码中抽取实际 plot trace，并对两者进行对齐，从而实现 requirement-level 的验证、归因与局部修复。该设计把“数值真值”与“语言建模”明确分离：LLM 负责需求解释和代码修订，而过滤、分组、聚合、排序、百分比计算等操作则由可执行程序来验证。通过把 query span、requirement node、expected artifact、plotted trace、verifier decision 与修复后结果串联起来，我们的方法把图表正确性从黑箱判断转化为一个可追踪、可证据支撑的过程。在自然语言到图表 benchmark 上的实验表明，GroundedChart 能提升 requirement fidelity，揭示表面指标无法发现的失败模式，并支持跨 requirement family 的细粒度分析。我们的结果说明，可靠的图表生成不仅依赖更强的生成模型，也依赖显式的 requirement grounding 与基于证据的验证机制。</p>
+    </div>
+    <div class="strength-risk">
+      <div class="mini-box good">
+        <strong>为什么这是理想终局</strong>
+        它同时回答了“你到底在解决什么问题”以及“你和普通 self-refine / judge-based 系统有什么本质不同”，理论高度和方法辨识度都更强。
+      </div>
+      <div class="mini-box warn">
+        <strong>为什么现在不能直接硬上</strong>
+        这版默认你已经把 requirement family、evidence chain、attribution、localized repair 和 family-wise analysis 都做实了。只要其中一块偏虚，就会显得 overclaim。
+      </div>
+    </div>
+    <div class="usage-note">建议：把这版当成论文终稿方向，而不是当前立即投稿版本。现实推进顺序仍然应该是先把 C 做硬，再逐步把 B 的范围补上。</div>
   </div>
 </div>
 
