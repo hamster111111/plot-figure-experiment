@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>师弟研究指导报告 — GroundedChart / EMNLP</title>
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --card2: #1c2128; --border: #30363d;
+  --accent: #58a6ff; --green: #3fb950; --yellow: #d29922; --red: #f85149;
+  --purple: #bc8cff; --teal: #39d353; --text: #e6edf3; --muted: #8b949e;
+  --warn-bg: #2d1d0e; --warn-border: #d29922;
+  --good-bg: #0d1f12; --good-border: #238636;
+  --info-bg: #0d1f38; --info-border: #1f6feb;
+  --danger-bg: #1f0d0d; --danger-border: #f85149;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: -apple-system, 'Segoe UI', system-ui, sans-serif; font-size: 14px; line-height: 1.7; }
+
+/* ── Header ── */
+.header { background: linear-gradient(135deg, #0d2137 0%, #0d1117 70%); padding: 36px 48px 28px; border-bottom: 1px solid var(--border); }
+.header-top { display: flex; align-items: center; gap: 16px; margin-bottom: 8px; }
+.header h1 { font-size: 22px; font-weight: 700; color: #fff; }
+.header .subtitle { color: var(--muted); font-size: 13px; margin-top: 4px; }
+.tag { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+.tag.emnlp { background: #2d1858; color: #bc8cff; border: 1px solid #6e40c9; }
+.tag.mvp { background: #0d2137; color: var(--accent); border: 1px solid #1f6feb; }
+.tag.date { background: #1c2128; color: var(--muted); border: 1px solid var(--border); }
+
+/* ── Tabs ── */
+.tabs { display: flex; gap: 0; background: var(--card); border-bottom: 1px solid var(--border); padding: 0 48px; overflow-x: auto; }
+.tab { padding: 13px 22px; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; font-weight: 500; font-size: 13px; white-space: nowrap; transition: all .15s; }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tab:hover:not(.active) { color: var(--text); }
+
+/* ── Panes ── */
+.pane { display: none; padding: 36px 48px; max-width: 1100px; }
+.pane.active { display: block; }
+
+/* ── TLDR ── */
+.tldr { background: var(--info-bg); border: 1px solid var(--info-border); border-radius: 10px; padding: 18px 22px; margin-bottom: 28px; }
+.tldr-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--accent); margin-bottom: 8px; }
+.tldr p { color: var(--text); line-height: 1.8; }
+
+/* ── Alert boxes ── */
+.alert { border-radius: 8px; padding: 14px 18px; margin-bottom: 16px; border-left: 4px solid; }
+.alert.warn { background: var(--warn-bg); border-color: var(--yellow); }
+.alert.good { background: var(--good-bg); border-color: var(--green); }
+.alert.danger { background: var(--danger-bg); border-color: var(--red); }
+.alert.info { background: var(--info-bg); border-color: var(--accent); }
+.alert strong { display: block; margin-bottom: 4px; font-size: 13px; }
+.alert.warn strong { color: var(--yellow); }
+.alert.good strong { color: var(--green); }
+.alert.danger strong { color: var(--red); }
+.alert.info strong { color: var(--accent); }
+.alert p, .alert li { color: var(--muted); font-size: 13px; }
+.alert ul { padding-left: 16px; }
+
+/* ── Cards ── */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 24px; }
+.grid4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 14px; margin-bottom: 24px; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; }
+.card h4 { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 10px; }
+.card .val { font-size: 26px; font-weight: 700; }
+.card .val.green { color: var(--green); }
+.card .val.yellow { color: var(--yellow); }
+.card .val.red { color: var(--red); }
+.card .val.blue { color: var(--accent); }
+.card .sub { font-size: 11px; color: var(--muted); margin-top: 4px; line-height: 1.5; }
+
+/* ── Section headings ── */
+.section { margin-bottom: 32px; }
+h2 { font-size: 15px; font-weight: 700; margin-bottom: 16px; color: var(--text); padding-left: 12px; border-left: 3px solid var(--accent); }
+h3 { font-size: 13px; font-weight: 600; margin-bottom: 10px; color: var(--text); }
+
+/* ── Tables ── */
+table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13px; }
+th { background: #21262d; padding: 9px 14px; text-align: left; font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
+td { padding: 9px 14px; border-bottom: 1px solid var(--border); color: var(--muted); vertical-align: top; }
+td strong { color: var(--text); }
+tr:hover td { background: #1c2128; }
+
+/* ── Code ── */
+.code { background: #010409; border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; font-family: 'JetBrains Mono','Fira Code','Courier New', monospace; font-size: 12px; color: #c9d1d9; overflow-x: auto; white-space: pre; margin-bottom: 16px; line-height: 1.8; }
+.code .cm { color: #8b949e; } /* comment */
+.code .kw { color: #ff7b72; } /* keyword */
+.code .st { color: #a5d6ff; } /* string */
+.code .nu { color: #79c0ff; } /* number */
+.code .fn { color: #d2a8ff; } /* function */
+
+/* ── Badge ── */
+.badge { display: inline-block; padding: 1px 9px; border-radius: 12px; font-size: 11px; font-weight: 600; vertical-align: middle; }
+.badge.green { background: #0d2c17; color: var(--green); border: 1px solid #238636; }
+.badge.yellow { background: #271d06; color: var(--yellow); border: 1px solid #9e6a03; }
+.badge.red { background: #2d0e0e; color: var(--red); border: 1px solid #da3633; }
+.badge.blue { background: #0d1f38; color: var(--accent); border: 1px solid #1f6feb; }
+.badge.purple { background: #1a0d2e; color: var(--purple); border: 1px solid #6e40c9; }
+.badge.gray { background: #21262d; color: var(--muted); border: 1px solid var(--border); }
+
+/* ── Todo / Advice items ── */
+.advice-list { display: flex; flex-direction: column; gap: 0; }
+.advice-item { display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--border); align-items: flex-start; }
+.advice-item:last-child { border-bottom: none; }
+.advice-num { min-width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+.advice-num.p0 { background: #2d0e0e; color: var(--red); border: 2px solid #f85149; }
+.advice-num.p1 { background: #271d06; color: var(--yellow); border: 2px solid #d29922; }
+.advice-num.p2 { background: #0d1f38; color: var(--accent); border: 2px solid #1f6feb; }
+.advice-body h4 { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 5px; }
+.advice-body p { font-size: 12px; color: var(--muted); line-height: 1.7; }
+.advice-body .reason { font-size: 11px; color: #58a6ff; margin-top: 5px; font-style: italic; }
+
+/* ── Progress ── */
+.progress-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.progress-label { min-width: 160px; font-size: 12px; color: var(--muted); }
+.progress-bar { flex: 1; height: 8px; background: #21262d; border-radius: 4px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 4px; }
+.progress-val { min-width: 40px; font-size: 12px; color: var(--text); text-align: right; font-weight: 600; }
+
+/* ── Flow ── */
+.flow { display: flex; align-items: stretch; gap: 0; flex-wrap: wrap; margin: 16px 0; }
+.flow-box { background: var(--card); border: 1px solid var(--accent); border-radius: 8px; padding: 10px 16px; font-size: 12px; color: var(--accent); font-weight: 600; text-align: center; min-width: 100px; }
+.flow-box .sub { color: var(--muted); font-size: 10px; font-weight: 400; display: block; margin-top: 2px; }
+.flow-box.done { border-color: var(--green); color: var(--green); }
+.flow-box.todo { border-color: var(--yellow); color: var(--yellow); }
+.flow-box.placeholder { border-color: var(--border); color: var(--muted); border-style: dashed; }
+.flow-arrow { display: flex; align-items: center; padding: 0 6px; color: var(--muted); font-size: 18px; }
+
+/* ── Comparison ── */
+.vs-row { display: flex; gap: 2px; margin-bottom: 8px; align-items: center; }
+.vs-label { min-width: 160px; font-size: 12px; color: var(--muted); }
+.vs-bar-wrap { flex: 1; position: relative; height: 24px; background: #21262d; border-radius: 4px; overflow: hidden; }
+.vs-bar { height: 100%; display: flex; align-items: center; padding-left: 8px; font-size: 11px; font-weight: 700; color: #fff; border-radius: 4px; min-width: 40px; transition: width .3s; }
+.vs-val { min-width: 50px; font-size: 12px; font-weight: 600; text-align: right; }
+
+/* ── Divider ── */
+hr { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+
+ul { padding-left: 18px; }
+li { color: var(--muted); margin-bottom: 5px; }
+li strong { color: var(--text); }
+li .em { color: var(--accent); }
+
+.chip { display: inline-block; background: #21262d; border: 1px solid var(--border); border-radius: 4px; padding: 1px 7px; font-size: 11px; color: var(--muted); font-family: monospace; }
+
+/* Scrollable bench table */
+.bench-wrap { overflow-x: auto; }
+
+/* Quote */
+blockquote { border-left: 3px solid var(--purple); padding: 10px 16px; background: #1a0d2e22; border-radius: 0 8px 8px 0; margin: 16px 0; color: var(--muted); font-style: italic; font-size: 13px; }
+blockquote strong { color: var(--purple); font-style: normal; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <h1>GroundedChart — 师弟研究指导报告</h1>
+    <span class="tag emnlp">EMNLP Target</span>
+    <span class="tag mvp">MVP Done</span>
+    <span class="tag date">2026-04-23</span>
+  </div>
+  <div class="subtitle">基于两个仓库（Grounded-Chart + plot-figure-experiment）深度阅读，整理为导师视角的指导文档</div>
+</div>
+
+<div class="tabs">
+  <div class="tab active"    onclick="show('summary')">① 总体判断</div>
+  <div class="tab"           onclick="show('evidence')">② 核心证据链</div>
+  <div class="tab"           onclick="show('system')">③ 系统现状</div>
+  <div class="tab"           onclick="show('bench')">④ Benchmark 选型</div>
+  <div class="tab"           onclick="show('abstract')">⑤ 论文定位</div>
+  <div class="tab"           onclick="show('advice')">⑥ 导师建议</div>
+  <div class="tab"           onclick="show('risk')">⑦ 风险清单</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!--  TAB 1 总体判断                                            -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div id="summary" class="pane active">
+  <div class="tldr">
+    <div class="tldr-label">导师一句话判断</div>
+    <p>方向是真实的，证据是够的，但论文还没写稳——<strong>最大风险不是"能不能发"，而是"claim 是否撑得住"</strong>。现在需要做的是：锁定 Abstract A + VisEval 主实验，把 operator 覆盖从 1 个扩到 4 个，在强模型（GPT-4/Claude）上跑一遍，其他都是加分项。</p>
+  </div>
+
+  <div class="grid4">
+    <div class="card">
+      <h4>方向可行性</h4>
+      <div class="val green">强</div>
+      <div class="sub">VisEval 953 例 data_check 失败，72% 归因 operator-level，无竞品在解决</div>
+    </div>
+    <div class="card">
+      <h4>系统完成度</h4>
+      <div class="val yellow">60%</div>
+      <div class="sub">确定性核心完成，LLM Parser/Repairer 接口预留，消融未跑</div>
+    </div>
+    <div class="card">
+      <h4>证据充分度</h4>
+      <div class="val yellow">中</div>
+      <div class="sub">VisEval 强，Text2Vis 弱，MatPlotBench 不相关，缺强模型验证</div>
+    </div>
+    <div class="card">
+      <h4>投稿把握</h4>
+      <div class="val blue">EMNLP Main<br><small style="font-size:13px">有机会</small></div>
+      <div class="sub">需补强 operator 多样性 + 强模型实验，才能站稳</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>三天探索成果概览</h2>
+    <table>
+      <tr><th>方向</th><th>发现</th><th>信心</th></tr>
+      <tr><td><strong>核心问题定义</strong></td><td>Faithful language-to-chart generation：LLM 生成图表可执行、看起来对，但数据操作（groupby/filter/agg）是错的。这是 <em>silent failure</em>。</td><td><span class="badge green">✓ 站得住</span></td></tr>
+      <tr><td><strong>VisEval 证据</strong></td><td>953 例 data_check 失败；60% = missing_groupby；Pass Rate 36.8% → 85.2%（+48.4pp），落差全来自 data fidelity</td><td><span class="badge green">✓ 强</span></td></tr>
+      <tr><td><strong>Text2Vis 证据</strong></td><td>81% 失败来自推理错误（wrong_entity/wrong_value），只有 19% 与数据保真度直接相关</td><td><span class="badge yellow">⚠ 弱，需谨慎</span></td></tr>
+      <tr><td><strong>MatPlotBench 证据</strong></td><td>评的是视觉相似度，43% 低分主要是颜色/布局问题，与数据保真度关系不大</td><td><span class="badge red">✗ 不适合主实验</span></td></tr>
+      <tr><td><strong>竞品空白</strong></td><td>调研 12 个图表生成系统，0 个专门解决数据保真度；CoDA/VisPath/PlotGen 都只优化视觉质量</td><td><span class="badge green">✓ 真实空白</span></td></tr>
+      <tr><td><strong>代码框架</strong></td><td>Grounded-Chart MVP 完成：Parser→Executor→Verifier→Repairer 链路跑通，108/109 测试通过</td><td><span class="badge green">✓ 可用</span></td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>当前进度概览</h2>
+    <div class="progress-row"><div class="progress-label">Benchmark 调研与复现</div><div class="progress-bar"><div class="progress-fill" style="width:95%;background:var(--green)"></div></div><div class="progress-val">95%</div></div>
+    <div class="progress-row"><div class="progress-label">竞品分析</div><div class="progress-bar"><div class="progress-fill" style="width:90%;background:var(--green)"></div></div><div class="progress-val">90%</div></div>
+    <div class="progress-row"><div class="progress-label">系统框架（确定性核心）</div><div class="progress-bar"><div class="progress-fill" style="width:80%;background:var(--green)"></div></div><div class="progress-val">80%</div></div>
+    <div class="progress-row"><div class="progress-label">LLM Parser / Repairer 实验</div><div class="progress-bar"><div class="progress-fill" style="width:15%;background:var(--yellow)"></div></div><div class="progress-val">15%</div></div>
+    <div class="progress-row"><div class="progress-label">Operator 覆盖（4 类以上）</div><div class="progress-bar"><div class="progress-fill" style="width:30%;background:var(--yellow)"></div></div><div class="progress-val">30%</div></div>
+    <div class="progress-row"><div class="progress-label">强模型（GPT-4/Claude）验证</div><div class="progress-bar"><div class="progress-fill" style="width:0%;background:var(--red)"></div></div><div class="progress-val">0%</div></div>
+    <div class="progress-row"><div class="progress-label">论文写作</div><div class="progress-bar"><div class="progress-fill" style="width:10%;background:var(--red)"></div></div><div class="progress-val">10%</div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!--  TAB 2 核心证据链                                          -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div id="evidence" class="pane">
+  <div class="tldr">
+    <div class="tldr-label">TLDR</div>
+    <p>VisEval 是目前最强的证据柱：953 例 data_check 失败 + 48.4pp 的口径落差，已经足够支撑"数据保真度被系统性忽视"这一 claim。Text2Vis 需要诚实说明局限，MatPlotBench 不应作为主实验。</p>
+  </div>
+
+  <div class="section">
+    <h2>VisEval 关键数字（最强证据）</h2>
+    <div class="grid3">
+      <div class="card">
+        <h4>Full Pass Rate（含 data_check）</h4>
+        <div class="val red">36.8%</div>
+        <div class="sub">423 / 1150 instances 通过</div>
+      </div>
+      <div class="card">
+        <h4>去掉 data_check 后</h4>
+        <div class="val green">85.2%</div>
+        <div class="sub">与 GPT-4 (75%) / Gemini-2.5-Pro (83%) 同水平</div>
+      </div>
+      <div class="card">
+        <h4>口径落差</h4>
+        <div class="val yellow">+48.4pp</div>
+        <div class="sub">全部来自数据保真度缺陷，与模型代码生成能力无关</div>
+      </div>
+    </div>
+
+    <div class="alert good">
+      <strong>✓ 这是最关键的一张牌</strong>
+      <p>同一个模型，换一种评测口径，Pass Rate 从 36.8% 跳到 85.2%。这个 48.4pp 的落差就是论文的核心发现：<strong>数据保真度不是模型能力问题，而是一个被现有评测指标系统性忽视的维度。</strong></p>
+    </div>
+
+    <h3>953 例 data_check 失败根因分类</h3>
+    <div class="vs-row"><div class="vs-label">missing_groupby</div><div class="vs-bar-wrap"><div class="vs-bar" style="width:60%;background:#f85149">551 例 (60.2%)</div></div><div class="vs-val red" style="color:var(--red)">60.2%</div></div>
+    <div class="vs-row"><div class="vs-label">unknown / 复杂情况</div><div class="vs-bar-wrap"><div class="vs-bar" style="width:25%;background:#d29922">231 例 (25.2%)</div></div><div class="vs-val" style="color:var(--yellow)">25.2%</div></div>
+    <div class="vs-row"><div class="vs-label">missing_filter</div><div class="vs-bar-wrap"><div class="vs-bar" style="width:12%;background:#58a6ff">107 例 (11.7%)</div></div><div class="vs-val" style="color:var(--accent)">11.7%</div></div>
+    <div class="vs-row"><div class="vs-label">wrong_agg (COUNT↔SUM)</div><div class="vs-bar-wrap"><div class="vs-bar" style="width:3%;background:#3fb950">27 例 (2.9%)</div></div><div class="vs-val" style="color:var(--green)">2.9%</div></div>
+
+    <div class="alert info" style="margin-top:16px">
+      <strong>导师提示</strong>
+      <p>60% 的失败是 missing_groupby，这是好事也是风险：<br>
+      • <span style="color:var(--green)">好事</span>：问题集中，可以先做好 groupby 验证就有强结果<br>
+      • <span style="color:var(--red)">风险</span>：Reviewer 会问"换个更强的模型就会自动 groupby，你的贡献在哪？" → 需要在 GPT-4/Claude-4 上也跑，证明问题不只是弱模型的 bug</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Text2Vis — 需要诚实说明局限</h2>
+    <div class="grid3">
+      <div class="card">
+        <h4>Final Pass Rate</h4>
+        <div class="val yellow">33.4%</div>
+        <div class="sub">vs GPT-4o Direct 26%，SOTA Agentic 42%</div>
+      </div>
+      <div class="card">
+        <h4>与 F-A 直接相关的失败</h4>
+        <div class="val red">~19%</div>
+        <div class="sub">exec_failure (172) + low_correctness (75) / 1062 总失败</div>
+      </div>
+      <div class="card">
+        <h4>代码可读性</h4>
+        <div class="val green">4.75/5</div>
+        <div class="sub">图表可读性极高，说明生成质量本身不差</div>
+      </div>
+    </div>
+
+    <h3>1062 例 answer_mismatch 分类</h3>
+    <table>
+      <tr><th>类型</th><th>数量</th><th>是否 F-A 能解决</th><th>说明</th></tr>
+      <tr><td><strong>wrong_entity</strong></td><td>544 (51.2%)</td><td><span class="badge red">✗ 不直接相关</span></td><td>图表本身对（readability 5.0），错在从图中推理答案的过程</td></tr>
+      <tr><td><strong>wrong_value</strong></td><td>351 (33.1%)</td><td><span class="badge yellow">⚠ 部分相关</span></td><td>数值计算错误，可能是推理问题而非图表数据问题</td></tr>
+      <tr><td><strong>format_mismatch</strong></td><td>163 (15.3%)</td><td><span class="badge red">✗ 不相关</span></td><td>百分比 vs 小数、年份差一年等格式问题</td></tr>
+      <tr><td><strong>exec_failure</strong></td><td>172 (-)</td><td><span class="badge green">✓ 直接相关</span></td><td>代码执行崩溃，F-A 的 execution error 处理路径</td></tr>
+    </table>
+
+    <div class="alert warn">
+      <strong>⚠ 不要用 Text2Vis 的 33.4% 直接撑主 claim</strong>
+      <p>81% 的失败（wrong_entity + format_mismatch）与数据保真度无关，是答案推理/阅读理解错误。把这些都算作 F-A 能解决的问题会被 Reviewer 直接质疑。<strong>建议：Text2Vis 作为"迁移场景"的补充实验，VisEval 作为主实验。</strong></p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>MatPlotBench — 不适合作为核心证据</h2>
+    <div class="alert danger">
+      <strong>✗ MatPlotBench 评的是视觉相似度，不是数据正确性</strong>
+      <ul>
+        <li>43% 低分（score &lt; 50）主要原因：颜色差异、布局问题、3D 渲染细节丢失、特殊 API 不熟</li>
+        <li>只有 7 例 0 分可能涉及数据保真度</li>
+        <li>结论：不能用 MatPlotBench 证明"现有系统有数据保真度问题"</li>
+        <li>可以用来证明"F-A 不损害视觉质量"（修复后分数不下降），这是可行的次级主张</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>竞品空白（极强论据）</h2>
+    <table>
+      <tr><th>系统</th><th>发表</th><th>优化目标</th><th>数据保真度</th></tr>
+      <tr><td><strong>CoDA</strong></td><td>ICLR 2026</td><td>视觉相似度 (VSR)</td><td><span class="badge red">✗ 无</span></td></tr>
+      <tr><td><strong>MatPlotAgent</strong></td><td>ACL 2024</td><td>视觉质量</td><td><span class="badge red">✗ 无</span></td></tr>
+      <tr><td><strong>AutoFigure</strong></td><td>ICLR 2026</td><td>科学插图视觉质量</td><td><span class="badge red">✗ 无（正交任务）</span></td></tr>
+      <tr><td><strong>VisPath</strong></td><td>arXiv 2025</td><td>Pass Rate（但去掉 data_check）</td><td><span class="badge red">✗ 无</span></td></tr>
+      <tr><td><strong>PlotGen</strong></td><td>ACM IUI 2025</td><td>视觉分数</td><td><span class="badge red">✗ 无</span></td></tr>
+      <tr><td><strong>METAL</strong></td><td>ACL 2025</td><td>ChartMimic 专用</td><td><span class="badge red">✗ 无</span></td></tr>
+      <tr><td><strong>RAGvis</strong></td><td>EMNLP 2025</td><td>EDA 推荐（正交任务）</td><td><span class="badge red">✗ 无</span></td></tr>
+    </table>
+    <div class="alert good">
+      <strong>✓ 12 个系统，0 个解决数据保真度 — 这是真实的研究空白</strong>
+      <p>RAGvis 在 VisEval 3 个 failed case 上实测：5/5 生成代码全部执行失败。CoDA/VisPath 的高分来自去掉 data_check 的宽松口径。<strong>直接用这个事实，这比自己做消融实验更有说服力。</strong></p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!--  TAB 3 系统现状                                            -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div id="system" class="pane">
+  <div class="tldr">
+    <div class="tldr-label">TLDR</div>
+    <p>系统的确定性核心（规则 Parser → Executor → Verifier → RuleRepairer）已完整跑通，MVP Smoke Test 验证三类错误均可检测和给出修复建议。LLM 接口已预留，但消融实验一次都没跑过，是最大的实验缺口。</p>
+  </div>
+
+  <div class="section">
+    <h2>系统 Pipeline</h2>
+    <div class="flow">
+      <div class="flow-box done">IntentParser<div class="sub">HeuristicParser ✓<br>LLMParser 待接入</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box done">ChartIntentPlan<div class="sub">+ RequirementNode<br>+ 溯源 span ✓</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box done">CanonicalExecutor<div class="sub">期望 PlotTrace ✓<br>filter/groupby/sort</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box done">Verifier<div class="sub">7 类错误码 ✓<br>逐算子对比</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box todo">Repairer<div class="sub">RuleRepairer ✓<br>LLMRepairer 待跑</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box todo">BoundedRepairLoop<div class="sub">结构完整 ✓<br>端到端待评测</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>MVP Smoke Test 输出（已验证）</h2>
+    <div class="code"><span class="cm"># 查询：Show total sales by category in a bar chart, ascending.</span>
+<span class="cm"># 模拟错误代码：直接画原始行，未做 groupby</span>
+
+Plan: ChartIntentPlan(
+    chart_type=<span class="st">'bar'</span>,  dimensions=(<span class="st">'category'</span>,),
+    measure=MeasureSpec(column=<span class="st">'sales'</span>, agg=<span class="st">'sum'</span>),
+    sort=SortSpec(by=<span class="st">'measure'</span>, direction=<span class="st">'asc'</span>),
+    confidence=<span class="nu">0.35</span>   <span class="cm"># ← 偏低，需改进 HeuristicParser</span>
+)
+
+Expected: (DataPoint(x=<span class="st">'B'</span>, y=<span class="nu">7.0</span>), DataPoint(x=<span class="st">'A'</span>, y=<span class="nu">25.0</span>))
+Actual:   (DataPoint(x=<span class="st">'A'</span>, y=<span class="nu">10</span>), DataPoint(x=<span class="st">'A'</span>, y=<span class="nu">15</span>), DataPoint(x=<span class="st">'B'</span>, y=<span class="nu">7</span>))
+
+<span class="kw">OK: False</span>
+Errors: (<span class="st">'length_mismatch_extra_points'</span>, <span class="st">'wrong_aggregation_value'</span>, <span class="st">'wrong_order'</span>)
+
+Repair: Aggregate rows before plotting; add the missing group-by...
+        Sort the plotted data according to the requested order...
+        <span class="cm">Repair scope: data_transformation</span></div>
+  </div>
+
+  <div class="section">
+    <h2>Verifier 7 类错误码</h2>
+    <table>
+      <tr><th>错误码</th><th>算子</th><th>含义</th><th>VisEval 占比</th></tr>
+      <tr><td><span class="chip">length_mismatch_extra_points</span></td><td>groupby</td><td>多绘数据点（未聚合）</td><td><span class="badge red">60%</span></td></tr>
+      <tr><td><span class="chip">data_point_not_found</span></td><td>filter_or_join</td><td>期望的 x 值不在实际图中</td><td><span class="badge yellow">36%</span></td></tr>
+      <tr><td><span class="chip">wrong_aggregation_value</span></td><td>aggregation</td><td>聚合结果数值错</td><td><span class="badge green">3%</span></td></tr>
+      <tr><td><span class="chip">wrong_chart_type</span></td><td>chart_type</td><td>图表类型不符</td><td>—</td></tr>
+      <tr><td><span class="chip">wrong_order</span></td><td>sort</td><td>数据顺序不符</td><td>—</td></tr>
+      <tr><td><span class="chip">unexpected_data_point</span></td><td>filter_or_join</td><td>多余的 x 值</td><td>—</td></tr>
+      <tr><td><span class="chip">execution_error</span></td><td>execution</td><td>代码运行崩溃</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>模块完成度</h2>
+    <table>
+      <tr><th>模块</th><th>状态</th><th>导师评注</th></tr>
+      <tr><td><strong>HeuristicIntentParser</strong></td><td><span class="badge green">✓ 完成</span></td><td>confidence=0.35 偏低，关键词匹配过于保守，需要针对 VisEval 语料优化</td></tr>
+      <tr><td><strong>CanonicalExecutor</strong></td><td><span class="badge green">✓ 完成</span></td><td>filter/groupby/sort/limit 齐全，这是论文的确定性基础</td></tr>
+      <tr><td><strong>OperatorLevelVerifier</strong></td><td><span class="badge green">✓ 完成</span></td><td>7 类错误码，逻辑正确，已有单测覆盖</td></tr>
+      <tr><td><strong>RuleBasedRepairer</strong></td><td><span class="badge green">✓ 完成</span></td><td>能给出修复 instruction，但还没有真正执行代码修复</td></tr>
+      <tr><td><strong>BoundedRepairLoop</strong></td><td><span class="badge yellow">⚠ 结构完整</span></td><td>逻辑写好了，但没有端到端跑过 repair 成功率实验</td></tr>
+      <tr><td><strong>LLMIntentParser</strong></td><td><span class="badge yellow">⚠ 接口预留</span></td><td><strong>最高优先级</strong>：接入后跑消融，才有论文的 Table 1</td></tr>
+      <tr><td><strong>LLMRepairer / TieredRepairer</strong></td><td><span class="badge yellow">⚠ 接口预留</span></td><td>需要设计 prompt，跑 Rule-only vs LLM-only vs Tiered 对比</td></tr>
+      <tr><td><strong>MatplotlibTraceRunner</strong></td><td><span class="badge green">✓ 完成</span></td><td>能从真实代码执行中提取 PlotTrace，这是"execution-grounded"的核心</td></tr>
+      <tr><td><strong>EvidenceGraph</strong></td><td><span class="badge blue">数据结构完成</span></td><td>"原文→错误"溯源图，是论文 traceability claim 的依据，还没有可视化</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!--  TAB 4 Benchmark 选型                                      -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div id="bench" class="pane">
+  <div class="tldr">
+    <div class="tldr-label">TLDR</div>
+    <p>VisEval 是唯一一个在主流口径下包含 strict data_check 的 Benchmark，这就是为什么要用它作为主实验。<strong>关键陷阱：不同论文用不同口径，96% SOTA 和 36.8% 并非同一指标，必须在论文中清晰说明口径差异。</strong></p>
+  </div>
+
+  <div class="section">
+    <h2>推荐选型策略</h2>
+    <table>
+      <tr><th>角色</th><th>Benchmark</th><th>规模</th><th>核心指标</th><th>理由</th></tr>
+      <tr>
+        <td><span class="badge green">主实验</span></td>
+        <td><strong>VisEval</strong></td>
+        <td>2,524 (1,150 instances)</td>
+        <td>Full Pass Rate（含 data_check）+ 口径转换</td>
+        <td>直接测数据保真度，有逐点 SVG 对比，是论文核心证据</td>
+      </tr>
+      <tr>
+        <td><span class="badge green">主实验</span></td>
+        <td><strong>PlotCraft</strong></td>
+        <td>982</td>
+        <td>Pass Rate（48 种图表类型）</td>
+        <td>覆盖 CSV/XLSX 多种格式，独立于 VisEval，泛化性证据</td>
+      </tr>
+      <tr>
+        <td><span class="badge yellow">补充实验</span></td>
+        <td><strong>Text2Vis</strong></td>
+        <td>1,985</td>
+        <td>Final Pass Rate（诚实说明 19% 相关）</td>
+        <td>可以作为"不同任务形式下的迁移"，但不能当主力</td>
+      </tr>
+      <tr>
+        <td><span class="badge blue">对比基线</span></td>
+        <td><strong>MatPlotBench</strong></td>
+        <td>100</td>
+        <td>Plot Score（证明不损害视觉质量）</td>
+        <td>与 PlotGen/CoDA 有可比结果，只用来证明修复后视觉不退化</td>
+      </tr>
+      <tr>
+        <td><span class="badge gray">不建议</span></td>
+        <td>FigureBench / SciGenBench</td>
+        <td>—</td>
+        <td>—</td>
+        <td>偏 illustration 方向，与 structured data-to-chart 无关</td>
+      </tr>
+      <tr>
+        <td><span class="badge gray">不建议</span></td>
+        <td>ChartMimic</td>
+        <td>4,800</td>
+        <td>—</td>
+        <td>Image→Code 方向，声称有数据保真度检查但实际无逐点验证</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>口径陷阱 — 必须在论文中说清楚</h2>
+    <div class="alert danger">
+      <strong>✗ 不同论文的数字不能直接对比</strong>
+      <ul>
+        <li><strong>PlotCraft 报告的 SOTA 96.14%</strong>（Claude-4.1-Opus）= 去掉 data_check 的宽松口径</li>
+        <li><strong>我们复现的 VisEval 36.8%</strong> = 含 strict data_check 的严格口径</li>
+        <li><strong>同口径下我们是 85.2%</strong>，与 GPT-4 (75%) / Gemini-2.5-Pro (83%) 持平</li>
+        <li>如果 Reviewer 看到 36.8% vs 96.14% 不理解口径差异，会直接否定工作</li>
+      </ul>
+    </div>
+
+    <h3>各 Benchmark 指标口径对照</h3>
+    <table>
+      <tr><th>指标</th><th>来源</th><th>包含 data_check</th><th>可比性</th></tr>
+      <tr><td>Pass Rate (Full)</td><td>我们 VisEval 复现</td><td><span class="badge green">✓ 是</span></td><td>论文主指标</td></tr>
+      <tr><td>Pass Rate（口径转换）</td><td>我们去掉 data_check</td><td><span class="badge red">✗ 否</span></td><td>与现有 SOTA 对比用</td></tr>
+      <tr><td>Pass Rate（PlotCraft 等论文）</td><td>PlotCraft / VisPath / CoDA</td><td><span class="badge red">✗ 否</span></td><td>只用于"代码生成能力"对比</td></tr>
+      <tr><td>Final Pass</td><td>Text2Vis</td><td><span class="badge yellow">⚠ 间接</span></td><td>补充实验</td></tr>
+      <tr><td>Plot Score</td><td>MatPlotBench</td><td><span class="badge red">✗ 否</span></td><td>视觉质量对比</td></tr>
+      <tr><td>VSR（Visual Similarity Rate）</td><td>CoDA</td><td><span class="badge red">✗ 否</span></td><td>对比时需注明</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>VisEval SOTA 对比（同口径）</h2>
+    <div class="vs-row"><div class="vs-label">Claude-4.1-Opus (PlotCraft)</div><div class="vs-bar-wrap"><div class="vs-bar" style="width:96%;background:#6e40c9">96.14%</div></div><div class="vs-val" style="color:var(--purple)">96.14%</div></div>
+    <div class="vs-row"><div class="vs-label">PlotCraftor-30B</div><div class="vs-bar-wrap"><div class="vs-bar" style="width:93%;background:#6e40c9">93.81%</div></div><div class="vs-val" style="color:var(--purple)">93.81%</div></div>
+    <div class="vs-row" style="font-style:italic"><div class="vs-label" style="color:var(--muted);font-size:11px">← 以上为去掉 data_check 口径</div><div class="vs-bar-wrap" style="background:transparent;border:none"></div><div class="vs-val"></div></div>
+    <div style="border-top:1px dashed var(--border);margin:8px 0"></div>
+    <div class="vs-row"><div class="vs-label">我们（去 data_check 口径）</div><div class="vs-bar-wrap"><div class="vs-bar" style="width:85%;background:#3fb950">85.2%</div></div><div class="vs-val" style="color:var(--green)">85.2%</div></div>
+    <div class="vs-row"><div class="vs-label">Gemini-2.5-Pro</div><div class="vs-bar-wrap"><div class="vs-bar" style="width:83%;background:#3fb950">83.71%</div></div><div class="vs-val" style="color:var(--green)">83.71%</div></div>
+    <div class="vs-row"><div class="vs-label">GPT-4</div><div class="vs-bar-wrap"><div class="vs-bar" style="width:75%;background:#d29922">75.27%</div></div><div class="vs-val" style="color:var(--yellow)">75.27%</div></div>
+    <div style="border-top:2px solid var(--red);margin:8px 0"></div>
+    <div class="vs-row"><div class="vs-label" style="color:var(--red);font-weight:700">我们（含 data_check 口径）</div><div class="vs-bar-wrap"><div class="vs-bar" style="width:37%;background:#f85149">36.8%</div></div><div class="vs-val" style="color:var(--red)">36.8%</div></div>
+    <p style="color:var(--muted);font-size:12px;margin-top:8px">红线以下 = 加入 strict data_check 后，落差就是数据保真度问题的大小</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!--  TAB 5 论文定位                                            -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div id="abstract" class="pane">
+  <div class="tldr">
+    <div class="tldr-label">TLDR</div>
+    <p>师弟准备了三版摘要（A/B/C），当前应选 <strong>Abstract A</strong> 作为投稿版本（最稳妥，与证据最匹配），但设计系统时要为 Abstract C（可溯源、evidence-grounded）做准备，因为这是与黑箱 judge 的最强差异化点。</p>
+  </div>
+
+  <div class="section">
+    <h2>三版摘要对比</h2>
+    <table>
+      <tr><th>版本</th><th>核心定位</th><th>推荐度</th><th>主要风险</th></tr>
+      <tr>
+        <td><strong>Abstract A</strong><br><span class="badge green">推荐现在用</span></td>
+        <td>Execution-Grounded Verification-and-Repair Framework：聚焦 data operation fidelity，claim 收得准</td>
+        <td><span class="badge green">✓ 现在用</span></td>
+        <td>需要确保系统至少初步覆盖 encoding constraints，不能只有 groupby/filter</td>
+      </tr>
+      <tr>
+        <td><strong>Abstract C</strong><br><span class="badge blue">值得冲</span></td>
+        <td>Evidence-Grounded & Traceable：强调可归因性，把系统从"又一个 chart agent"升华为"evidence-backed verification framework"</td>
+        <td><span class="badge blue">中期目标</span></td>
+        <td>evidence chain / abstention / localized repair 都需要 prototype，工作量大</td>
+      </tr>
+      <tr>
+        <td><strong>Abstract B</strong><br><span class="badge yellow">终极目标</span></td>
+        <td>Chart Requirement Fidelity：最强 claim，引入 requirement family 视角，最像顶会套路</td>
+        <td><span class="badge yellow">3-6 个月后</span></td>
+        <td>Reviewer 会追问支持了多少 requirement family，若只有 data ops 会被认为超卖</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>推荐论文叙事结构（Abstract A 版）</h2>
+    <div class="advice-list">
+      <div class="advice-item">
+        <div class="advice-num p0">1</div>
+        <div class="advice-body">
+          <h4>Problem / Scene（1-2 句）</h4>
+          <p>LLM 能生成可执行、视觉合理的图表代码，但可能 silently 违反 aggregation/filter/join/sort 约束。这类错误在现有评测指标下不可见。</p>
+        </div>
+      </div>
+      <div class="advice-item">
+        <div class="advice-num p0">2</div>
+        <div class="advice-body">
+          <h4>Limitation（1-2 句）</h4>
+          <p>现有系统优化 executability 或 visual similarity，没有显式中间表示，缺少执行后的数据语义验证。VisEval 在 strict data_check 口径下 36.8% pass rate vs 宽松口径 85.2%——48.4pp 落差全来自数据保真度。</p>
+        </div>
+      </div>
+      <div class="advice-item">
+        <div class="advice-num p1">3</div>
+        <div class="advice-body">
+          <h4>Method（2-3 句）</h4>
+          <p>我们提出 GroundedChart：从 NL query 抽取操作符级意图（Intent Parser），用 CanonicalExecutor 计算期望绘图数据，再用 OperatorLevelVerifier 与实际执行结果做逐算子对比，最后通过 localized repair 修复错误并重新验证。</p>
+        </div>
+      </div>
+      <div class="advice-item">
+        <div class="advice-num p1">4</div>
+        <div class="advice-body">
+          <h4>Results（2-3 句）</h4>
+          <p>在 VisEval 上，GroundedChart 将 Full Pass Rate 从 36.8% 提升至 XX%（还需跑实验），同时在去掉 data_check 的口径下维持 85%+ 的视觉质量。在 PlotCraft 上泛化至 48 种图表类型。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>EMNLP Main 级别最低门槛（导师评估）</h2>
+    <table>
+      <tr><th>要求</th><th>当前状态</th><th>行动</th></tr>
+      <tr><td>问题定义站得住（data fidelity 是被忽视的真实问题）</td><td><span class="badge green">✓ 已有强证据</span></td><td>VisEval 48.4pp 落差 + 竞品调研，可以直接写进 Introduction</td></tr>
+      <tr><td>方法链路完整（extraction→expected→trace→attribution→repair 真跑通）</td><td><span class="badge yellow">⚠ 部分完成</span></td><td>LLMRepairer 需接入并跑端到端实验</td></tr>
+      <tr><td>Operator 覆盖不能太单薄（不能只修 missing_groupby）</td><td><span class="badge red">✗ 待做</span></td><td>至少要稳定覆盖：groupby + filter + agg + sort 四类</td></tr>
+      <tr><td>强模型验证（不只是弱模型现象）</td><td><span class="badge red">✗ 未做</span></td><td>在 GPT-4 / Claude-4 上跑 VisEval，证明强模型也有数据保真度问题</td></tr>
+      <tr><td>细粒度分析（requirement family 级别改进曲线）</td><td><span class="badge yellow">⚠ 数据结构有</span></td><td>把 EvidenceGraph 做成实验 Table，分 groupby/filter/agg/sort 各自修复率</td></tr>
+      <tr><td>至少一主一辅 benchmark</td><td><span class="badge yellow">⚠ VisEval 主实验有</span></td><td>补 PlotCraft 作为辅实验</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!--  TAB 6 导师建议                                            -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div id="advice" class="pane">
+  <div class="tldr">
+    <div class="tldr-label">TLDR</div>
+    <p>师弟的思路已经很清晰，调研做得很扎实。接下来需要从"调研阶段"转入"实验阶段"：锁定 Abstract A + VisEval 主实验，优先把 LLMIntentParser 接进去跑出 Table 1，然后补强模型验证和 operator 多样性。</p>
+  </div>
+
+  <div class="section">
+    <h2>立即行动项（P0 — 1-2 周内）</h2>
+    <div class="advice-list">
+      <div class="advice-item">
+        <div class="advice-num p0">①</div>
+        <div class="advice-body">
+          <h4>接入 LLMIntentParser，跑 VisEval 消融实验，拿到 Table 1</h4>
+          <p>设置 <code class="chip">GCHART_MODEL</code> / <code class="chip">GCHART_API_KEY</code>，用 <code class="chip">run_llm_ablation_bench.py</code> 在 VisEval 上跑：Heuristic Parser vs LLM Parser，Rule Repairer vs LLM Repairer vs Tiered。这是论文的核心实验表格，没有它什么都写不了。</p>
+          <div class="reason">→ Grounded-Chart 的接口已经写好，只差 API key 和实际 prompt 设计</div>
+        </div>
+      </div>
+      <div class="advice-item">
+        <div class="advice-num p0">②</div>
+        <div class="advice-body">
+          <h4>修复 MatPlotBench benchmark 路径硬编码，让批量实验能跑</h4>
+          <p><code class="chip">benchmarks/matplotbench_failed_tasks.json</code> 里的 <code class="chip">generated_code_path</code> 是 Windows 绝对路径（<code>D:\Code\...</code>），在 Linux 上跑不起来。需要改为相对路径或内联 code_text 字段。</p>
+          <div class="reason">→ 这是基础设施问题，影响所有 benchmark 实验</div>
+        </div>
+      </div>
+      <div class="advice-item">
+        <div class="advice-num p0">③</div>
+        <div class="advice-body">
+          <h4>在 GPT-4 / Claude-4 上跑 VisEval，证明数据保真度问题不只是弱模型现象</h4>
+          <p>Reviewer 最可能的质疑："你用了什么模型？换 GPT-4 就 OK 了吧。" 必须在强模型上也证明：就算是 GPT-4，在 strict data_check 口径下也有显著的 missing_groupby 问题。</p>
+          <div class="reason">→ 这是防御 Reviewer 的最关键实验，没有它论文非常脆弱</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>中期行动项（P1 — 2-4 周内）</h2>
+    <div class="advice-list">
+      <div class="advice-item">
+        <div class="advice-num p1">④</div>
+        <div class="advice-body">
+          <h4>扩展 Operator 覆盖：从 groupby 到 filter + agg + sort 四类</h4>
+          <p>当前 Verifier 七类错误码都有，但 RuleRepairer 主要只能修 missing_groupby（data_transformation scope）。需要设计并验证 filter 缺失 / 聚合函数错误 / 排序错误 的 repair 策略，并在 VisEval 上分类统计修复率。</p>
+          <div class="reason">→ 论文需要展示 operator 级别的细粒度分析，单一 groupby 修复不够</div>
+        </div>
+      </div>
+      <div class="advice-item">
+        <div class="advice-num p1">⑤</div>
+        <div class="advice-body">
+          <h4>提升 HeuristicParser 的 confidence（目前 0.35，偏低）</h4>
+          <p>Smoke Test 跑出来 confidence=0.35，说明 HeuristicParser 的规则过于保守。需要分析 VisEval 的 NL query 语料，改进关键词匹配规则和 schema-aware 推断，让 Heuristic baseline 也足够强，才能衬托 LLM Parser 的提升。</p>
+          <div class="reason">→ 消融实验的 baseline 要足够强，否则"LLM Parser 提升了"这个 claim 也站不住</div>
+        </div>
+      </div>
+      <div class="advice-item">
+        <div class="advice-num p1">⑥</div>
+        <div class="advice-body">
+          <h4>接入 PlotCraft 作为第二主实验</h4>
+          <p>PlotCraft 982 个案例，48 种图表类型，是独立于 VisEval 的泛化证据。需要写 PlotCraft Adapter（参考已有的 MatplotbenchAdapter），在上面跑相同的 pipeline，报告 F-A 的 Full Pass Rate 提升。</p>
+          <div class="reason">→ 只有 VisEval 一个 benchmark，论文泛化性会被质疑</div>
+        </div>
+      </div>
+      <div class="advice-item">
+        <div class="advice-num p1">⑦</div>
+        <div class="advice-body">
+          <h4>把 EvidenceGraph 做成可视化 + 论文 Figure</h4>
+          <p>EvidenceGraph（"哪段原文 → 哪个验证错误"的关联图）是框架最有特色的部分，但目前只有数据结构，没有可视化。做一个案例可视化图放进论文，能极大提高论文的可读性和说服力。</p>
+          <div class="reason">→ 一张好的 Figure 抵三张 Table，是审稿人判断工作是否"有新意"的关键</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>长期方向建议（P2）</h2>
+    <div class="advice-list">
+      <div class="advice-item">
+        <div class="advice-num p2">⑧</div>
+        <div class="advice-body">
+          <h4>Abstract A → Abstract C 升级：强化 traceability 作为差异化点</h4>
+          <p>Abstract C（"evidence-grounded, traceable"）是与黑箱 judge / 黑箱 self-refine 最强的区分点。当 LLM 说"修好了"时，GroundedChart 能精确指出"第 3 行的 groupby 操作导致第 2 个 requirement node 失败"。这是可信 AI 领域的重要价值主张。</p>
+        </div>
+      </div>
+      <div class="advice-item">
+        <div class="advice-num p2">⑨</div>
+        <div class="advice-body">
+          <h4>Plotly 后端支持 — 扩大 applicability claim</h4>
+          <p><code class="chip">plotly_smoke_bench.json</code> 已有，实现 PlotlyTraceRunner 后，可以说"框架与 rendering backend 无关"，这是一个简单但有效的 applicability 证明。</p>
+        </div>
+      </div>
+      <div class="advice-item">
+        <div class="advice-num p2">⑩</div>
+        <div class="advice-body">
+          <h4>监控 CoDA（ICLR 2026）开源状态</h4>
+          <p>CoDA 是目前最强的竞品，若其开源并在 VisEval strict 口径下也测过，需要提前准备差异化说明。目前 CoDA 未开源，是研究空白的有力佐证，但要持续关注。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>导师对三天调研的综合评价</h2>
+    <div class="alert good">
+      <strong>✓ 调研做得非常扎实，思路清晰</strong>
+      <ul>
+        <li>三个 Benchmark 全部亲自复现，数字可信</li>
+        <li>竞品分析深度足够（RAGvis 还实测了三个 case！）</li>
+        <li>对 Text2Vis 证据的局限性有诚实的自我评估（81% 失败不是 F-A 能直接解决的），这点非常难得</li>
+        <li>三版 Abstract 候选显示对论文定位思考得很认真</li>
+      </ul>
+    </div>
+    <div class="alert warn">
+      <strong>⚠ 需要警惕的习惯</strong>
+      <ul>
+        <li><strong>不要用弱模型结果做唯一证据。</strong> 现在的实验全是用某个未知模型跑的，需要明确说是哪个模型，并在强模型上复现</li>
+        <li><strong>不要把文档写得比代码好。</strong> 目前 HTML 报告做得很精美，但消融实验一次都没跑过。论文最终靠数字说话</li>
+        <li><strong>不要等系统"完美"再跑实验。</strong> 现在就应该接入 LLM API，哪怕结果不好也要看数字</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!--  TAB 7 风险清单                                            -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div id="risk" class="pane">
+  <div class="tldr">
+    <div class="tldr-label">TLDR</div>
+    <p>最高风险：换强模型后 missing_groupby 消失（方向失效），以及 Reviewer 认为 operator 覆盖太单薄（只修 groupby = 不够通用）。这两个风险需要用"GPT-4 也有这个问题"和"覆盖 4 类 operator"来对冲。</p>
+  </div>
+
+  <div class="section">
+    <h2>风险矩阵</h2>
+    <table>
+      <tr><th>风险</th><th>等级</th><th>可能性</th><th>应对策略</th></tr>
+      <tr>
+        <td><strong>强模型自动解决 missing_groupby</strong><br><small>GPT-4/Claude 本来就会 groupby，F-A 没有增量价值</small></td>
+        <td><span class="badge red">高影响</span></td>
+        <td><span class="badge yellow">中</span></td>
+        <td>立即在 GPT-4 上跑 VisEval strict 口径，如果 GPT-4 也有 30%+ 的 data_check 失败，风险解除；如果 GPT-4 只有 5%，需要重新定位论文为"弱模型增强"</td>
+      </tr>
+      <tr>
+        <td><strong>Operator 覆盖太单薄</strong><br><small>"你只解决了 groupby，filter/join/agg 怎么办？"</small></td>
+        <td><span class="badge red">高影响</span></td>
+        <td><span class="badge red">高</span></td>
+        <td>扩展 RuleRepairer 到 filter + agg + sort，在实验中分类报告各 operator 的修复率</td>
+      </tr>
+      <tr>
+        <td><strong>Text2Vis 证据被质疑</strong><br><small>81% 失败不是数据保真问题，审稿人直接否定</small></td>
+        <td><span class="badge yellow">中影响</span></td>
+        <td><span class="badge red">高</span></td>
+        <td>论文中诚实说明 Text2Vis 的错误分类，只声称 F-A 能解决 ~19% 的失败；不把 33.4% pass rate 当主要论据</td>
+      </tr>
+      <tr>
+        <td><strong>CoDA 开源并解决了数据保真度</strong><br><small>ICLR 2026 最强竞品开源后方向被占</small></td>
+        <td><span class="badge red">高影响</span></td>
+        <td><span class="badge yellow">低中</span></td>
+        <td>每周检查 CoDA 开源状态；如果 CoDA 开源，分析其是否做了 operator-level verification（大概率没有），找差异化点</td>
+      </tr>
+      <tr>
+        <td><strong>VisEval 评测口径混淆</strong><br><small>36.8% vs 96.14% 被误读为"比 SOTA 差 60pp"</small></td>
+        <td><span class="badge yellow">中影响</span></td>
+        <td><span class="badge red">高</span></td>
+        <td>在论文中用专门的表格说明口径差异；Introduction 第一段就讲清楚为什么 96% 和 36.8% 不在同一口径</td>
+      </tr>
+      <tr>
+        <td><strong>Repair 成功率不够高</strong><br><small>F-A 识别出错误，但修复后结果没有显著提升</small></td>
+        <td><span class="badge yellow">中影响</span></td>
+        <td><span class="badge yellow">中</span></td>
+        <td>先跑实验看数字；如果 repair 效果差，可以调整论文 claim 为"诊断 + 定位"（不一定要修好），把 verification 作为主贡献</td>
+      </tr>
+      <tr>
+        <td><strong>MatPlotBench benchmark 路径硬编码</strong><br><small>Windows 路径在 Linux 跑不起来</small></td>
+        <td><span class="badge blue">低影响</span></td>
+        <td><span class="badge green">已发现</span></td>
+        <td>修改 benchmark JSON 改为相对路径或内联 code_text，1 小时内可修复</td>
+      </tr>
+      <tr>
+        <td><strong>HeuristicParser confidence 偏低</strong><br><small>confidence=0.35，baseline 太弱，消融结果无意义</small></td>
+        <td><span class="badge yellow">中影响</span></td>
+        <td><span class="badge yellow">中</span></td>
+        <td>针对 VisEval 语料改进规则，让 Heuristic baseline 至少达到合理水平</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>总结：论文投稿 Roadmap</h2>
+    <table>
+      <tr><th>阶段</th><th>时间</th><th>目标</th><th>关键产物</th></tr>
+      <tr><td><span class="badge red">Now</span></td><td>本周</td><td>接入 LLM API，跑第一版 VisEval 消融</td><td>Table 1 草稿（Heuristic vs LLM parser）</td></tr>
+      <tr><td><span class="badge red">Week 2</span></td><td>下周</td><td>强模型验证 + Operator 覆盖扩展</td><td>GPT-4 VisEval 结果 + filter/agg/sort repair</td></tr>
+      <tr><td><span class="badge yellow">Week 3-4</span></td><td>2 周后</td><td>PlotCraft 副实验 + EvidenceGraph 可视化</td><td>第二张实验表 + 论文 Figure 2</td></tr>
+      <tr><td><span class="badge yellow">Month 2</span></td><td>1 个月后</td><td>论文写作（Introduction + Method + Experiment）</td><td>论文草稿 v1</td></tr>
+      <tr><td><span class="badge blue">Month 3</span></td><td>2-3 个月后</td><td>内部 review + 修改 + 投稿</td><td>EMNLP 2026 投稿</td></tr>
+    </table>
+
+    <blockquote>
+      <strong>导师最后一句话：</strong>
+      你的调研已经证明这个方向值得做，不要再在调研上花时间了。现在要做的只有一件事：<strong>跑实验，拿数字。</strong> 哪怕第一版结果不好看，数字出来才能知道下一步怎么调整。
+    </blockquote>
+  </div>
+</div>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+</script>
+</body>
+</html>
